@@ -163,15 +163,24 @@ AMK大小写敏感，内置关键字等统一用小写。推荐用户使用小�
 暂时没有编辑器支持，如果需要的话可以考虑先开发一个Vim的插件用作高亮和辅助写作。
 
 ## 其它解释器语法
-### source
+### 运行：amk
+在终端调用amk进入解释器。例如
+	
+	$ amk
+	welcome to amk interpreter!
+	>
+	
+
+### 装载：source *file*
 source 用以装载源文件。例如
 
 	$ amk 
 	welcome to amk interpreter!
 	> source A.amk
 	source code loaded successfully!
+	>
 	
-### check
+### 检查：check *file*
 check 用以检查定理／引理的正确性。例如
 
 	$ amk 
@@ -182,3 +191,11 @@ check 用以检查定理／引理的正确性。例如
 	Proof for theorem A is not correct!
 		@ line 10: conclude a -> b
 	> quit
+	
+### 检查文件: amk *file*
+可以使用解释器对文件中的证明逐个检查。例如
+
+	$amk A.amk
+	welcome to amk interpreter!
+	checked all theorems and lemmas, they are all correct!
+	congratulations!
