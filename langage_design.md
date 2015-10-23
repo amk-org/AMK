@@ -2,6 +2,28 @@
 Drafted by *ssy* @ Oct, 2015
 ***
 
+<link rel="stylesheet" href="http://yandex.st/highlightjs/6.2/styles/googlecode.min.css">
+ 
+<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+<script src="http://yandex.st/highlightjs/6.2/highlight.min.js"></script>
+ 
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+ $(document).ready(function(){
+      $("h2,h3,h4,h5,h6").each(function(i,item){
+        var tag = $(item).get(0).localName;
+        $(item).attr("id","wow"+i);
+        $("#category").append('<a class="new'+tag+'" href="#wow'+i+'">'+$(this).text()+'</a></br>');
+        $(".newh2").css("margin-left",0);
+        $(".newh3").css("margin-left",20);
+        $(".newh4").css("margin-left",40);
+        $(".newh5").css("margin-left",60);
+        $(".newh6").css("margin-left",80);
+      });
+ });
+</script>
+<div id="category"></div>
+
 下面是关于AMK语言的总述，会出现一些例子，这些例子默认来自于古典命题逻辑领域。具体各领域的内容在各自的说明文件中查阅。
 
 ## 模块 Module
@@ -195,7 +217,7 @@ check 用以检查定理／引理的正确性。例如
 ### 检查文件: amk *file*
 可以使用解释器对文件中的证明逐个检查。例如
 
-	$amk A.amk
+	$ amk A.amk
 	welcome to amk interpreter!
 	checked all theorems and lemmas, they are all correct!
 	congratulations!
