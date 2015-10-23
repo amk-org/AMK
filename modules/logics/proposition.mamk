@@ -1,0 +1,95 @@
+# proposition.mamk
+# This is a module for AMK, defining some necessary thing for propositional logics
+# Drafted by ssy @ 23rd Oct 2015
+
+TYPE
+	statement {default}
+	list[statement] # [statement] here means there is a list of several (finite) statements
+
+OPERATOR # operators are arranged in decreasing order of their priorities
+	not (statement) --> statement
+
+	wedge (statement, statement) --> statement
+
+	vee (statement, statement) --> statement
+
+	-> (statement, statement) --> statement
+
+	<-> (statement, statement) --> statement
+
+	|- (list[statement], statement) --> statement
+
+AXIOM
+
+	# base axioms of "N"
+
+	axiom1:		# inclusion
+		require: 
+			a of statement
+			b of list[statement]
+		conclude:
+			a, b |- a
+
+	axiom2:		# not cancellation
+		require:
+			a of statement
+			b of statement
+			c of list[statement]
+			not a, c |- b
+			not a, c |- not b
+		conclude:
+			c |- a
+
+	axiom3:		# -> cancellation
+		require:
+			a of statement
+			b of statement
+			c of list[statement]
+			c |- a -> b
+			c |- a
+		conclude:
+			c |- b
+
+	axiom4:		# -> introduction
+		require:
+			a of statement
+			b of statement
+			c of list[statement]
+			a, c |- b
+		conclude:
+			c |- a -> b
+
+	axiom5:		# vee cancellation
+		require:
+			a, b, c of statement
+			d of list[statement]
+			a, d |- c
+			b, d |- c
+		conclude:
+			a vee b, d |- c
+
+	axiom6:		# vee introduction
+		 TODO
+
+	axiom7:		# wedge cancellation
+		 TODO
+
+	axiom8:		# wedge introduction
+		 TODO
+
+	axiom9:		# <-> cancellation
+		 TODO
+
+	axiom10:		# <-> introduction
+		 TODO
+			
+
+	# Below are not axioms, but for convenience we put them here. 
+	# Be really CAREFUL about this kind of behaviors.
+
+	axiom11:		# not introduction
+		 TODO
+
+THEOREM
+	# no theorems here ... yet!
+

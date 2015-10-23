@@ -9,24 +9,11 @@ Drafted by *ssy* @ Oct, 2015
 继承AMK本身的所有语言特征。
 
 ## 具体的定义与说明
-参见 modules/logics/classic.mamk
+命题逻辑部分，参见 modules/logics/proposition.mamk。
 	
 
 ## Source Code Example
-A.amk
-
-	1 import "mathmatical_logics"
-	2 
-	3 lemma B:
-	4 	conclude 1
-	5 	
-	6 theorem name_of_the_theorem:
-	7 	require: p, q
-	8 	state a = p wedge q
-	9 	state b = p -> not q
-	10	conclude a -> b [lemma B]
-
--
+A nonsense proof:
 
 	theoreom A:
 		require: P, R, Q
@@ -37,7 +24,8 @@ A.amk
 				state c = R -> P
 		proof:
 			conclude a, b |- c [lemma B]
--
+
+A sensible proof:
 
 	theorem T:
 		require: a, b
@@ -50,7 +38,7 @@ A.amk
 			a -> b |- a -> (a wedge b) [4]
 			
 
-尝试检查定理正确性
+Check a theorem proof:
 
 	$ amk 
 	welcome to amk interpreter!
