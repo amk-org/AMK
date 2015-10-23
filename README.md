@@ -1,5 +1,5 @@
 #Documents of AMK Project
-Please refer to the following linkes to documents:
+Please refer to the following links to documents:
 
 - [AMK Language Design: Overview](docs/language_design.md)
 
