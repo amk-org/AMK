@@ -63,7 +63,7 @@ classic.mamk
 
 	TYPE
 		statement {default}
-		list[statement] # [statement] here means there is a list of several (finite) statements
+		set[statement] # [statement] here means there is a list of several (finite) statements
 		numeric # numeric values like int, float, etc
 		
 	OPERATOR # operators are arranged in decreasing order of their priorities
@@ -75,7 +75,7 @@ classic.mamk
 			...
 		-> (statement, statement) --> statement
 			...
-		|- (list[statement], statement) --> statement
+		|- (set[statement], statement) --> statement
 			...
 		
 	AXIOM
@@ -108,6 +108,24 @@ classic.mamk
 ### 类型 
 AMK本身并不支持类型（theorem, lemma, axiom除外），所有类型都来自于模块定义。
 
+AMK提供元类型，即**list**, **set** 分别表示有序、无序的列表（有限数量的元素）。
+使用方式：
+
+1. 在模块的源代码声明类型，如
+
+	list[typeA]
+	set[typeB]
+	
+2. 运算符默认使用逗号，用
+
+	a, b
+	
+	表示a, b两个元素组成的set，用
+	
+	[a, b]
+	
+	表示a, b两个元素组成的list。 
+	
 
 ### 运算符
 AMK本身并没有运算符，所有的相关运算符都来自模块定义（除了numeric，它在模块中声明，一旦声明不需在模块中再定义即可使用）。
@@ -169,7 +187,7 @@ AMK本身并没有运算符，所有的相关运算符都来自模块定义（�
 	- 如果是公理，可以不写。但是定理、引理的使用必须明确指明（这点和手写证明的要求是一样的）。
 	- 括号内的内容可以用':'分隔作为两部分
 		- 前面是使用的定理／引理／公理的名字，前缀 axiom / lemma / theorem 可以省略。
-		- 后面是对那几行推理得到的结果使用该定理／引理／公理，用标号按顺序指明，用逗号作为分隔符。
+		- 后面是对那几行推理得到的结果使用该定理／引理／公理，用标号**按定理条件的顺序**指明，用逗号作为分隔符。
 		- 如果只有前一半，可以省略':'，但是只有后一半不能省略':'
 		
 ## 编写 Coding

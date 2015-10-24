@@ -4,7 +4,7 @@
 
 TYPE
 	statement {default}
-	list[statement] # [statement] here means there is a list of several (finite) statements
+	set[statement] # [statement] here means there is a list of several (finite) statements
 
 OPERATOR # operators are arranged in decreasing order of their priorities
 	not (statement) --> statement
@@ -17,7 +17,7 @@ OPERATOR # operators are arranged in decreasing order of their priorities
 
 	<-> (statement, statement) --> statement
 
-	|- (list[statement], statement) --> statement
+	|- (set[statement], statement) --> statement
 
 AXIOM
 
@@ -26,7 +26,7 @@ AXIOM
 	axiom1:		# inclusion
 		require: 
 			a of statement
-			b of list[statement]
+			b of set[statement]
 		conclude:
 			a, b |- a
 
@@ -34,7 +34,7 @@ AXIOM
 		require:
 			a of statement
 			b of statement
-			c of list[statement]
+			c of set[statement]
 			not a, c |- b
 			not a, c |- not b
 		conclude:
@@ -44,7 +44,7 @@ AXIOM
 		require:
 			a of statement
 			b of statement
-			c of list[statement]
+			c of set[statement]
 			c |- a -> b
 			c |- a
 		conclude:
@@ -54,7 +54,7 @@ AXIOM
 		require:
 			a of statement
 			b of statement
-			c of list[statement]
+			c of set[statement]
 			a, c |- b
 		conclude:
 			c |- a -> b
@@ -62,33 +62,33 @@ AXIOM
 	axiom5:		# vee cancellation
 		require:
 			a, b, c of statement
-			d of list[statement]
+			d of set[statement]
 			a, d |- c
 			b, d |- c
 		conclude:
 			a vee b, d |- c
 
 	axiom6:		# vee introduction
-		 TODO
+		# TODO
 
 	axiom7:		# wedge cancellation
-		 TODO
+		# TODO
 
 	axiom8:		# wedge introduction
-		 TODO
+		# TODO
 
 	axiom9:		# <-> cancellation
-		 TODO
+		# TODO
 
 	axiom10:		# <-> introduction
-		 TODO
+		# TODO
 			
 
 	# Below are not axioms, but for convenience we put them here. 
 	# Be really CAREFUL about this kind of behaviors.
 
 	axiom11:		# not introduction
-		 TODO
+		# TODO
 
 THEOREM
 	# no theorems here ... yet!
