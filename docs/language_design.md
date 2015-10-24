@@ -85,7 +85,7 @@ classic.mamk
 				b of list[statement]
 			conclude: a, b |- a
 			
-		axiom 2:
+		axiom2:
 		...
 	
 	THEOREM
