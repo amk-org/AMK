@@ -9,15 +9,17 @@ TYPE
 OPERATOR # operators are arranged in decreasing order of their priorities
 	not (statement) --> statement
 
-	wedge (statement, statement) --> statement
+	wedge (statement, statement) --> statement # ^
 
-	vee (statement, statement) --> statement
+	vee (statement, statement) --> statement # v
 
 	-> (statement, statement) --> statement
 
 	<-> (statement, statement) --> statement
 
 	|- (set[statement], statement) --> statement
+	
+	|-| (set[statement], statement) --> statement
 
 AXIOM
 
