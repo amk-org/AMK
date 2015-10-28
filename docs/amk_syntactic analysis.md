@@ -1,6 +1,8 @@
 #	AMK 词法分析
 Drafted by *zhq* @ Oct, 2015
 ***
+	theorem 
+	
 	theorem T:
 		require: a, b
 		conclude: a -> b |- a -> (a wedge b)
