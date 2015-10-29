@@ -5,4 +5,7 @@ Well, at this moment there are only several sample files here (in directory *exa
 - a *.y* / *.ypp* file for bison / yacc
 - a *Makefile* file for make
 
-The files in this directory are just for future modification.
+And the default compiler is GCC.
+
+Well, I have to confess the files have nothing to do with **amk**, they are just a calculator 
+modified from a code online.
