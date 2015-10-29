@@ -1,5 +1,5 @@
 # Source code
-Well, at this moment there is only several sample files here:
+Well, at this moment there are only several sample files here (in directory *example*):
 
 - a *.lex* file for flex
 - a *.y* file for bison / yacc
