@@ -3,12 +3,12 @@
 OBJ = mycalc
 NAME = amk
 LEX = $(NAME).lex
-YACC = $(NAME).ypp
+YACC = $(NAME).y
 
 default:
 	bison -d $(YACC)
 	flex $(LEX)
-	g++ -o $(OBJ) $(NAME).tab.cpp lex.yy.c
+	gcc -o $(OBJ) $(NAME).tab.c lex.yy.c
 
 clean:
-	rm $(NAME).tab.hpp $(NAME).tab.cpp lex.yy.c $(OBJ)
+	rm $(NAME).tab.h $(NAME).tab.c lex.yy.c $(OBJ)

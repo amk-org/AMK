@@ -1,16 +1,13 @@
 %{
-#include <iostream>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
-using namespace std;
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 //-- Lexer prototype required by bison, aka getNextToken()
 int yylex(); 
 extern int yylineno;
 int yyerror(const char *p) { 
-	fprintf(stderr, "Error: '%s' at line %d\n", p, yylineno);
+	fprintf(stderr, "Error at line %d\n", yylineno);
 	return 1;
 }
 %}
@@ -28,7 +25,7 @@ int yyerror(const char *p) {
 %%
 run: res run | res    /* forces bison to process many stmts */
 
-res: exp STOP         { cout << $1 << endl; }
+res: exp STOP         { printf("%d\n", $1); }
 
 exp: exp OPA term     { $$ = ($2 == '+' ? $1 + $3 : $1 - $3); }
 | term                { $$ = $1; }

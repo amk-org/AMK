@@ -2,15 +2,14 @@
  * ex1.l 
  ********************************************************/
 %{
-#include "amk.tab.hpp"
-#include <cstdlib>
-#include <iostream>
-using namespace std;
+#include "amk.tab.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 %}
 
 %option noyywrap
 %option yylineno
-
 %%
 
 [0-9]+   { yylval.val = atoi(yytext); return NUM; }
