@@ -16,9 +16,10 @@ int yyerror(const char *p) {
 %union {
   int val; 
   char sym;
+  char[128] str;
 };
-%token <val> NUM
-%token <sym> OPA OPM LP RP STOP
+%token <val> num left_bracket right_bracket left_ref right_ref left_parren right_parren colon comma right_tab left_tab
+%token <str> file_name idn label 
 %type  <val> exp term sfactor factor res
 
 //-- GRAMMAR RULES ---------------------------------------
