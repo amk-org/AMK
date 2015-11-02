@@ -23,20 +23,26 @@ cur_tab = 0;
 %}
 
 %%
-import |
-theorem |
-axiom |
-lemma |
-require |
-conclude |
-proof |
-where	{strcpy(yylval.str,yytext);return keyword;}
+import {return import;}
+theorem {return theorem;}
+axiom {return axiom;}
+lemma {return lemma;}
+require {return require;}
+conclude {return conclude;}
+proof {return proof;}
+where	{return where;}
 	
-[a-z0-9A-Z_-~]*\.[a-z0-0A-Z_.-~]		{strcpy(yylval.str,yytext); return file_name;}
+[a-z0-9A-Z_-~]*\.[a-z0-0A-Z_.-~]		{
+												yylval.str = malloc(strlen(yytext));
+												strcpy(yylval.str,yytext); 
+												return file_name;
+										}
 
-[a-zA-Z_][a-zA-Z0-9_]*		{strcpy(yylval.str,yytext);return idn;}
-
-[0-9]+						{yylval.num = atoi(yytext);return number;}
+[a-zA-Z_][a-zA-Z0-9_]*		{
+									yylval.str = malloc(strlen(yytext));
+									strcpy(yylval.str,yytext);
+									return idn;
+							}
 
 
 \|- |
@@ -44,14 +50,20 @@ where	{strcpy(yylval.str,yytext);return keyword;}
 -> |
 not |
 vee |
-wedge	{strcpy(yylval.str,yytext);return operator;}
+wedge	{
+		yylval.str = malloc(strlen(yytext));
+		strcpy(yylval.str,yytext);
+		return operator;
+	}
 
 ,	{return comma;}
 
 :	{return colon;}
 
-\<[a-zA-Z0-9_]+\>		{	strcpy(yylval.str,yytext + 1);
-							return label}
+\<[a-zA-Z0-9_]+\>		{		yylval.str = malloc(strlen(yytext));
+						strcpy(yylval.str,yytext + 1);
+						return label;
+				}
 
 \[		{return left_bracket;}
 
@@ -75,19 +87,21 @@ wedge	{strcpy(yylval.str,yytext);return operator;}
 
 [ ]+	{}	
 
-\t\t	{	cur_tab++;
+[\t]+\n		{}
+
+\t\t		{	cur_tab++;
 			yyless(1);
 		}
 
 \t		{	cur_tab ++;
-			if(cur_tab > last_tab)
-				for(int i = 0;i < cur_tab - last_tab;i++){
+			if(cur_tab > last_tab){
+					yylval.num = cur_tab - last_tab;
 					return right_tab;
 				}
-			if(cur_tab < last_tab)
-				for(int i = 0;i < last_tab - cur_tab;i++){
+			if(cur_tab < last_tab){
+					yylval.num = last_tab - cur_tab;
 					return left_tab;
-				}
+			}	
 		}		
 
 #[^\n]	{}
@@ -107,6 +121,6 @@ char **argv;
   }
 
   yylex();
-
+}
 yywrap() { return 1; }
 

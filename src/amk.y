@@ -15,31 +15,16 @@ int yyerror(const char *p) {
 //-- SYMBOL SEMANTIC VALUES -----------------------------
 %union {
   int val; 
-  char sym;
-  char[128] str;
+  char* str;
+  void* pr
 };
-%token <val> num left_bracket right_bracket left_ref right_ref left_parren right_parren colon comma right_tab left_tab
-%token <str> file_name idn label 
-%type  <val> exp term sfactor factor res
+%token <pr> left_bracket right_bracket left_ref right_ref left_parren right_parren colon comma
+%token <str> file_name idn label
+%token <val> left_tab right_tab
 
 //-- GRAMMAR RULES ---------------------------------------
 %%
-run: res run | res    /* forces bison to process many stmts */
-
-res: exp STOP         { printf("%d\n", $1); }
-
-exp: exp OPA term     { $$ = ($2 == '+' ? $1 + $3 : $1 - $3); }
-| term                { $$ = $1; }
-
-term: term OPM factor { $$ = ($2 == '*' ? $1 * $3 : $1 / $3); }
-| sfactor             { $$ = $1; }
-
-sfactor: OPA factor   { $$ = ($1 == '+' ? $2 : -$2); }
-| factor              { $$ = $1; }
-
-factor: NUM           { $$ = $1; }
-| LP exp RP           { $$ = $2; }
-
+run: res run | res  
 %%
 //-- FUNCTION DEFINITIONS ---------------------------------
 int main()
