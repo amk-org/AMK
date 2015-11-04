@@ -1,8 +1,6 @@
 # Source code
-Well, at this moment there are only several sample files here (in directory *example* / *example_cpp* for C / C++ language):
 
-- a *.lex* file for flex
-- a *.y* / *.ypp* file for bison / yacc
-- a *Makefile* file for make
+At this moment we are 
 
-The files in this directory are just for future modification.
+- (writing *amy.y*) doing the syntactical analysis
+- (modifying *amk.lex*) modifying lexcial analysis

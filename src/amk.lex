@@ -41,7 +41,7 @@ where	{return where;}
 [a-zA-Z_][a-zA-Z0-9_]*		{
 									yylval.str = malloc(strlen(yytext));
 									strcpy(yylval.str,yytext);
-									return idn;
+									return identifier;
 							}
 
 
