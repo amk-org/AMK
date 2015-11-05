@@ -23,7 +23,9 @@ int yyerror(const char *p) {
 %token <ptr> import	theorem	axiom lemma require
 %token <ptr> conclude proof where left_bracket right_bracket
 %token <ptr> left_ref right_ref left_parren	right_parren colon
-%token <ptr> comma
+%token <ptr> comma 
+%token <ptr> not vee wedge contain get dget
+%token <ptr> indent dedent
 %token <str> file_name	identifier	label
 %token <val> left_tab	right_tab
 

@@ -20,6 +20,8 @@ int keyword = 0;
 int left = 0;
 last_tab = 0;
 cur_tab = 0;
+tmp_tab = 0;
+
 %}
 
 %%
@@ -33,34 +35,45 @@ proof {return proof;}
 where	{return where;}
 	
 [a-z0-9A-Z_-~]*\.[a-z0-0A-Z_.-~]		{
-												yylval.str = malloc(strlen(yytext));
+												yylval.str = malloc(strlen(yytext) + 1);
 												strcpy(yylval.str,yytext); 
 												return file_name;
 										}
 
 [a-zA-Z_][a-zA-Z0-9_]*		{
-									yylval.str = malloc(strlen(yytext));
+									yylval.str = malloc(strlen(yytext) + 1);
 									strcpy(yylval.str,yytext);
 									return identifier;
 							}
 
 
-\|- |
-\|-\| |
--> |
-not |
-vee |
-wedge	{
-		yylval.str = malloc(strlen(yytext));
-		strcpy(yylval.str,yytext);
-		return operator;
+\|- {
+	return get;
+}
+\|-\| {
+	return dget;
+}
+
+-> {
+	return contain;
+}
+not {
+	return not;
+}
+
+vee {
+	return vee;
+}
+wedge
+	{
+		return wedge;
 	}
 
 ,	{return comma;}
 
 :	{return colon;}
 
-\<[a-zA-Z0-9_]+\>		{		yylval.str = malloc(strlen(yytext));
+\<[a-zA-Z0-9_]+\>		{		yylval.str = malloc(strlen(yytext) + 1);
 						strcpy(yylval.str,yytext + 1);
 						return label;
 				}
@@ -93,14 +106,35 @@ wedge	{
 			yyless(1);
 		}
 
-\t		{	cur_tab ++;
-			if(cur_tab > last_tab){
-					yylval.num = cur_tab - last_tab;
-					return right_tab;
+\t		{	
+			if(tmp_tab == 0)
+			{
+				cur_tab++;
+				if(cur_tab != last_tab){
+					tmp_tab = 1;
+					yyless(1);
 				}
-			if(cur_tab < last_tab){
-					yylval.num = last_tab - cur_tab;
-					return left_tab;
+			
+			}
+			else
+			{
+				if(cur_tab < last_tab)
+				{
+					last_tab --;
+					if(cur_tab != last_tab)
+						yyless(1);
+					else
+						tmp_tab = 0;
+					return dedent;
+				}
+				if(cur_tab > last_tab){
+					last_tab ++;
+					if(cur_tab != last_tab)
+						yyless(1);
+					else
+						tmp_tab = 0;
+					return indent;
+				}
 			}	
 		}		
 
