@@ -3,15 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-/*  Lexer prototype required by bison, aka getNextToken() */
-int yylex(); 
+/* include header file for AST */
+#include "amk_ast.h"
 
-extern int yylineno;
-
-int yyerror(const char *p) { 
-	fprintf(stderr, "Error at line %d\n", yylineno);
-	return 1;
-}
 %}
 
 /* union */
@@ -49,47 +43,104 @@ int yyerror(const char *p) {
 
 program: import_part proof_part {}
 
-import_part: import_expr {}
-		   | import_expr import_part {}
+import_part: {
+		   
+		   }
+		   | import_expr import_part {
+		   
+		   }
 
-import_expr: import file_name { $$ = $2; }
+import_expr: import file_name {
+				$$ = $2; 
+		   }
 
-proof_part: proof_block {}
-		  | proof_block proof_part {}
+proof_part: {
+		  
+		  }
+		  | proof_block proof_part {
+		  
+		  }
 
-proof_block: proof_head proof_req proof_con proof_body {}
-		   | proof_head proof_req proof_con {}
+proof_block: proof_head proof_req proof_con proof_body {
+		   
+		   }
+		   | proof_head proof_req proof_con {
+		   
+		   }
 
-theorem_pref: theorem {}
-			| lemma {}
+theorem_pref: theorem {
+			
+			}
+			| lemma {
+			
+			}
 
-ref_pref: theorem {}
-		| lemma {}
-		| axiom {}
+ref_pref: theorem {
+		
+		}
+		| lemma {
+		
+		}
+		| axiom {
+		
+		}
 
-proof_head: theorem_pref identifier {}
+proof_head: theorem_pref identifier colon {
+		  
+		  }
 	
-proof_req: require colon exprs {}
+proof_req: require colon exprs {
+		 
+		 }
 
-proof_con: conclusion colon exprs {}
+proof_con: conclusion colon exprs {
+		 
+		 }
 
-proof_body: proof colon rich_exprs {}
+proof_body: proof colon rich_exprs {
+		  
+		  }
 
-exprs: expr {}
-	 | expr exprs {}
+exprs: expr {
+	 
+	 }
+	 | expr exprs {
+	 
+	 }
 
-rich_exprs: expr {}
-		  | expr theorem_ref {}
-		  | expr label {}
+rich_exprs: expr {
+		  
+		  }
+		  | expr theorem_ref {
+		  
+		  }
+		  | expr label {
+		  
+		  }
+		  | expr theorem_ref label {
+		  
+		  }
 
-theorem_ref: left_ref ref_body right_ref {}
+theorem_ref: left_ref ref_body right_ref {
+		   
+		   }
 
-ref_body: ref_pref {}
-		| ref_pref colon ref_vars {}
-		| colon ref_vars {}
+ref_body: ref_pref {
+		
+		}
+		| ref_pref colon ref_vars {
+		
+		}
+		| colon ref_vars {
+		
+		}
 
-ref_vars: var {}
-		| var comma ref_vars {}
+ref_vars: var {
+		
+		}
+		| var comma ref_vars {
+		
+		}
 
 /* logics.proposition Grammar*/
 
@@ -100,6 +151,10 @@ ref_vars: var {}
 /* FUNCTION DEFINITIONS */
 int main()
 {
+	/* parse to get AST */
 	yyparse();
+
+	/* perform Syntax-Directed Translation*/
+	/* TODO */
 	return 0;
 }
