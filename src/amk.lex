@@ -69,10 +69,6 @@ wedge
 		return wedge;
 	}
 
-,	{return comma;}
-
-:	{return colon;}
-
 \<[a-zA-Z0-9_]+\>		{		yylval.str = malloc(strlen(yytext) + 1);
 						strcpy(yylval.str,yytext + 1);
 						return label;
