@@ -1,5 +1,5 @@
 # AMK Brief
-AMK (Anti-Min-Ke) is a home-made language for people writing and checking maathematical proofs. It aims to
+AMK (Anti-Min-Ke) is a home-made language for people writing and checking mathematical proofs. It aims to
 - standardize proof writings, 
 - automatically check the correctness of proofs, and
 - (future) semi-automatically proof.
