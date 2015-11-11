@@ -2,6 +2,7 @@ src/*.o
 src/lex.yy.c
 src/amk
 src/amk.tab.*
+src/tags
 src/example/*.o
 src/example/lex.yy.c
 src/example/amk.tab.*
