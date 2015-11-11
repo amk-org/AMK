@@ -18,9 +18,9 @@
 
 int keyword = 0;
 int left = 0;
-last_tab = 0;
-cur_tab = 0;
-tmp_tab = 0;
+int last_tab = 0;
+int cur_tab = 0;
+int tmp_tab = 0;
 
 %}
 
@@ -57,6 +57,9 @@ where	{return where;}
 -> {
 	return contain;
 }
+suinsk {
+	return dcontain;
+}
 not {
 	return not;
 }
@@ -85,13 +88,13 @@ wedge
 			else return right_bracket;
 		}
 
-\(		{return left_parren}
+\(		{return left_parren;}
 
-\)		{return right_parren}
+\)		{return right_parren;}
 
 \n		{	last_tab = cur_tab; 
 			cur_tab = 0;
-			return new_line;
+		//	return new_line;
 		}
 
 [ ]+	{}	
@@ -139,9 +142,7 @@ wedge
 	
 %%
 
-main(argc, argv)
-int argc;
-char **argv;
+int main (int argc, char **argv)
 {
   if(argc > 1) {
     if(!(yyin = fopen(argv[1], "r"))) {
@@ -152,5 +153,5 @@ char **argv;
 
   yylex();
 }
-yywrap() { return 1; }
+int yywrap() { return 1; }
 

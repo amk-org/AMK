@@ -248,3 +248,4 @@ check 用以检查定理／引理的正确性。例如
 	welcome to amk interpreter!
 	checked all theorems and lemmas, they are all correct!
 	congratulations!
+v

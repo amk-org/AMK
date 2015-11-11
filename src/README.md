@@ -8,17 +8,16 @@
 ## Current status
 
 - Lexical part 
-	- Finished
-		- First stage bug fixed
-	- TODO
-		- Coordinate with syntactical part
+	- [x] First stage bug fixed
+	- [ ] Fix compiling errors
+	- [ ] Coordinate with syntactical part
 - Syntactical part
-	- Finished
-		- Basic AMK grammar draft
-	- TODO
-		- Proposition part grammar
-		- Actions to construct AST
-		- Token completion
-		- Operator priority and associability
-		- Error reporting system
-		- DEBUG (print)
+	- [x] Basic AMK grammar draft
+	- [x] Proposition part grammar
+	- [x] Actions to construct AST
+	- [x] Token completion
+	- [x] Operator priority and associability
+	- [ ] Error reporting system (\*)
+	- [ ] DEBUG (print) (\*)
+- Syntax-Directed Translation
+	- [ ] Basic framework and work allocation

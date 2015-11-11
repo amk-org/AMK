@@ -1,6 +1,6 @@
 # Makefile: A simple makefile for ex1.
 
-OBJ = mycalc
+OBJ = amki
 NAME = amk
 LEX = $(NAME).lex
 YACC = $(NAME).y

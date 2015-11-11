@@ -15,12 +15,22 @@
   void * VOID;
 };
 
+/* operator precedence and associativity */
+%right dget
+%right get
+%right dcontain
+%right contain
+%right vee
+%right wedge
+%nonassoc not
+
 /* terminal tokens */
 %token <ptr> import	theorem	axiom lemma require
 %token <ptr> conclude proof where left_bracket right_bracket
 %token <ptr> left_ref right_ref left_parren	right_parren 
-%token <ptr> not vee wedge contain get dget
+%token <ptr> not vee wedge contain get dget dcontain
 %token <ptr> indent dedent
+
 %token <str> file_name	identifier	label
 
 /* non-terminal tokens */
@@ -31,9 +41,9 @@
 %type <ptr> theorem_ref
 %type <ptr> ref_body ref_vars
 %type <ptr> expr exprs rich_expr rich_exprs
+%type <ptr> var
+%type <ptr> import_expr
 
-%type <str> import_expr
-%type <str> var
 %type <str> ref_pref ref_theo
 %type <str> proof_head theorem_pref
 /* logics.proposition */
@@ -48,26 +58,26 @@
 /* Basic AMK Grammar */
 
 program: import_part proof_part {
-			$$ = new_ast_node(nd_program, $1, $2);
+			$$ = new_ast_node(nd_program, $1, $2, NULL);
 	   }
 
 import_part: {
-				$$ = new_ast_node(nd_import_part, NULL, NULL); 
+				$$ = new_ast_node(nd_import_part, NULL, NULL, NULL); 
 		   }
 		   | import_expr import_part {
-				$$ = new_ast_node(nd_import_part, $1, $2); 
+				$$ = new_ast_node(nd_import_part, $1, $2, NULL); 
 		   }
 
 import_expr: import file_name {
-				$$ = new_ast_node(nd_import_expr, $2, NULL); 
+				$$ = new_ast_node(nd_import_expr, $2, NULL, NULL); 
 				fprintf(stderr, "import: %s\n", $2);
 		   }
 
 proof_part: {
-				$$ = new_ast_node(nd_proof_part, NULL, NULL);
+				$$ = new_ast_node(nd_proof_part, NULL, NULL, NULL);
 		  }
 		  | proof_block proof_part {
-				$$ = new_ast_node(nd_proof_part, $1, $2);
+				$$ = new_ast_node(nd_proof_part, $1, $2, NULL);
 		  }
 
 proof_block: proof_head proof_req proof_con proof_body {
@@ -75,13 +85,13 @@ proof_block: proof_head proof_req proof_con proof_body {
 				arr[0] = $2;
 				arr[1] = $3;
 				arr[2] = $4;
-				$$ = new_ast_node(nd_proof_block, (void *)$1, (void *)arr);
+				$$ = new_ast_node(nd_proof_block, (void *)$1, (void *)arr, NULL);
 		   }
 		   | proof_head proof_req proof_con {
 				struct ast_node ** arr = malloc(sizeof(void *) * 2);
 				arr[0] = $2;
 				arr[1] = $3;
-				$$ = new_ast_node(nd_proof_block, (void *)$1, (void *)arr);
+				$$ = new_ast_node(nd_proof_block, (void *)$1, (void *)arr, NULL);
 		   }
 
 theorem_pref: theorem {
@@ -121,39 +131,30 @@ proof_body: proof ':' rich_exprs {
 		  }
 
 exprs: expr {
-		$$ = new_ast_node(nd_exprs, $1, NULL);
+		$$ = new_ast_node(nd_exprs, $1, NULL, NULL);
 	 }
 	 | expr exprs {
-		$$ = new_ast_node(nd_exprs, $1, $2);
+		$$ = new_ast_node(nd_exprs, $1, $2, NULL);
 	 }
 
 rich_exprs: rich_expr {
-			$$ = new_ast_node(nd_rich_exprs, $1, NULL);
+			$$ = new_ast_node(nd_rich_exprs, $1, NULL, NULL);
 		  }
 		  | rich_expr rich_exprs {
-			$$ = new_ast_node(nd_rich_exprs, $1, $2);
+			$$ = new_ast_node(nd_rich_exprs, $1, $2, NULL);
 		  }
 
 rich_expr: expr { 
-			$$ = new_ast_node(nd_rich_exprs, $1, NULL);
+			$$ = new_ast_node(nd_rich_exprs, $1, NULL, NULL);
 		  }
 		  | expr theorem_ref {
-			void * arr[2];
-			arr[0] = $2;
-			arr[1] = NULL;
-			$$ = new_ast_node(nd_rich_exprs, $1, arr);
+			$$ = new_ast_node(nd_rich_exprs, $1, $2, NULL);
 		  }
 		  | expr label {
-			void * arr[2];
-			arr[0] = NULL;
-			arr[1] = $2;
-			$$ = new_ast_node(nd_rich_exprs, $1, arr);
+			$$ = new_ast_node(nd_rich_exprs, $1, NULL, $2);
 		  }
 		  | expr theorem_ref label {
-			void * arr[2];
-			arr[0] = $2;
-			arr[1] = $3;
-			$$ = new_ast_node(nd_rich_exprs, $1, arr);
+			$$ = new_ast_node(nd_rich_exprs, $1, $2, $3);
 		  }
 
 theorem_ref: left_ref ref_body right_ref {
@@ -161,27 +162,59 @@ theorem_ref: left_ref ref_body right_ref {
 		   }
 
 ref_body: ref_pref ref_theo {
-		
+			$$ = new_ast_node(nd_ref_body, $2, $1, NULL);
 		}
 		| ref_pref ref_theo ':' ref_vars {
-		
+			$$ = new_ast_node(nd_ref_body, $2, $1, $4);
 		}
 		| ref_theo ':' ref_vars {
-		
+			$$ = new_ast_node(nd_ref_body, $1, NULL, $3);
 		}
 		| ':' ref_vars {
-		
+			$$ = new_ast_node(nd_ref_body, NULL, NULL, $2);
+		}
+
+ref_theo: identifier {
+			$$ = $1;
 		}
 
 ref_vars: var {
-		
+			$$ = new_ast_node(nd_ref_vars, $1, NULL, NULL);	
 		}
 		| var ',' ref_vars {
-		
+			$$ = new_ast_node(nd_ref_vars, $1, $3, NULL);	
 		}
+
+var: identifier {
+		$$ = new_ast_node(nd_var, $1, NULL, NULL);
+	}
 
 /* logics.proposition Grammar */
 
+expr: var {
+		$$ = new_ast_node(nd_expr, NULL, NULL, NULL);
+	}
+	| not expr {
+		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_not), $2, NULL);
+	}
+	| expr wedge expr {
+		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_wedge), $1, $3);
+	}
+	| expr vee expr {
+		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_vee), $1, $3);
+	}
+	| expr contain expr {
+		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_contain), $1, $3);
+	}
+	| expr dcontain expr {
+		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_dcontain), $1, $3);
+	}
+	| expr get expr {
+		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_get), $1, $3);
+	}
+	| expr dget expr {
+		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_dget), $1, $3);
+	}
 
 
 %%

@@ -16,7 +16,7 @@
 /*  Lexer prototype required by bison, aka getNextToken() */
 int yylex();
 
-/* line number variable*/
+/* line number variable */
 extern int yylineno;
 
 /* error reporting function */
@@ -29,7 +29,28 @@ int yyerror(const char *p) {
 /*****************************************************************************/
 /*** Abstract Syntax Tree (prototypes) ***/
 
-enum keywords {};
+/* keywords */
+enum keywords {
+	kw_import,
+	kw_theorem,
+	kw_axiom,
+	kw_lemma,
+	kw_require,
+	kw_conclude,
+	kw_proof,
+	kw_where
+};
+
+/* operators */
+enum operators {
+	op_not,
+	op_wedge,
+	op_vee,
+	op_contain,
+	op_dcontain,
+	op_get,
+	op_dget
+};
 
 /* node types */
 enum node_types {
@@ -41,7 +62,11 @@ enum node_types {
 	nd_proof_block_dcl, // declare
 	nd_exprs,
 	nd_rich_exprs,
-	nd_rich_expr
+	nd_rich_expr,
+	nd_ref_body,
+	nd_ref_vars,
+	nd_var,
+	nd_expr
 };
 
 /* node in AST */
@@ -56,7 +81,7 @@ struct ast_node {
 };
 
 /* new node */
-struct ast_node *new_ast_node(enum node_types, void *, void *);
+struct ast_node *new_ast_node(enum node_types, void *, void *, void *);
 
 /* free node */
 void free_ast_node(struct ast_node *);
@@ -70,18 +95,20 @@ void free_ast_node(struct ast_node * node) {
 	free(node);
 }
 
-#define AST_NODE_MALLOC(p, nd_t); {\
+#define AST_NODE_MALLOC(p, nd_t); do {\
 	(p) = (struct ast_node *)malloc(sizeof(struct ast_node));\
 	(p)->node_type = (nd_t);\
-}
+} while(0)
 
 #define AST_NODE_PTR(p) ((struct ast_node *)(p))
 
-#define LINKS_MALLOC(p, n); {\
-	(p) = (struct ast_node **)malloc(sizeof(void *) * (n));\
-}
+#define AST_NODE_PTR_ARR(p) ((struct ast_node **)(p))
 
-struct ast_node *new_ast_node(enum node_types node_type, void *arg, void *arg2) {
+#define LINKS_MALLOC(p, n); do {\
+	(p) = (struct ast_node **)malloc(sizeof(void *) * (n));\
+} while(0)
+
+struct ast_node *new_ast_node(enum node_types node_type, void *arg, void *arg2, void *arg3) {
 	struct ast_node *re = NULL;
 	switch (node_type) {
 
@@ -116,6 +143,10 @@ struct ast_node *new_ast_node(enum node_types node_type, void *arg, void *arg2) 
 		/* rich_exprs */
 		/* arg - rich_expr, arg2 - rich_exprs */
 		case nd_rich_exprs:
+
+		/* ref_vars */
+		/* arg - var, arg2 - vars */
+		case nd_ref_vars:
 
 		/* exprs */
 		/* arg - expr, arg2 - exprs */
@@ -156,19 +187,43 @@ struct ast_node *new_ast_node(enum node_types node_type, void *arg, void *arg2) 
 			break;
 
 		/* rich expr */
-		/* arg - expr, arg2 - void ** (theorem_ref, label) */
+		/* arg - expr, arg2 - theorem_ref, arg3 - label */
 		/* re->links: expr, theorem_ref, label */
 		case nd_rich_expr:
 			AST_NODE_MALLOC(re, node_type);
-			re->data = NULL;
-			re->num_links = 3;
-			re->links[0] = AST_NODE_PTR(arg);
-			if (arg2) {
-				re->links[1] = ((struct ast_node **)arg2)[0];
-				re->links[2] = ((struct ast_node **)arg2)[1];
-			}
-			else
-				re->links[1] = re->links[2] = NULL;
+			re->data = arg;
+			re->num_links = 2;
+			re->links[0] = AST_NODE_PTR(arg2);
+			re->links[1] = AST_NODE_PTR(arg3);
+			break;
+
+		/* reference body */
+		/* arg - ref_theo, arg2 - ref_pref, arg3 - ref_vars */
+		case nd_ref_body:
+			AST_NODE_MALLOC(re, node_type);
+			re->data = arg;
+			re->num_links = 2;
+			re->links[0] = AST_NODE_PTR(arg2);
+			re->links[1] = AST_NODE_PTR(arg3);
+			break;
+
+		/* var */
+		/* arg - identifier */
+		case nd_var:
+			AST_NODE_MALLOC(re, node_type);
+			re->data = arg;
+			re->num_links = 0;
+			break;
+
+		/* expr */
+		/* arg - operator; arg2, arg3 - parameters */
+		case nd_expr:
+			AST_NODE_MALLOC(re, node_type);
+			re->data = arg;
+			re->num_links = (arg3 ? 2 : 1);
+			re->links[0] = AST_NODE_PTR(arg2);
+			if (arg3)
+				re->links[1] = AST_NODE_PTR(arg3);
 			break;
 
 		/* otherwise: error */
