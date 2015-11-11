@@ -67,17 +67,20 @@ classic.mamk
 		numeric # numeric values like int, float, etc
 		
 	OPERATOR # operators are arranged in decreasing order of their priorities
-		wedge (statement, statement) --> statement
-			...
-		vee (statement, statement) --> statement
-			...
 		not (statement) --> statement
-			...
-		-> (statement, statement) --> statement
-			...
-		|- (set[statement], statement) --> statement
-			...
 		
+		wedge (statement, statement) --> statement
+		
+		vee (statement, statement) --> statement
+		
+		-> (statement, statement) --> statement
+	
+		<-> (statement, statement) --> statement
+		
+		|- (set[statement], statement) --> statement
+		
+		|-| (set[statement], statement) --> statement
+
 	AXIOM
 		axiom1:
 			require: 
@@ -173,17 +176,17 @@ AMK本身并没有运算符，所有的相关运算符都来自模块定义（�
 		require: a, b
 		conclude: a -> b |- a -> (a wedge b)
 		proof:
-			a -> b, a |- a [axiom belong] <1>
+			a -> b, a |- a -[axiom belong] <1>
 			a -> b, a |- a -> b <2> # using of axiom can be omitted
-			a -> b, a |- b [axiom ->- : 1,2] <t3>
-			a -> b, a |- a wedge b [:t3] <4>
+			a -> b, a |- b -[axiom ->- : 1,2] <t3>
+			a -> b, a |- a wedge b -[:t3] <4>
 			a -> b |- a -> (a wedge b) [4]
 
 首先来看写在定理／引理的"proof:"后面的内容，每行一句推理过程。
 
 - 每行是一个已定义类型的表达式（或者变量），标示该表达式已经由require的内容和前面的推理步骤，在该定理内得到证明。
 - （可选）尖括号<>内标示的是推理过程的标号，可以用数字、字母、下划线进行组合。为了方便书写，推理过程的标号**仅在当前函数内有效**。标号在一行的最右边（注释除外）。
-- （可选）方括号[]内标示的是使用的定理、引理。
+- （可选）符号对-[和]内标示的是使用的定理、引理。
 	- 如果是公理，可以不写清楚具体是哪条公里。但是定理、引理的使用必须明确指明其名字和应用的变量（这点和手写证明的要求是一样的）。
 	- 括号内的内容可以用':'分隔作为两部分
 		- 前面是使用的定理／引理／公理的名字，前缀 axiom / lemma / theorem 可以省略。

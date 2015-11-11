@@ -2,7 +2,7 @@
 AMK (Anti-Min-Ke) is a home-made language for people writing and checking mathematical proofs. It aims to
 - standardize proof writings, 
 - automatically check the correctness of proofs, and
-- (future) semi-automatically proof.
+- (future) do semi-automatically proof.
 
 # Documents of AMK Project
 Please refer to the following links to documents:
