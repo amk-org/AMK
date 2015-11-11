@@ -57,7 +57,11 @@ AMK的设计初衷是为了在数学各个领域的证明中发挥相当的作�
 - 公理
 - 基本定理或引理。
 
-这里不仔细展开了，有兴趣的读者可以看完后文的语法介绍以后根据下面的一个例子自行琢磨。其中，"..."表示省略一些内容。
+这里不仔细展开了，有兴趣的读者可以看完后文的语法介绍以后根据下面的一个例子自行琢磨。有几点注意。
+
+- 分为四大部分，分别是TYPE, OPERATOR, AXIOM, THEOREM
+- OPERATOR 中的前缀表示结合性(left, right, nonasc, func)，其中nonasc表示没有结合性，func表示不采用中缀的方式而是类似函数调用传参数的方式使用(e.g. fun(a, b))。
+- AXIOM部分的公理不需要证明，THEOREM部分的定理需要证明。
 
 classic.mamk
 
@@ -67,19 +71,19 @@ classic.mamk
 		numeric # numeric values like int, float, etc
 		
 	OPERATOR # operators are arranged in decreasing order of their priorities
-		not (statement) --> statement
+		nonasc not (statement) --> statement
 		
-		wedge (statement, statement) --> statement
+		right wedge (statement, statement) --> statement
 		
-		vee (statement, statement) --> statement
+		right vee (statement, statement) --> statement
 		
-		-> (statement, statement) --> statement
+		right -> (statement, statement) --> statement
 	
-		<-> (statement, statement) --> statement
+		right <-> (statement, statement) --> statement
 		
-		|- (set[statement], statement) --> statement
+		right |- (set[statement], statement) --> statement
 		
-		|-| (set[statement], statement) --> statement
+		right |-| (set[statement], statement) --> statement
 
 	AXIOM
 		axiom1:

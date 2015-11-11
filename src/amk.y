@@ -70,7 +70,7 @@ import_part: {
 
 import_expr: import file_name {
 				$$ = new_ast_node(nd_import_expr, $2, NULL, NULL); 
-				fprintf(stderr, "import: %s\n", $2);
+				fprintf(stderr, "#\timport %s\n", $2);
 		   }
 
 proof_part: {
@@ -115,7 +115,8 @@ ref_pref: theorem {
 		}
 
 proof_head: theorem_pref identifier ':' {
-			$$ = $2; 
+			$$ = $2;
+			fprintf(stderr, "#\t%s declared.\n", $2);
 		  }
 	
 proof_req: require ':' exprs {

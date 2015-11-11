@@ -7,19 +7,19 @@ TYPE
 	set[statement] # [statement] here means there is a list of several (finite) statements
 
 OPERATOR # operators are arranged in decreasing order of their priorities
-	not (statement) --> statement
+	nonasc not (statement) --> statement
 
-	wedge (statement, statement) --> statement # ^
+	right wedge (statement, statement) --> statement # ^
 
-	vee (statement, statement) --> statement # v
+	right vee (statement, statement) --> statement # v
 
-	-> (statement, statement) --> statement
+	right -> (statement, statement) --> statement
 
-	<-> (statement, statement) --> statement
+	right <-> (statement, statement) --> statement
 
-	|- (set[statement], statement) --> statement
+	right |- (set[statement], statement) --> statement
 	
-	|-| (set[statement], statement) --> statement
+	right |-| (set[statement], statement) --> statement
 
 AXIOM
 

@@ -1,0 +1,8 @@
+import logics.proposition
+
+theorem T :
+	require:
+		a
+		b
+	conclude:
+		a vee b vee not b

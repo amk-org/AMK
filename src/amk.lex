@@ -34,7 +34,7 @@ conclude {return conclude;}
 proof {return proof;}
 where	{return where;}
 	
-[a-z0-9A-Z_-~]*\.[a-z0-0A-Z_.-~]		{
+[a-z0-9A-Z_-~]*\.[a-z0-0A-Z_.-~]*		{
 												yylval.str = malloc(strlen(yytext) + 1);
 												strcpy(yylval.str,yytext); 
 												return file_name;

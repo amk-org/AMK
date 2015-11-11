@@ -17,7 +17,9 @@ Please refer to the following links to documents:
 
 	- [AMK Language Design: Propositional logics](docs/ld_propositional_logics.md)
 
-- Code Documents
+	- [Syntactical Analysis & AST](docs/syntax.md)
+
+- Code Progress Documents
 	
 	- [src/README](src/README.md)
 

@@ -9,8 +9,8 @@
 
 - Lexical part 
 	- [x] First stage bug fixed
-	- [ ] Fix compiling errors
-	- [ ] Coordinate with syntactical part
+	- [x] Fix compiling errors
+	- [ ] DEBUG!!!!
 - Syntactical part
 	- [x] Basic AMK grammar draft
 	- [x] Proposition part grammar
