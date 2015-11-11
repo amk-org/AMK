@@ -2,12 +2,11 @@ src/*.o
 src/lex.yy.c
 src/amk
 src/amk.tab.*
-src/tags
 src/example/*.o
 src/example/lex.yy.c
 src/example/amk.tab.*
-src/example/amki
+src/example/mycalc
 src/example_cpp/*.o
 src/example_cpp/lex.yy.c
 src/example_cpp/amk.tab.*
-src/example_cpp/amki
+src/example_cpp/mycalc
