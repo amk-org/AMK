@@ -57,18 +57,17 @@ where	{return where;}
 -> {
 	return contain;
 }
-suinsk {
+\<-\> {
 	return dcontain;
 }
-not {
+'not' {
 	return not;
 }
 
-vee {
+'vee' {
 	return vee;
 }
-wedge
-	{
+'wedge' {
 		return wedge;
 	}
 
@@ -142,16 +141,5 @@ wedge
 	
 %%
 
-int main (int argc, char **argv)
-{
-  if(argc > 1) {
-    if(!(yyin = fopen(argv[1], "r"))) {
-      perror(argv[1]);
-      return (1);
-    }
-  }
-
-  yylex();
-}
 int yywrap() { return 1; }
 
