@@ -1,5 +1,5 @@
 syntax keyword amk_type list set
-syntax keyword amk_statement of require conclude proof
+syntax keyword amk_statement of require conclude proof define
 syntax keyword func axiom lemma theorem import
 syntax keyword todo contained TODO FIXME
 syntax match comment "#.*$" contains=todo

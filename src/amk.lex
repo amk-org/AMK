@@ -26,6 +26,7 @@ int tmp_tab = 0;
 
 %%
 of {return of;}
+define {return define;}
 import {return import;}
 theorem {return theorem;}
 axiom {return axiom;}

@@ -2,7 +2,7 @@ import logics.proposition
 
 theorem T:
 	require:
-		a
-		b
+		define a of statement
+		define b of statement
 	conclude:
 		a vee b vee not b

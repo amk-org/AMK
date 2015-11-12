@@ -25,7 +25,8 @@
 
 /* terminal tokens */
 %token <ptr> import	theorem	axiom lemma require
-%token <ptr> conclude proof where of left_bracket right_bracket
+%token <ptr> conclude proof where define of 
+%token <ptr> left_bracket right_bracket
 %token <ptr> left_ref right_ref left_parren	right_parren
 %token <ptr> colon comma
 %token <ptr> not vee wedge contain get dget dcontain
@@ -151,9 +152,9 @@ of_exprs: {
 			$$ = new_ast_node(nd_of_exprs, $1, $2, NULL);
 		}
 
-of_expr: var of identifier new_line {
-			$$ = new_ast_node(nd_of_expr, $1, $3, NULL);
-			RPT(of_expr, "var %s of type %s", $1, $3);
+of_expr: define var of identifier new_line {
+			$$ = new_ast_node(nd_of_expr, $2, $4, NULL);
+			RPT(of_expr, "var %s of type %s", $2, $4);
 		}
 
 
