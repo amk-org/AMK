@@ -33,7 +33,13 @@ require {return require;}
 conclude {return conclude;}
 proof {return proof;}
 where	{return where;}
-	
+not {return not;}
+wedge {return wedge;}
+vee {return vee;}
+
+[:] {
+}
+
 [a-z0-9A-Z_-~]*\.[a-z0-0A-Z_.-~]*		{
 												yylval.str = malloc(strlen(yytext) + 1);
 												strcpy(yylval.str,yytext); 
@@ -60,25 +66,19 @@ where	{return where;}
 \<-\> {
 	return dcontain;
 }
-'not' {
-	return not;
-}
-
-'vee' {
-	return vee;
-}
-'wedge' {
-		return wedge;
-	}
 
 \<[a-zA-Z0-9_]+\>		{		yylval.str = malloc(strlen(yytext) + 1);
 						strcpy(yylval.str,yytext + 1);
 						return label;
 				}
 
-\[		{return left_bracket;}
+\[		{ 
+		return left_bracket;
+	}
 
--\[		{left++;return left_ref;}
+-\[		{ 
+	left++;return left_ref;
+}
 
 \]		{if(left){
 			left--;
@@ -104,28 +104,39 @@ where	{return where;}
 			yyless(1);
 		}
 
-\t		{	
+[\t]		{
+			printf("!!!!!!!!!!!!!!!!!!!!!\n");
+			yyless(yyleng - 1);
+
+			//return indent;
+			/*return dedent;
 			if(tmp_tab == 0)
 			{
+				printf("firstpart\n");
 				cur_tab++;
 				if(cur_tab != last_tab){
 					tmp_tab = 1;
 					yyless(1);
+					printf("yoooo\n");
 				}
 			
 			}
 			else
 			{
+				printf("secondpart\n");
 				if(cur_tab < last_tab)
 				{
+					printf("cur %d  last %d \n", cur_tab, last_tab);
 					last_tab --;
 					if(cur_tab != last_tab)
 						yyless(1);
 					else
 						tmp_tab = 0;
+					
 					return dedent;
 				}
 				if(cur_tab > last_tab){
+					printf("cur %d last %d \n", cur_tab , last_tab);
 					last_tab ++;
 					if(cur_tab != last_tab)
 						yyless(1);
@@ -133,10 +144,14 @@ where	{return where;}
 						tmp_tab = 0;
 					return indent;
 				}
-			}	
+			}	*/
 		}		
 
 #[^\n]	{}
+
+[*]{
+	printf("yubbbbbbbbbbbbbb\n");
+}
 	
 	
 %%

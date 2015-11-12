@@ -1,0 +1,2 @@
+make
+./amki < a.amk
