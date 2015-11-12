@@ -72,7 +72,9 @@ enum node_types {
 	nd_rich_expr,
 	nd_ref_body,
 	nd_ref_labels,
-	nd_var,
+	nd_of_exprs,
+	nd_of_expr,
+	nd_proof_req,
 	nd_expr
 };
 
@@ -147,6 +149,10 @@ struct ast_node *new_ast_node(enum node_types node_type, void *arg, void *arg2, 
 		/* arg - proof block, arg2 - proof part node */
 		case nd_proof_part:
 
+		/* of_exprs */
+		/* arg - of_expr, arg2 - of_exprs */
+		case nd_of_exprs:
+
 		/* rich_exprs */
 		/* arg - rich_expr, arg2 - rich_exprs */
 		case nd_rich_exprs:
@@ -216,14 +222,6 @@ struct ast_node *new_ast_node(enum node_types node_type, void *arg, void *arg2, 
 			re->links[1] = AST_NODE_PTR(arg3);
 			break;
 
-		/* var */
-		/* arg - identifier */
-		case nd_var:
-			AST_NODE_MALLOC(re, node_type);
-			re->data = arg;
-			re->num_links = 0;
-			break;
-
 		/* expr */
 		/* arg - operator; arg2, arg3 - parameters */
 		case nd_expr:
@@ -234,6 +232,27 @@ struct ast_node *new_ast_node(enum node_types node_type, void *arg, void *arg2, 
 			re->links[0] = AST_NODE_PTR(arg2);
 			if (arg3)
 				re->links[1] = AST_NODE_PTR(arg3);
+			break;
+
+		/* proof_req */
+		/* arg - of_exprs, arg2 - exprs */
+		case nd_proof_req:
+			AST_NODE_MALLOC(re, node_type);
+			re->data = NULL;
+			re->num_links = 2;
+			LINKS_MALLOC(re->links, re->num_links);
+			re->links[0] = AST_NODE_PTR(arg);
+			re->links[1] = AST_NODE_PTR(arg2);
+			break;
+
+		/* of_expr */
+		/* arg - var, arg2 - identifier (type) */
+		case nd_of_expr:
+			AST_NODE_MALLOC(re, node_type);
+			re->data = arg;
+			re->num_links = 1;
+			LINKS_MALLOC(re->links, re->num_links);
+			re->links[0] = AST_NODE_PTR(arg2);
 			break;
 
 		/* otherwise: error */

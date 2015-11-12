@@ -43,8 +43,10 @@ nd\_proof\_block\_dcl  |(char *) name | 2|proof\_require, proof\_conclude
 nd\_rich\_expr  | (struct ast_node *) expr | 2 | theorem\_ref, label
 nd\_ref\_body  | (char *) theorem\_name | 2 | ref\_pref, ref\_labels
 nd\_ref\_labels  |NULL|n|identifier
-nd\_var | (char *) str | 0 | NULL
 nd\_expr | (enum operators) op (NULL if none) | k = 1 or 2| expr
+nd\_of\_expr | var | 1 | (char *) type
+nd\_of\_exprs | NULL | n | of\_expr
+nd\_proof\_req | NULL | 2 | of\_exprs, exprs
 
 
 ## Operator Precedence and Associativity
