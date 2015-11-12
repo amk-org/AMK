@@ -44,6 +44,13 @@ import {
 		RPT(import);
 	return import;}
 theorem {	
+	printf("cur %d last %d\n", cur_tab, last_tab);
+	if(last_tab != 0 && left == 0){
+		last_tab --;
+		yyless(0);
+		printf("dedent in theorem \n ");
+		return dedent;
+	}
 	RPT(theorem);
 	return theorem;}
 axiom {return axiom;}

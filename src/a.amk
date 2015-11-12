@@ -1,4 +1,11 @@
 import logics.proposition
+theorem T:
+	require:
+		define a of statement
+	conclude:
+		a vee b
+	proof:
+		a |- b
 
 theorem T:
 	require:
