@@ -25,6 +25,13 @@ int yyerror(const char *p) {
 	return 1;
 }
 
+/* macros for debugging */
+#define DEBUG_FILE_PTR stderr
+#define RPT(status, fmt, ...)  do {							\
+	if (DEBUG_FILE_PTR)										\
+		fprintf(DEBUG_FILE_PTR, "#\t" #status ": "			\
+				fmt "\n" , ##__VA_ARGS__);					\
+} while(0)
 
 /*****************************************************************************/
 /*** Abstract Syntax Tree (prototypes) ***/
@@ -64,7 +71,7 @@ enum node_types {
 	nd_rich_exprs,
 	nd_rich_expr,
 	nd_ref_body,
-	nd_ref_vars,
+	nd_ref_labels,
 	nd_var,
 	nd_expr
 };
@@ -144,9 +151,9 @@ struct ast_node *new_ast_node(enum node_types node_type, void *arg, void *arg2, 
 		/* arg - rich_expr, arg2 - rich_exprs */
 		case nd_rich_exprs:
 
-		/* ref_vars */
-		/* arg - var, arg2 - vars */
-		case nd_ref_vars:
+		/* ref_labels */
+		/* arg - label, arg2 - ref_labels */
+		case nd_ref_labels:
 
 		/* exprs */
 		/* arg - expr, arg2 - exprs */
