@@ -29,7 +29,9 @@ import {return import;}
 theorem {return theorem;}
 axiom {return axiom;}
 lemma {return lemma;}
-require {return require;}
+require {//printf("lexer found require\n");
+		return require;
+		}
 conclude {return conclude;}
 proof {return proof;}
 where	{return where;}
@@ -37,9 +39,9 @@ not {return not;}
 wedge {return wedge;}
 vee {return vee;}
 
-[:] {
+[:]		{
+	return colon;
 }
-
 [a-z0-9A-Z_-~]*\.[a-z0-0A-Z_.-~]*		{
 												yylval.str = malloc(strlen(yytext) + 1);
 												strcpy(yylval.str,yytext); 
@@ -49,6 +51,7 @@ vee {return vee;}
 [a-zA-Z_][a-zA-Z0-9_]*		{
 									yylval.str = malloc(strlen(yytext) + 1);
 									strcpy(yylval.str,yytext);
+									//printf("lexer found iden %s\n",yylval.str);
 									return identifier;
 							}
 
@@ -93,66 +96,78 @@ vee {return vee;}
 
 \n		{	last_tab = cur_tab; 
 			cur_tab = 0;
-		//	return new_line;
+			//printf("\nnext line : line no. %d\n", yylineno);
+			//return new_line;
 		}
 
-[ ]+	{}	
+[ ]+	{
+			//printf("waste space\n");
+		}	
 
-[\t]+\n		{}
+[\s\t]*\n	{}
 
-\t\t		{	cur_tab++;
-			yyless(1);
+[\t][\t]		{	cur_tab++;
+					unput('\t');
 		}
 
 [\t]		{
-			printf("!!!!!!!!!!!!!!!!!!!!!\n");
-			yyless(yyleng - 1);
+			/*printf("catch tab now!\n");
+			cur_tab++;
+			if(cur_tab > last_tab){
+				printf("indent\n");
+				//return require;
+			}
+			if(cur_tab < last_tab){
+				printf("dedent\n");
+			//	return dedent;
+			}
+			*/
 
-			//return indent;
-			/*return dedent;
 			if(tmp_tab == 0)
 			{
-				printf("firstpart\n");
 				cur_tab++;
 				if(cur_tab != last_tab){
 					tmp_tab = 1;
-					yyless(1);
-					printf("yoooo\n");
+					unput('\t');
 				}
-			
 			}
 			else
 			{
-				printf("secondpart\n");
 				if(cur_tab < last_tab)
 				{
-					printf("cur %d  last %d \n", cur_tab, last_tab);
+					//printf("cur %d  last %d \n", cur_tab, last_tab);
 					last_tab --;
-					if(cur_tab != last_tab)
-						yyless(1);
+					if(cur_tab != last_tab){
+						
+						unput('\t');
+					}
 					else
 						tmp_tab = 0;
-					
-					return dedent;
+					printf("dedent\n");
+					//return dedent;
 				}
 				if(cur_tab > last_tab){
-					printf("cur %d last %d \n", cur_tab , last_tab);
+					//printf("cur %d last %d \n", cur_tab , last_tab);
 					last_tab ++;
-					if(cur_tab != last_tab)
-						yyless(1);
+					if(cur_tab != last_tab){
+						//printf("indent\n");
+						unput('\t');
+					}
 					else
 						tmp_tab = 0;
-					return indent;
+					printf("indent\n");
+					//return indent;
 				}
-			}	*/
+			}	
 		}		
 
-#[^\n]	{}
-
-[*]{
-	printf("yubbbbbbbbbbbbbb\n");
-}
+#[^\n]	{/*
+	if(cur_tab != 0){
+		cur_tab --;
+		printf("dedent\n");
+	}*/
 	
+}
 	
 %%
 

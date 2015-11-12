@@ -25,7 +25,7 @@
 %nonassoc not
 
 /* terminal tokens */
-%token <ptr> import	theorem	axiom lemma require
+%token <ptr> import	theorem	axiom lemma require colon
 %token <ptr> conclude proof where left_bracket right_bracket
 %token <ptr> left_ref right_ref left_parren	right_parren 
 %token <ptr> not vee wedge contain get dget dcontain
@@ -96,6 +96,7 @@ proof_block: proof_head proof_req proof_con proof_body {
 
 theorem_pref: theorem {
 				/* nothing */
+				fprintf(stderr, "bison found theorem\n");
 			}
 			| lemma {
 				/* nothing */
@@ -114,20 +115,21 @@ ref_pref: theorem {
 			*$$ = 'a';
 		}
 
-proof_head: theorem_pref identifier ':' {
+proof_head: theorem_pref identifier colon  {
 			$$ = $2;
 			fprintf(stderr, "#\t%s declared.\n", $2);
 		  }
 	
-proof_req: require ':' exprs {
-			$$ = $3;	 
+proof_req: require colon exprs {
+			$$ = $3;
+			fprintf(stderr, "Here ! Require!\n");
 		 }
 
-proof_con: conclude ':' exprs {
+proof_con: conclude colon exprs {
 			$$ = $3; 
 		 }
 
-proof_body: proof ':' rich_exprs {
+proof_body: proof colon rich_exprs {
 			$$ = $3;
 		  }
 
