@@ -109,7 +109,12 @@ theorem_pref: theorem {
 				/* nothing */
 			}
 
-ref_pref: theorem {
+ref_pref: {
+			$$ = malloc(sizeof(char));
+			*$$ = 'a';
+			RPT(reference_prefix, "axiom");
+		}
+		| theorem {
 			$$ = malloc(sizeof(char));
 			*$$ = 't';
 			RPT(reference_prefix, "theorem");
@@ -158,8 +163,8 @@ of_expr: define var of identifier new_line {
 		}
 
 
-exprs: expr new_line{
-		$$ = new_ast_node(nd_exprs, $1, NULL, NULL);
+exprs: {
+		$$ = new_ast_node(nd_exprs, NULL, NULL, NULL);
 		RPT(exprs, "bound");
 	 }
 	 | expr new_line exprs {
@@ -205,10 +210,6 @@ ref_body: ref_pref ref_theo {
 			$$ = new_ast_node(nd_ref_body, $2, $1, $4);
 			RPT(reference, "with theorem %s and labels", $2);
 		}
-		| ref_theo colon ref_labels {
-			$$ = new_ast_node(nd_ref_body, $1, NULL, $3);
-			RPT(reference, "with theorem/lemma/axiom %s and labels", $1);
-		}
 		| colon ref_labels {
 			$$ = new_ast_node(nd_ref_body, NULL, NULL, $2);
 			RPT(reference, "with an axiom and labels");
@@ -223,8 +224,8 @@ ref_labels: label {
 			$$ = new_ast_node(nd_ref_labels, $1, NULL, NULL);
 			RPT(label, "%s", $1);
 		}
-		| label comma ref_labels {
-			$$ = new_ast_node(nd_ref_labels, $1, $3, NULL);
+		| label ref_labels {
+			$$ = new_ast_node(nd_ref_labels, $1, $2, NULL);
 			RPT(label, " with %s", $1);
 		}
 

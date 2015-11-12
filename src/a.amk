@@ -6,3 +6,8 @@ theorem T:
 		define b of statement
 	conclude:
 		a vee b vee not b
+	proof:
+		a |- b -[theorem t: <1> <2>] <1>
+		a -> b <2>
+		b |- a -[: <2>] <t3>
+		bs |- nsk -[t] <r>

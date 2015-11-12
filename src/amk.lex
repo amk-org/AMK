@@ -6,6 +6,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+/* macros for debugging */
+#define DEBUG_FILE_PTR stderr
+#define RPT(status)  do {							\
+	if (DEBUG_FILE_PTR)										\
+		fprintf(DEBUG_FILE_PTR, "Lexer  " #status "\n");					\
+} while(0)
+
 %}
 
 %option yylineno
@@ -27,14 +35,20 @@ int tmp_tab = 0;
 %%
 of {return of;}
 define {return define;}
-import {return import;}
-theorem {return theorem;}
+import {
+		RPT(import);
+	return import;}
+theorem {	
+	RPT(theorem);
+	return theorem;}
 axiom {return axiom;}
 lemma {return lemma;}
-require {//printf("lexer found require\n");
+require {RPT(require);
 		return require;
 		}
-conclude {return conclude;}
+conclude {
+	RPT(conclude);
+	return conclude;}
 proof {return proof;}
 where	{return where;}
 not {return not;}
@@ -42,6 +56,8 @@ wedge {return wedge;}
 vee {return vee;}
 
 [:]		{
+	RPT(colon);
+
 	return colon;
 }
 
@@ -66,6 +82,7 @@ vee {return vee;}
 	return get;
 }
 \|-\| {
+	RPT(dget);
 	return dget;
 }
 
@@ -76,7 +93,9 @@ vee {return vee;}
 	return dcontain;
 }
 
-\<[a-zA-Z0-9_]+\>		{		yylval.str = malloc(strlen(yytext) + 1);
+\<[a-zA-Z0-9_]+\>		{
+	RPT(label);
+	yylval.str = malloc(strlen(yytext) + 1);
 						strcpy(yylval.str,yytext + 1);
 						return label;
 				}
@@ -86,7 +105,9 @@ vee {return vee;}
 	}
 
 -\[		{ 
-	left++;return left_ref;
+	RPT(left_ref);
+	left++;
+	return left_ref;
 }
 
 \]		{if(left){
@@ -100,9 +121,10 @@ vee {return vee;}
 
 \)		{return right_parren;}
 
-\n		{	last_tab = cur_tab; 
+[\n]+		{	last_tab = cur_tab; 
 			cur_tab = 0;
 			//printf("\nnext line : line no. %d\n", yylineno);
+			RPT(new_line);
 			return new_line;
 		}
 
@@ -110,7 +132,10 @@ vee {return vee;}
 			//printf("waste space\n");
 		}	
 
-[\s\t]*\n	{}
+[\s\t]*\n	
+{
+	RPT(blankline);
+}
 
 [\t][\t]		{	cur_tab++;
 					unput('\t');
@@ -131,6 +156,7 @@ vee {return vee;}
 
 			if(tmp_tab == 0)
 			{
+				RPT(first_tab_try);
 				cur_tab++;
 				if(cur_tab != last_tab){
 					tmp_tab = 1;
@@ -144,13 +170,13 @@ vee {return vee;}
 					//printf("cur %d  last %d \n", cur_tab, last_tab);
 					last_tab --;
 					if(cur_tab != last_tab){
-						
+						RPT(tab_dedent_twice);	
 						unput('\t');
 					}
 					else
 						tmp_tab = 0;
 					printf("dedent\n");
-					//return dedent;
+					return dedent;
 				}
 				if(cur_tab > last_tab){
 					//printf("cur %d last %d \n", cur_tab , last_tab);
@@ -162,17 +188,23 @@ vee {return vee;}
 					else
 						tmp_tab = 0;
 					printf("indent\n");
-					//return indent;
+					return indent;
 				}
 			}	
 		}		
 
-#[^\n]	{/*
-	if(cur_tab != 0){
-		cur_tab --;
+[\s\t]*#[^\n]	{}
+
+<<EOF>> {
+	printf("tab num : %d\n", last_tab);
+	if(last_tab != 0){
+		last_tab --;
 		printf("dedent\n");
-	}*/
+		return dedent;
+	}
 	
+	yyterminate();
+	return dedent;
 }
 	
 %%
