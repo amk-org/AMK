@@ -42,6 +42,10 @@ vee {return vee;}
 [:]		{
 	return colon;
 }
+
+[,]	{
+	return comma;
+}
 [a-z0-9A-Z_-~]*\.[a-z0-0A-Z_.-~]*		{
 												yylval.str = malloc(strlen(yytext) + 1);
 												strcpy(yylval.str,yytext); 
@@ -97,7 +101,7 @@ vee {return vee;}
 \n		{	last_tab = cur_tab; 
 			cur_tab = 0;
 			//printf("\nnext line : line no. %d\n", yylineno);
-			//return new_line;
+			return new_line;
 		}
 
 [ ]+	{
