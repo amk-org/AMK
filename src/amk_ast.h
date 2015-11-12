@@ -193,6 +193,7 @@ struct ast_node *new_ast_node(enum node_types node_type, void *arg, void *arg2, 
 			AST_NODE_MALLOC(re, node_type);
 			re->data = arg;
 			re->num_links = 2;
+			LINKS_MALLOC(re->links, re->num_links);
 			re->links[0] = AST_NODE_PTR(arg2);
 			re->links[1] = AST_NODE_PTR(arg3);
 			break;
@@ -203,6 +204,7 @@ struct ast_node *new_ast_node(enum node_types node_type, void *arg, void *arg2, 
 			AST_NODE_MALLOC(re, node_type);
 			re->data = arg;
 			re->num_links = 2;
+			LINKS_MALLOC(re->links, re->num_links);
 			re->links[0] = AST_NODE_PTR(arg2);
 			re->links[1] = AST_NODE_PTR(arg3);
 			break;
@@ -221,6 +223,7 @@ struct ast_node *new_ast_node(enum node_types node_type, void *arg, void *arg2, 
 			AST_NODE_MALLOC(re, node_type);
 			re->data = arg;
 			re->num_links = (arg3 ? 2 : 1);
+			LINKS_MALLOC(re->links, re->num_links);
 			re->links[0] = AST_NODE_PTR(arg2);
 			if (arg3)
 				re->links[1] = AST_NODE_PTR(arg3);
