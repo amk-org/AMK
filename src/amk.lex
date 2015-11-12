@@ -9,9 +9,14 @@
 
 /* macros for debugging */
 #define DEBUG_FILE_PTR stderr
-#define RPT(status)  do {							\
-	if (DEBUG_FILE_PTR)										\
-		fprintf(DEBUG_FILE_PTR, "Lexer  " #status "\n");					\
+#define RPTF(status, fmt, ...)  do {							\
+	if (DEBUG_FILE_PTR)											\
+		fprintf(DEBUG_FILE_PTR, "#\t[Lexer] " #status			\
+			fmt "\n", ##__VA_ARGS__);	\
+} while(0)
+#define RPT(status)  do {										\
+	if (DEBUG_FILE_PTR)											\
+		fprintf(DEBUG_FILE_PTR, "#\t[Lexer] " #status "\n");	\
 } while(0)
 
 %}
@@ -95,8 +100,9 @@ vee {return vee;}
 
 \<[a-zA-Z0-9_]+\>		{
 	RPT(label);
-	yylval.str = malloc(strlen(yytext) + 1);
-						strcpy(yylval.str,yytext + 1);
+	yylval.str = malloc(strlen(yytext));
+						memcpy(yylval.str,yytext + 1, strlen(yytext) - 2);
+						yylval.str[strlen(yytext) - 2] = 0;
 						return label;
 				}
 
@@ -175,7 +181,7 @@ vee {return vee;}
 					}
 					else
 						tmp_tab = 0;
-					printf("dedent\n");
+					RPT(dedent);
 					return dedent;
 				}
 				if(cur_tab > last_tab){
@@ -187,7 +193,7 @@ vee {return vee;}
 					}
 					else
 						tmp_tab = 0;
-					printf("indent\n");
+					RPT(indent);
 					return indent;
 				}
 			}	
@@ -196,10 +202,10 @@ vee {return vee;}
 [\s\t]*#[^\n]	{}
 
 <<EOF>> {
-	printf("tab num : %d\n", last_tab);
+	RPTF(tab, "num : %d", last_tab);
 	if(last_tab != 0){
 		last_tab --;
-		printf("dedent\n");
+		RPT(dedent);
 		return dedent;
 	}
 	

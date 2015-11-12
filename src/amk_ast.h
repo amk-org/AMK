@@ -27,26 +27,15 @@ int yyerror(const char *p) {
 
 /* macros for debugging */
 #define DEBUG_FILE_PTR stderr
+#define NAME "parser"
 #define RPT(status, fmt, ...)  do {							\
 	if (DEBUG_FILE_PTR)										\
-		fprintf(DEBUG_FILE_PTR, "#\t" #status ": "			\
-				fmt "\n" , ##__VA_ARGS__);					\
+		fprintf(DEBUG_FILE_PTR, "#\t" "[" NAME "] "			\
+		#status ": " fmt "\n" , ##__VA_ARGS__);				\
 } while(0)
 
 /*****************************************************************************/
 /*** Abstract Syntax Tree (prototypes) ***/
-
-/* keywords */
-enum keywords {
-	kw_import,
-	kw_theorem,
-	kw_axiom,
-	kw_lemma,
-	kw_require,
-	kw_conclude,
-	kw_proof,
-	kw_where
-};
 
 /* operators */
 enum operators {
