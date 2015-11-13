@@ -20,7 +20,7 @@ int yylex();
 extern int yylineno;
 
 /* error reporting function */
-int yyerror(const char *p) {
+int yyerror(void * addr_root, const char *p) {
 	fprintf(stderr, "Error at line %d: %s\n", yylineno, p);
 	return 1;
 }
@@ -77,6 +77,9 @@ struct ast_node {
 	int num_links;
 	struct ast_node ** links;
 };
+
+/* root of AST */
+struct ast_node *root;
 
 /* new node */
 struct ast_node *new_ast_node(enum node_types, void *, void *, void *);
@@ -246,7 +249,7 @@ struct ast_node *new_ast_node(enum node_types node_type, void *arg, void *arg2, 
 
 		/* otherwise: error */
 		default:
-			yyerror("Unknown node type");
+			yyerror(NULL, "Unknown node type");
 	}
 	return re;
 }

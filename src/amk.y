@@ -14,6 +14,9 @@
   struct ast_node *ptr;
 };
 
+/* param of parser */
+%parse-param {void *addr_root} 
+
 /* operator precedence and associativity */
 %right dget
 %right get
@@ -60,6 +63,7 @@
 
 program: import_part proof_part {
 			$$ = new_ast_node(nd_program, $1, $2, NULL);
+			*AST_NODE_PTR_ARR(addr_root) = $$;
 			RPT(program, "finished");
 	   }
 
@@ -276,7 +280,7 @@ expr: var {
 int main()
 {
 	/* parse to get AST */
-	yyparse();
+	yyparse(&root);
 
 	/* perform Syntax-Directed Translation*/
 	/* TODO */
