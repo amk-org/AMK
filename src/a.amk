@@ -1,16 +1,16 @@
 import logics.proposition
 
-axiom belong1:
+theorem belong1:
 	require:
 		define a of statement
 		define b of statement
 	conclude:
-		a,b|-a
+		a, b |- a
 
 theorem belong:
 	require:
 		define a of statement
-		define b of set[statement]
+		define b of set[statement] 
 	conclude:
 		a,b|-a
 

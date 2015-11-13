@@ -25,6 +25,10 @@ int yyerror(void * addr_root, const char *p) {
 	return 1;
 }
 
+/* const strings */
+const char str_set[] = "set\0";
+const char str_list[] = "list\0";
+
 /* macros for debugging */
 #define DEBUG_FILE_PTR stderr
 #define NAME "parser"
@@ -45,7 +49,8 @@ enum operators {
 	op_contain,
 	op_dcontain,
 	op_get,
-	op_dget
+	op_dget,
+	op_comma
 };
 
 /* node types */
@@ -64,7 +69,8 @@ enum node_types {
 	nd_of_exprs,
 	nd_of_expr,
 	nd_proof_req,
-	nd_expr
+	nd_expr,
+	nd_type
 };
 
 /* node in AST */
@@ -238,13 +244,25 @@ struct ast_node *new_ast_node(enum node_types node_type, void *arg, void *arg2, 
 			break;
 
 		/* of_expr */
-		/* arg - var, arg2 - identifier (type) */
+		/* arg - var, arg2 - type */
 		case nd_of_expr:
 			AST_NODE_MALLOC(re, node_type);
 			re->data = arg;
 			re->num_links = 1;
 			LINKS_MALLOC(re->links, re->num_links);
 			re->links[0] = AST_NODE_PTR(arg2);
+			break;
+
+		/* type */
+		/* arg - name or "set" "list", arg2 - subtype */
+		case nd_type:
+			AST_NODE_MALLOC(re, node_type);
+			re->data = arg;
+			re->num_links = (arg2 ? 1 : 0);
+			if (arg2) {
+				LINKS_MALLOC(re->links, re->num_links);
+				re->links[0] = AST_NODE_PTR(arg2);
+			}
 			break;
 
 		/* otherwise: error */

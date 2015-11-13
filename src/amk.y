@@ -20,6 +20,7 @@
 /* operator precedence and associativity */
 %right dget
 %right get
+%right comma
 %right dcontain
 %right contain
 %right vee
@@ -32,10 +33,13 @@
 %token <ptr> left_bracket right_bracket
 %token <ptr> left_ref right_ref left_parren	right_parren
 %token <ptr> colon comma
+%token <ptr> set list
 %token <ptr> not vee wedge contain get dget dcontain
 %token <ptr> indent dedent new_line
+%type <ptr> type
 
 %token <str> file_name	identifier	label
+%token <str> type_identifier
 
 /* non-terminal tokens */
 /* Basic AMK */
@@ -161,10 +165,23 @@ of_exprs: {
 			$$ = new_ast_node(nd_of_exprs, $1, $2, NULL);
 		}
 
-of_expr: define var of identifier new_line {
+of_expr: define var of type new_line {
 			$$ = new_ast_node(nd_of_expr, $2, $4, NULL);
-			RPT(of_expr, "var %s of type %s", $2, $4);
+			RPT(of_expr, "var %s of type %s", $2, (char *)($4->data));
 		}
+
+type: identifier {
+		$$ = new_ast_node(nd_type, $1, NULL, NULL);
+		RPT(type, "%s", $1);
+	}
+	| set left_bracket type right_bracket {
+		$$ = new_ast_node(nd_type, (char *)str_set, $3, NULL);
+		RPT(set_type, "%s", (char *)($3->data));
+	}
+	| list left_bracket type right_bracket {
+		$$ = new_ast_node(nd_type, (char *)str_list, $3, NULL);
+		RPT(list_type, "%s", (char *)($3->data));
+	}
 
 
 exprs: {
@@ -271,6 +288,10 @@ expr: var {
 	| expr dget expr {
 		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_dget), $1, $3);
 		RPT(expr, "with 'dget'");
+	}
+	| expr comma expr {
+		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_comma), $1, $3);
+		RPT(expr, "with comma");
 	}
 
 

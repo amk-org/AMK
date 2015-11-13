@@ -39,6 +39,8 @@ int tmp_tab = 0;
 
 %%
 of {return of;}
+set {return set;}
+list {return list;}
 define {return define;}
 import {
 		RPT(import);
