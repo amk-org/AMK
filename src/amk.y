@@ -276,6 +276,49 @@ expr: var {
 
 %%
 
+#define MAX_NUM_THEOREM 100
+
+struct theorem_node
+{
+	char* name;
+	int type;
+	struct ast_node* node_require;
+	struct ast_node* node_conclude;
+};
+
+struct theorem_node table_theorem[MAX_NUM_THEOREM];
+int theorem_total=0;
+
+void translate(struct ast_node* node)
+{
+	enum node_types node_type=node->node_type;
+	int node_num,i;
+	switch (node_type)
+	{
+		case nd_program:
+			/* now, only focus on the proof parts */
+			translate(node->links[1]); 
+			break;
+		case nd_proof_part:
+			node_num=node->num_links;
+			/* deal with each proof block */
+			for (i=0;i<node_num;i++)
+				translate(node->links[i]);
+			break;
+		case nd_proof_block:
+			table_theorem[theorem_total].name=(char*)node->data;
+			//printf("%s\n",table_theorem[theorem_total].name);
+			table_theorem[theorem_total].type=0;
+			table_theorem[theorem_total].node_require=node->links[0];
+			table_theorem[theorem_total].node_conclude=node->links[1];
+			theorem_total++;
+			break;
+		default:
+			break;
+	}
+}
+
+
 /* FUNCTION DEFINITIONS */
 int main()
 {
@@ -283,7 +326,10 @@ int main()
 	yyparse(&root);
 
 	/* perform Syntax-Directed Translation*/
-	/* TODO */
+	translate(root);
+	printf("lalala\n");
+
+	for (int i=0;i<theorem_total;i++)
+		printf("%s\n",table_theorem[i].name);
 	return 0;
 }
-

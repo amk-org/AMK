@@ -1,5 +1,5 @@
 import logics.proposition
-theorem T:
+theorem T123:
 	require:
 		define a of statement
 	conclude:
@@ -7,7 +7,7 @@ theorem T:
 	proof:
 		a |- b
 
-theorem T:
+theorem zhqc:
 	require:
 		define a of statement
 		define b of statement
