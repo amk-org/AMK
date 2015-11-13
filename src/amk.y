@@ -307,7 +307,6 @@ void translate(struct ast_node* node)
 			break;
 		case nd_proof_block:
 			table_theorem[theorem_total].name=(char*)node->data;
-			//printf("%s\n",table_theorem[theorem_total].name);
 			table_theorem[theorem_total].type=0;
 			table_theorem[theorem_total].node_require=node->links[0];
 			table_theorem[theorem_total].node_conclude=node->links[1];
@@ -316,6 +315,12 @@ void translate(struct ast_node* node)
 		default:
 			break;
 	}
+}
+
+void search_require(struct ast_node* node)
+{
+	enum node_types node_type=node->node_type;
+	printf("== = == %d\n",node_type);
 }
 
 
@@ -330,6 +335,9 @@ int main()
 	printf("lalala\n");
 
 	for (int i=0;i<theorem_total;i++)
+	{
 		printf("%s\n",table_theorem[i].name);
+		search_require(table_theorem[i].node_require);
+	}
 	return 0;
 }

@@ -1,11 +1,18 @@
 import logics.proposition
-theorem T123:
+
+axiom belong1:
 	require:
 		define a of statement
+		define b of statement
 	conclude:
-		a vee b
-	proof:
-		a |- b
+		a,b|-a
+
+theorem belong:
+	require:
+		define a of statement
+		define b of set[statement]
+	conclude:
+		a,b|-a
 
 theorem zhqc:
 	require:
