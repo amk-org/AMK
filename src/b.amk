@@ -17,13 +17,16 @@ theorem cencellation:
 	conclude:
 		c |- a
 
-theorem first_proof:
+theorem zhqc:
 	require:
 		define a of statement
 		define b of statement
 	conclude:
-		a,not a|-b
+		a vee b vee not b
+		a wedge b |-| c
 	proof:
-		a,not a,not b|-a -[belong] <1>
-		a,not a,not b|-not a -[belong] <2>
-		a,not a,not b|-not a -[theorem cencellation: <1><2>] <3>
+		a |- b -[theorem t: <1> <2>] <1>
+		a -> b <2>
+		b |- a -[: <2>] <t3>
+		bs |- nsk -[t] <r>
+		c
