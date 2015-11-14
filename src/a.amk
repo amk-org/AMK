@@ -26,4 +26,4 @@ theorem first_proof:
 	proof:
 		a,not a,not b|-a -[belong] <1>
 		a,not a,not b|-not a -[belong] <2>
-		a,not a,not b|-not a -[theorem cencellation: <1><2>] <3>
+		a,not a,not b|-b -[theorem cencellation: <1><2>] <3>
