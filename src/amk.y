@@ -215,12 +215,14 @@ rich_expr: expr new_line {
 		  }
 		  | expr theorem_ref label new_line {
 			$$ = new_ast_node(nd_rich_exprs, $1, $2, $3);
+			printf("%d\n",$$->links[1]->node_type);
 			RPT(rich_expr, "with reference of theorem %s, label %s",
 				(char*)($2->data), $3);
 		  }
 
 theorem_ref: left_ref ref_body right_ref {
 			$$ = $2;
+			printf("%d\n",$2->node_type);
 			RPT(theorem_reference, "completed with -[ and ]");
 		   }
 
@@ -310,6 +312,7 @@ struct theorem_node
 
 struct theorem_node table_theorem[MAX_NUM_THEOREM];
 int theorem_total=0;
+int require_num=0;
 
 void translate(struct ast_node* node)
 {
@@ -333,15 +336,21 @@ void translate(struct ast_node* node)
 			table_theorem[theorem_total].node_require=node->links[0];
 			table_theorem[theorem_total].node_conclude=node->links[1];
 			theorem_total++;
-			//printf("  %d\n",(int)node->links[2]);
 			if (node->links[2]!=NULL)
-			{
 				translate(node->links[2]);
-				printf("%d\n",node->links[2]->node_type);
-			}
 			break;
-		case nd_rich_expr:
-			printf("%d\n",node_num);
+		case nd_rich_exprs:
+			/* in order to get requires firstly */
+			printf(" ?? %s\n",node->links[1]->data);
+			translate(node->links[1]);
+
+			translate(node->links[0]);
+			break;
+		case nd_ref_body:
+			printf("%si ooo \n",node->data);
+			break;
+		case nd_expr:
+			printf("==++==\n");
 			break;
 		default:
 			break;
