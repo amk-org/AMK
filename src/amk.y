@@ -215,7 +215,8 @@ rich_expr: expr new_line {
 		  }
 		  | expr theorem_ref label new_line {
 			$$ = new_ast_node(nd_rich_exprs, $1, $2, $3);
-			printf("%d\n",$$->links[1]->node_type);
+			printf("%d %d\n",$$->links[1]->node_type,(int)$$->links[1]);
+			printf("%d\n",(int)$$);
 			RPT(rich_expr, "with reference of theorem %s, label %s",
 				(char*)($2->data), $3);
 		  }
@@ -332,6 +333,7 @@ void translate(struct ast_node* node)
 			break;
 		case nd_proof_block:
 			table_theorem[theorem_total].name=(char*)node->data;
+			printf("%s\n",(char*)node->data);
 			table_theorem[theorem_total].type=0;
 			table_theorem[theorem_total].node_require=node->links[0];
 			table_theorem[theorem_total].node_conclude=node->links[1];
@@ -341,7 +343,8 @@ void translate(struct ast_node* node)
 			break;
 		case nd_rich_exprs:
 			/* in order to get requires firstly */
-			printf(" ?? %s\n",node->links[1]->data);
+			printf("%d\n",(int)node);
+			printf(" ?? %d %d\n",node->links[1]->node_type,(int)node->links[1]);
 			translate(node->links[1]);
 
 			translate(node->links[0]);
