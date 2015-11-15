@@ -202,19 +202,19 @@ rich_exprs: rich_expr {
 		  }
 
 rich_expr: expr new_line {
-			$$ = new_ast_node(nd_rich_exprs, $1, NULL, NULL);
+			$$ = new_ast_node(nd_rich_expr, $1, NULL, NULL);
 			RPT(rich_expr, "without additional info");
 		  }
 		  | expr theorem_ref new_line {
-			$$ = new_ast_node(nd_rich_exprs, $1, $2, NULL);
+			$$ = new_ast_node(nd_rich_expr, $1, $2, NULL);
 			RPT(rich_expr, "with reference of theorem %s", (char*)($2->data));
 		  }
 		  | expr label new_line {
-			$$ = new_ast_node(nd_rich_exprs, $1, NULL, $2);
+			$$ = new_ast_node(nd_rich_expr, $1, NULL, $2);
 			RPT(rich_expr, "with label %s", $2);
 		  }
 		  | expr theorem_ref label new_line {
-			$$ = new_ast_node(nd_rich_exprs, $1, $2, $3);
+			$$ = new_ast_node(nd_rich_expr, $1, $2, $3);
 			printf("%d %d\n",$$->links[1]->node_type,(int)$$->links[1]);
 			printf("%d\n",(int)$$);
 			RPT(rich_expr, "with reference of theorem %s, label %s",

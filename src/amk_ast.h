@@ -154,14 +154,6 @@ struct ast_node *new_ast_node(enum node_types node_type, void *arg, void *arg2, 
 		/* rich_exprs */
 		/* arg - rich_expr, arg2 - rich_exprs */
 		case nd_rich_exprs:
-			AST_NODE_MALLOC(re, node_type);
-			re->data = arg;
-			re->num_links = 3;
-			LINKS_MALLOC(re->links, re->num_links);
-			re->links[0] = AST_NODE_PTR(arg);
-			re->links[1] = AST_NODE_PTR(arg2);
-			re->links[2] = AST_NODE_PTR(arg3);
-			break;
 
 		/* ref_labels */
 		/* arg - label, arg2 - ref_labels */
