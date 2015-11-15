@@ -103,9 +103,10 @@ proof_block: proof_head indent proof_req proof_con proof_body dedent {
 				RPT(proof_block, "theorem %s constructed", $1);
 		   }
 		   | proof_head indent proof_req proof_con dedent {
-				struct ast_node ** arr = malloc(sizeof(void *) * 2);
+				struct ast_node ** arr = malloc(sizeof(void *) * 3);
 				arr[0] = $3;
 				arr[1] = $4;
+				arr[2] = NULL;
 				$$ = new_ast_node(nd_proof_block, (void *)$1, (void *)arr, NULL);
 				RPT(proof_block, "theorem %s declared", $1);
 		   }
@@ -154,7 +155,7 @@ proof_con: conclude colon new_line indent exprs dedent{
 		 }
 
 proof_body: proof colon new_line indent rich_exprs dedent {
-			$$ = $3;
+			$$ = $5;
 			RPT(proof_body, "finished");
 		  }
 
@@ -314,6 +315,7 @@ void translate(struct ast_node* node)
 {
 	enum node_types node_type=node->node_type;
 	int node_num,i;
+	node_num=node->num_links;
 	switch (node_type)
 	{
 		case nd_program:
@@ -321,7 +323,6 @@ void translate(struct ast_node* node)
 			translate(node->links[1]); 
 			break;
 		case nd_proof_part:
-			node_num=node->num_links;
 			/* deal with each proof block */
 			for (i=0;i<node_num;i++)
 				translate(node->links[i]);
@@ -332,6 +333,15 @@ void translate(struct ast_node* node)
 			table_theorem[theorem_total].node_require=node->links[0];
 			table_theorem[theorem_total].node_conclude=node->links[1];
 			theorem_total++;
+			//printf("  %d\n",(int)node->links[2]);
+			if (node->links[2]!=NULL)
+			{
+				translate(node->links[2]);
+				printf("%d\n",node->links[2]->node_type);
+			}
+			break;
+		case nd_rich_expr:
+			printf("%d\n",node_num);
 			break;
 		default:
 			break;
