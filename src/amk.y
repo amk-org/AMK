@@ -178,7 +178,7 @@ of_exprs: {
 		}
 		| of_expr of_exprs {
 			$$ = new_ast_node(nd_of_exprs, $1, $2, NULL);
-		}
+		;}
 
 of_expr: define var of type new_line {
 			$$ = new_ast_node(nd_of_expr, $2, $4, NULL);
@@ -313,6 +313,7 @@ expr: var {
 %%
 
 #define MAX_NUM_THEOREM 100
+#define MAX_NUM_PART_OF_EXPR 100
 
 struct theorem_node
 {
@@ -322,9 +323,49 @@ struct theorem_node
 	struct ast_node* node_conclude;
 };
 
+struct expr_hash_node
+{
+	struct ast_node* expr;
+	int index;
+};
+
 struct theorem_node table_theorem[MAX_NUM_THEOREM];
+struct expr_hash_node expr_hash[MAX_NUM_PART_OF_EXPR];
 int theorem_total=0;
 int require_num=0;
+
+int find_theorem_by_name(char* s)
+{
+	for (int i=0;i<theorem_total;i++)
+		if (strcmp(s,table_theorem[i].name)==0)
+			return i;
+	return -1;
+}
+
+int next_possible_comb(int t,int n)
+{
+	if (t==1)
+	{
+		int all_zero_flag=1;
+		for (int i=0;i<n;i++)
+			if (expr_hash[i].index)
+				all_zero_flag=0;
+		if (all_zero_flag)
+		{
+			expr_hash[0].index=1;
+			return 1;
+		}
+		for (int i=0;i<n;i++)
+			if (expr_hash[i].index)
+			{
+				if (i==n-1) return 0;
+				expr_hash[i+1].index=expr_hash[i].index;
+				expr_hash[i].index=0;
+				return 1;
+			}
+	}	
+	return 0;
+}
 
 void translate(struct ast_node* node)
 {
@@ -344,7 +385,7 @@ void translate(struct ast_node* node)
 			break;
 		case nd_proof_block:
 			table_theorem[theorem_total].name=(char*)node->data;
-			printf("%s\n",(char*)node->data);
+			printf("theorem: %s\n",(char*)node->data);
 			table_theorem[theorem_total].type=0;
 			table_theorem[theorem_total].node_require=node->links[0];
 			table_theorem[theorem_total].node_conclude=node->links[1];
@@ -353,18 +394,58 @@ void translate(struct ast_node* node)
 				translate(node->links[2]);
 			break;
 		case nd_rich_exprs:
-			/* in order to get requires firstly */
-			printf("%d\n",(int)node);
-			printf(" ?? %d %d\n",node->links[1]->node_type,(int)node->links[1]);
-			translate(node->links[1]);
-
 			translate(node->links[0]);
 			break;
+		case nd_rich_expr:
+			printf("%s\n",node->links[0]->data);
+			int id=find_theorem_by_name(node->links[0]->data);
+			printf(" == %d\n",id);
+			struct ast_node* req=table_theorem[id].node_require;
+			struct ast_node* pointer;
+
+			/* deal with of_exprs */
+			pointer=req->links[0];
+			int state_req_num=0;
+			for (int i=0;i<pointer->num_links;i++)
+			{
+				printf("%s\n",pointer->links[i]->data);
+				printf("%s\n",pointer->links[i]->links[0]->data);
+				if (strcmp("statement",pointer->links[i]->links[0]->data)==0) state_req_num++;
+			}
+			printf("num_state_req %d\n",state_req_num);
+
+			pointer=node->data;
+			int sub_expr_num=0;
+			if ((enum operators)pointer->data==op_get)
+			{
+				/* deal with rght part of the expr */
+				expr_hash[sub_expr_num].expr=pointer->links[1];
+				expr_hash[sub_expr_num].index=0;
+				sub_expr_num++;
+				pointer=pointer->links[0];
+				while ((enum operators)pointer->data==op_comma)
+				{
+					expr_hash[sub_expr_num].expr=pointer->links[1];
+					expr_hash[sub_expr_num].index=0;
+					sub_expr_num++;
+					pointer=pointer->links[0];
+				}
+				expr_hash[sub_expr_num].expr=pointer;
+				sub_expr_num++;
+			}
+			printf("sub_expr_num %d\n",sub_expr_num);
+			
+			while (next_possible_comb(state_req_num,sub_expr_num))
+			{
+				for (int i=0;i<sub_expr_num;i++)
+					printf("%d ",expr_hash[i].index);
+				printf("\n");
+			}
+
+			break;
 		case nd_ref_body:
-			printf("%si ooo \n",node->data);
 			break;
 		case nd_expr:
-			printf("==++==\n");
 			break;
 		default:
 			break;
@@ -383,7 +464,7 @@ int main()
 {
 	/* parse to get AST */
 	yyparse(&root);
-	printf("%x\n", (unsigned int)root);
+	//printf("%x\n", (unsigned int)root);
 
 	/* print AST structure */
 	FILE * ast_log = fopen("ast_structure.log", "w");
@@ -392,13 +473,12 @@ int main()
 
 	/* perform Syntax-Directed Translation*/
 	translate(root);
-	printf("lalala\n");
 
-	for (int i=0;i<theorem_total;i++)
+	/*for (int i=0;i<theorem_total;i++)
 	{
 		printf("%s\n",table_theorem[i].name);
 		search_require(table_theorem[i].node_require);
-	}
+	}*/
 	
 	return 0;
 }

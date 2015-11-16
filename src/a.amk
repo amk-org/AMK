@@ -1,12 +1,5 @@
 import logics.proposition
 
-theorem belong:
-	require:
-		define a of statement
-		define b of set[statement] 
-	conclude:
-		a,b|-a
-
 theorem cencellation:
 	require:
 		define a of statement
@@ -16,6 +9,13 @@ theorem cencellation:
 		not a,c |- not b
 	conclude:
 		c |- a
+
+theorem belong:
+	require:
+		define a of statement
+		define b of set[statement] 
+	conclude:
+		a,b|-a
 
 theorem first_proof:
 	require:
