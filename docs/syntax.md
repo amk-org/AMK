@@ -38,8 +38,7 @@ nd\_proof\_part  |NULL|n|proof\_block
 nd\_import\_expr  |(char *) str|0|NULL
 nd\_rich\_exprs  |NULL|n|rich\_expr
 nd\_exprs  |NULL|n|expr
-nd\_proof\_block  |(char *) name | 3|proof\_require, proof\_conclude, proof\_body
-nd\_proof\_block\_dcl  |(char *) name | 3|proof\_require, proof\_conclude, NULL
+nd\_proof\_block  |(char *) name | 3|proof\_require, proof\_conclude, proof\_body / NULL
 nd\_rich\_expr  | (struct ast_node *) expr | 2 | theorem\_ref, label
 nd\_ref\_body  | (char *) theorem\_name | 2 | ref\_pref, ref\_labels
 nd\_ref\_labels  |NULL|n|identifier
