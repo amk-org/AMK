@@ -11,20 +11,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/*** interface to the lexer ***/
-
-/*  Lexer prototype required by bison, aka getNextToken() */
-int yylex();
-
-/* line number variable */
-extern int yylineno;
-
-/* error reporting function */
-int yyerror(void * addr_root, const char *p) {
-	fprintf(stderr, "Error at line %d: %s\n", yylineno, p);
-	return 1;
-}
-
 /* const strings */
 const char str_set[] = "set\0";
 const char str_list[] = "list\0";
@@ -43,6 +29,7 @@ const char str_list[] = "list\0";
 
 /* operators */
 enum operators {
+	op_null,
 	op_not,
 	op_wedge,
 	op_vee,
@@ -51,6 +38,19 @@ enum operators {
 	op_get,
 	op_dget,
 	op_comma
+};
+
+/* operator names */
+const char *  operator_names[] = {
+	"op_null",
+	"op_not",
+	"op_wedge",
+	"op_vee",
+	"op_contain",
+	"op_dcontain",
+	"op_get",
+	"op_dget",
+	"op_comma"
 };
 
 /* node types */
@@ -73,6 +73,25 @@ enum node_types {
 	nd_type
 };
 
+const char * node_type_names[] = {
+	"nd_program",
+	"nd_import_expr",
+	"nd_import_part",
+	"nd_proof_part",
+	"nd_proof_block",
+	"nd_proof_block_dcl", // declare
+	"nd_exprs",
+	"nd_rich_exprs",
+	"nd_rich_expr",
+	"nd_ref_body",
+	"nd_ref_labels",
+	"nd_of_exprs",
+	"nd_of_expr",
+	"nd_proof_req",
+	"nd_expr",
+	"nd_type"
+};
+
 /* node in AST */
 struct ast_node {
 	/* info of this node */
@@ -93,8 +112,112 @@ struct ast_node *new_ast_node(enum node_types, void *, void *, void *);
 /* free node */
 void free_ast_node(struct ast_node *);
 
+/* print AST structure */
+void print_ast(struct ast_node *, int, FILE *);
+
 /*****************************************************************************/
 /*** Function Definitions ***/
+
+#define AST_RPT(fmt, ...)  do {														\
+	fprintf(out, "%s(%d): " fmt , node_type_names[root->node_type],					\
+			root->num_links, ##__VA_ARGS__);										\
+	fprintf(out, " CHILD [");														\
+	for (int _=0; _<root->num_links; _++)											\
+		if (visit_links)															\
+			if (root->links[_])														\
+				fprintf(out, "%s, ", node_type_names[root->links[_]->node_type]);	\
+			else																	\
+				fprintf(out, "NULL, ");												\
+		else																		\
+			fprintf(out, "%s, ", (char *) root->links[_]);							\
+	fprintf(out, "]\n");															\
+	fflush(out);																	\
+} while(0)
+
+void print_ast(struct ast_node * root, int depth, FILE * out) {
+	if (!root)
+		return;
+	char visit_data = 0;
+	char visit_links = 1;
+
+	for (int i=0; i<depth; i++)
+		fprintf(out, "\t");
+	switch (root->node_type) {
+		case nd_program:
+			AST_RPT();
+			break;
+
+		case nd_import_part:
+		case nd_proof_part:
+		case nd_rich_exprs:
+		case nd_of_exprs:
+		case nd_exprs:
+			AST_RPT();
+			break;
+
+		case nd_import_expr:
+			AST_RPT("module '%s'", root->data);
+			break;
+
+		case nd_proof_block:
+			AST_RPT("name '%s'", root->data);
+			break;
+
+		case nd_proof_block_dcl:
+			AST_RPT("name '%s'", root->data);
+			break;
+
+		case nd_rich_expr:
+			visit_data = 1;
+			fprintf(out, "%s(%d): CHILD [", node_type_names[root->node_type],
+					root->num_links);
+			fprintf(out, "%s, %s]\n", node_type_names[root->links[0]->node_type],
+					root->links[1] ? (char *)root->links[1] : "NULL");
+			break;
+
+		case nd_ref_body:
+			visit_links = 0;
+			AST_RPT("use '%s'", root->data);
+			break;
+
+		case nd_ref_labels:
+			visit_links = 0;
+			AST_RPT();
+			break;
+
+		case nd_expr:
+			if (!root->data) {
+				visit_links = 0;
+				AST_RPT("var '%s'", (char *)root->links[0]);
+			}
+			else
+				AST_RPT("op '%s'", operator_names[(int)root->data]);
+			break;
+
+		case nd_of_expr:
+			AST_RPT("var '%s'", root->data);
+			break;
+
+		case nd_proof_req:
+			AST_RPT();
+			break;
+
+		case nd_type:
+			AST_RPT("type '%s'", root->data);
+			break;
+
+		default:
+			fprintf(out, "Unrecognizable node_type %d\n", root->node_type);
+	}
+
+	if (visit_data)
+		print_ast(root->data, depth+1, out);
+	if (root->node_type == nd_rich_expr)
+		print_ast(root->links[0], depth+1, out);
+	else if (visit_links)
+		for (int i=0; i<root->num_links; i++)
+			print_ast(root->links[i], depth+1, out);
+}
 
 void free_ast_node(struct ast_node * node) {
 	if (node->num_links > 0)
@@ -210,7 +333,7 @@ struct ast_node *new_ast_node(enum node_types node_type, void *arg, void *arg2, 
 			break;
 
 		/* reference body */
-		/* arg - ref_theo, arg2 - ref_pref, arg3 - ref_vars */
+		/* arg - ref_theo, arg2 - ref_pref, arg3 - ref_labels */
 		case nd_ref_body:
 			AST_NODE_MALLOC(re, node_type);
 			re->data = arg;

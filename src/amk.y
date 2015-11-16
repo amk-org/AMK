@@ -3,6 +3,20 @@
 #include <stdlib.h>
 #include <string.h>
 
+/*** interface to the lexer ***/
+
+/*  Lexer prototype required by bison, aka getNextToken() */
+int yylex();
+
+/* line number variable */
+extern int yylineno;
+
+/* error reporting function */
+int yyerror(void * addr_root, const char *p) {
+	fprintf(stderr, "Error at line %d: %s\n", yylineno, p);
+	return 1;
+}
+
 /* include header file for AST */
 #include "amk_ast.h"
 
@@ -119,23 +133,23 @@ theorem_pref: theorem {
 			}
 
 ref_pref: {
-			$$ = malloc(sizeof(char));
-			*$$ = 'a';
+			$$ = malloc(2);
+			$$[0]='a'; $$[1]=0;
 			RPT(reference_prefix, "axiom");
 		}
 		| theorem {
-			$$ = malloc(sizeof(char));
-			*$$ = 't';
+			$$ = malloc(2);
+			$$[0]='t'; $$[1]=0;
 			RPT(reference_prefix, "theorem");
 		}
 		| lemma {
-			$$ = malloc(sizeof(char));
-			*$$ = 'l';
+			$$ = malloc(2);
+			$$[0]='l'; $$[1]=0;
 			RPT(reference_prefix, "lemma");
 		}
 		| axiom {
-			$$ = malloc(sizeof(char));
-			*$$ = 'a';
+			$$ = malloc(2);
+			$$[0]='a'; $$[1]=0;
 			RPT(reference_prefix, "axiom");
 		}
 
@@ -215,15 +229,12 @@ rich_expr: expr new_line {
 		  }
 		  | expr theorem_ref label new_line {
 			$$ = new_ast_node(nd_rich_expr, $1, $2, $3);
-			printf("%d %d\n",$$->links[1]->node_type,(int)$$->links[1]);
-			printf("%d\n",(int)$$);
 			RPT(rich_expr, "with reference of theorem %s, label %s",
 				(char*)($2->data), $3);
 		  }
 
 theorem_ref: left_ref ref_body right_ref {
 			$$ = $2;
-			printf("%d\n",$2->node_type);
 			RPT(theorem_reference, "completed with -[ and ]");
 		   }
 
@@ -262,7 +273,7 @@ var: identifier {
 /* logics.proposition Grammar */
 
 expr: var {
-		$$ = new_ast_node(nd_expr, NULL, $1, NULL);
+		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_null), $1, NULL);
 		RPT(expr, "with single var %s", $1);
 	}
 	| not expr {
@@ -372,6 +383,12 @@ int main()
 {
 	/* parse to get AST */
 	yyparse(&root);
+	printf("%x\n", (unsigned int)root);
+
+	/* print AST structure */
+	FILE * ast_log = fopen("ast_structure.log", "w");
+	print_ast(root, 0, ast_log);
+	fclose(ast_log);
 
 	/* perform Syntax-Directed Translation*/
 	translate(root);
@@ -382,5 +399,6 @@ int main()
 		printf("%s\n",table_theorem[i].name);
 		search_require(table_theorem[i].node_require);
 	}
+	
 	return 0;
 }
