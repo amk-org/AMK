@@ -17,5 +17,5 @@ theorem belong2:
 		a,b,c|-c
 	proof:
 		a,b,c|-a -[belong] <1>
-		a,b,b->(a wedge b)|- b->(a wedge b) -[belong] <2>
+		a,b,a wedge b|- a wedge b -[belong] <2>
 		a,b,c|-c -[belong] <2>
