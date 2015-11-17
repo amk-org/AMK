@@ -17,5 +17,5 @@ theorem belong2:
 		a,b,c|-c
 	proof:
 		a,b,c|-a -[belong] <1>
-		a,b,c|-d -[belong] <2>
 		a,b,c|-c -[belong] <2>
+		a,b,c|-b -[belong] <2>

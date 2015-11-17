@@ -314,6 +314,7 @@ expr: var {
 
 #define MAX_NUM_THEOREM 100
 #define MAX_NUM_PART_OF_EXPR 100
+#define MAX_REQ_STATE 100
 
 struct theorem_node
 {
@@ -329,8 +330,16 @@ struct expr_hash_node
 	int index;
 };
 
+struct req_node
+{
+	char* name;
+	char* type;
+	struct ast_node* pointer;
+};
+
 struct theorem_node table_theorem[MAX_NUM_THEOREM];
 struct expr_hash_node expr_hash[MAX_NUM_PART_OF_EXPR];
+struct req_node reqs[MAX_REQ_STATE];
 int theorem_total=0;
 int require_num=0;
 
@@ -342,35 +351,74 @@ int find_theorem_by_name(char* s)
 	return -1;
 }
 
-int next_possible_comb(int t,int n)
+int find_require_by_name(char* s,int req_num)
 {
-	if (t==1)
+	for (int i=0;i<req_num;i++)
+		if (strcmp(s,reqs[i].name)==0)
+			return i;
+	return -1;
+}
+
+int next_possible_comb(int n)
+{
+	int i,j;
+	for(i=n-1;i>0 && expr_hash[i].index<expr_hash[i-1].index;i--);
+	if (i==0) return 0;
+	for(j=n-1;j>i && expr_hash[j].index<expr_hash[i-1].index;j--);
+	int temp;
+	temp=expr_hash[i-1].index;
+	expr_hash[i-1].index=expr_hash[j].index;
+	expr_hash[j].index=temp;
+	for(i=i,j=n-1;i<j;i++,j--)
 	{
-		int all_zero_flag=1;
-		for (int i=0;i<n;i++)
-			if (expr_hash[i].index)
-				all_zero_flag=0;
-		if (all_zero_flag)
+		temp=expr_hash[i].index;
+		expr_hash[i].index=expr_hash[j].index;
+		expr_hash[j].index=temp;
+	}
+	return 1;
+}
+
+int search_same_exprs(struct ast_node* p1,struct ast_node* p2)
+{
+	//printf(" %d %d \n",(int)p1->data,(int)p2->data);
+	if (p1->data!=p2->data) return 0;
+	if (p1->data==0)
+		if (strcmp((char*)p1->links[0],(char*)p2->links[0])!=0) return 0;
+	if (p1->data>0)
+	{
+		if (p1->num_links!=p2->num_links) return 0;
+		for (int i=0;i<p1->num_links;i++)
 		{
-			expr_hash[0].index=1;
+			int t=search_same_exprs(p1->links[i],p2->links[i]);
+			if (t==0) return 0;
+		}
+	}
+	return 1;
+}
+
+int search_diff_exprs(struct ast_node* p1,struct ast_node* p2,int req_num)
+{
+	if (p1->data==0)
+	{
+		//printf(" require name %s\n",(char*)p1->links[0]);
+		int id=find_require_by_name((char*)p1->links[0],req_num);
+		if (strcmp("set",reqs[id].type)==0)
+			return 1;
+		if (reqs[id].pointer==NULL)
+		{
+			reqs[id].pointer=p2;
 			return 1;
 		}
-		for (int i=0;i<n;i++)
-			if (expr_hash[i].index)
-			{
-				if (i==n-1) return 0;
-				expr_hash[i+1].index=expr_hash[i].index;
-				expr_hash[i].index=0;
-				return 1;
-			}
-	}	
+		//printf(" you reached!\n");
+		return search_same_exprs(reqs[id].pointer,p2);
+	}
 	return 0;
 }
 
 void translate(struct ast_node* node)
 {
 	enum node_types node_type=node->node_type;
-	int node_num,i;
+	int node_num,i,id;
 	node_num=node->num_links;
 	switch (node_type)
 	{
@@ -385,7 +433,7 @@ void translate(struct ast_node* node)
 			break;
 		case nd_proof_block:
 			table_theorem[theorem_total].name=(char*)node->data;
-			printf("theorem: %s\n",(char*)node->data);
+			//printf("theorem: %s\n",(char*)node->data);
 			table_theorem[theorem_total].type=0;
 			table_theorem[theorem_total].node_require=node->links[0];
 			table_theorem[theorem_total].node_conclude=node->links[1];
@@ -394,25 +442,59 @@ void translate(struct ast_node* node)
 				translate(node->links[2]);
 			break;
 		case nd_rich_exprs:
-			translate(node->links[0]);
+			
+			for (int i=0;i<node->num_links;i++)
+			{
+				printf("#	[translator] program: begin to verify %dth line of proof body\n",i+1);
+				translate(node->links[i]);
+			}
+			
+			/* veriry the conclusion */
+			struct ast_node* con_expr=table_theorem[theorem_total-1].node_conclude;
+			con_expr=con_expr->links[0];
+			//printf("%d\n",(int)con_expr->data);
+			
+			struct ast_node* last_expr=node->links[node->num_links-1]->data;
+			//printf("%d\n",(int)last_expr->data);
+
+			int res=search_same_exprs(con_expr,last_expr);
+			if (res)
+				printf("#	[translator] program: last line do match it's conclusion\n");
+			else
+				printf("#	[translator] program: last line don't matche it's conclusion\n");
+
 			break;
 		case nd_rich_expr:
-			printf("%s\n",node->links[0]->data);
-			int id=find_theorem_by_name(node->links[0]->data);
-			printf(" == %d\n",id);
+			//printf("%s\n",(char*)node->links[0]->data);
+			id=find_theorem_by_name(node->links[0]->data);
 			struct ast_node* req=table_theorem[id].node_require;
+			struct ast_node* con=table_theorem[id].node_conclude;
 			struct ast_node* pointer;
 
 			/* deal with of_exprs */
 			pointer=req->links[0];
 			int state_req_num=0;
+			int req_num=0;
 			for (int i=0;i<pointer->num_links;i++)
 			{
-				printf("%s\n",pointer->links[i]->data);
-				printf("%s\n",pointer->links[i]->links[0]->data);
-				if (strcmp("statement",pointer->links[i]->links[0]->data)==0) state_req_num++;
+				if (strcmp("statement",pointer->links[i]->links[0]->data)==0)
+				{
+					reqs[req_num].name=pointer->links[i]->data;
+					//printf("%s\n",reqs[req_num].name);
+					reqs[req_num].type=pointer->links[i]->links[0]->data;
+					state_req_num++;
+					req_num++;
+				}
+				if (strcmp("set",pointer->links[i]->links[0]->data)==0)
+				{
+					reqs[req_num].name=pointer->links[i]->data;
+					//printf("%s\n",reqs[req_num].name);
+					reqs[req_num].type=pointer->links[i]->links[0]->data;
+					req_num++;
+				}
+				
 			}
-			printf("num_state_req %d\n",state_req_num);
+			//printf("num_state_req %d, num_req %d\n",state_req_num,req_num);
 
 			pointer=node->data;
 			int sub_expr_num=0;
@@ -420,28 +502,73 @@ void translate(struct ast_node* node)
 			{
 				/* deal with rght part of the expr */
 				expr_hash[sub_expr_num].expr=pointer->links[1];
-				expr_hash[sub_expr_num].index=0;
 				sub_expr_num++;
 				pointer=pointer->links[0];
 				while ((enum operators)pointer->data==op_comma)
 				{
-					expr_hash[sub_expr_num].expr=pointer->links[1];
-					expr_hash[sub_expr_num].index=0;
+					expr_hash[sub_expr_num].expr=pointer->links[0];
 					sub_expr_num++;
-					pointer=pointer->links[0];
+					pointer=pointer->links[1];
 				}
 				expr_hash[sub_expr_num].expr=pointer;
 				sub_expr_num++;
 			}
-			printf("sub_expr_num %d\n",sub_expr_num);
-			
-			while (next_possible_comb(state_req_num,sub_expr_num))
+			//printf("sub_expr_num %d\n",sub_expr_num);
+
+			for (int i=0;i<sub_expr_num;i++)
+				expr_hash[i].index=i;
+
+			int success;
+			do
 			{
+				success=1;
+				for (int i=0;i<req_num;i++)
+					reqs[i].pointer=NULL;
+
+				/*printf(" debug : sub_expr_hash \n");
 				for (int i=0;i<sub_expr_num;i++)
 					printf("%d ",expr_hash[i].index);
-				printf("\n");
-			}
+				printf("\n");*/
 
+				struct ast_node* sub_exprs[sub_expr_num]; 
+				for (int i=0;i<sub_expr_num;i++)
+					sub_exprs[expr_hash[i].index]=expr_hash[i].expr;
+
+				int index=0;
+				/* check the conclusion part */
+				pointer=con->links[0];
+				if ((enum operators)pointer->data==op_get)
+				{
+					int res=search_diff_exprs(pointer->links[1],sub_exprs[index++],req_num);
+					//printf("result %d\n",res);
+					if (!res) success=0;
+					if (!success) continue;
+					
+					pointer=pointer->links[0];
+					while ((enum operators)pointer->data==op_comma)
+					{
+						//printf("=== \n");
+						res=search_diff_exprs(pointer->links[0],sub_exprs[index++],req_num);
+						//printf("result %d\n",res);
+						if (!res) success=0;
+						if (!success) break;
+						pointer=pointer->links[1];
+					}
+					if (!success) continue;
+					
+					res=search_diff_exprs(pointer,sub_exprs[index++],req_num);
+					//printf("result %d\n",res);
+					if (!res) success=0;
+					if (!success) continue;
+				}
+				if (success) break;
+			}
+			while (next_possible_comb(sub_expr_num));
+
+			if (success)
+				printf("#	[translator] program: match with conclusion part\n");
+			else
+				printf("#	[translator] program: could not match with conclusion part\n");
 			break;
 		case nd_ref_body:
 			break;
