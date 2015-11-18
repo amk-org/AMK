@@ -591,9 +591,9 @@ void translate(struct ast_node* node)
 
 			int res=search_same_exprs(con_expr,last_expr);
 			if (res)
-				printf("#	[translator] program: (right) last line do match it's conclusion\n");
+				printf("#	[translator] program: (correct) last line matches its conclusion\n");
 			else
-				printf("#	[translator] program: (wrong) last line don't matche it's conclusion\n");
+				printf("#	[translator] program: (incorrect) last line does not match its conclusion\n");
 
 			break;
 		case nd_rich_expr:
@@ -718,9 +718,9 @@ void translate(struct ast_node* node)
 			while (next_possible_comb(sub_expr_num,expr_hash));
 
 			if (success)
-				printf("#	[translator] program: (right) match with conclusions part and requirements part\n");
+				printf("#	[translator] program: (correct) match conclusion part and requirement part\n");
 			else
-				printf("#	[translator] program: (wrong) could not match with conclusion part\n");
+				printf("#	[translator] program: (incorrect) cannot match conclusion part\n");
 			break;
 		case nd_ref_body:
 			break;
