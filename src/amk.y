@@ -368,11 +368,19 @@ int find_require_by_name(char* s,int req_num)
 	return -1;
 }
 
-int next_possible_comb(int n)
+int find_rich_expr_by_name(char* s)
+{
+	for (int i=0;i<rich_exprs_num;i++)
+		if (strcmp(s,rich_exprs[i].name)==0)
+			return i;
+	return -1;	
+}
+
+int next_possible_comb(int n,struct expr_hash_node* expr_hash)
 {
 	int i,j;
-	for(i=n-1;i>0 && expr_hash[i].index<expr_hash[i-1].index;i--);
-	if (i==0) return 0;
+	for(i=n-1;i>1 && expr_hash[i].index<expr_hash[i-1].index;i--);
+	if (i==1) return 0;
 	for(j=n-1;j>i && expr_hash[j].index<expr_hash[i-1].index;j--);
 	int temp;
 	temp=expr_hash[i-1].index;
@@ -421,7 +429,115 @@ int search_diff_exprs(struct ast_node* p1,struct ast_node* p2,int req_num)
 		//printf(" you reached!\n");
 		return search_same_exprs(reqs[id].pointer,p2);
 	}
+	if (p1->data==p2->data)
+	{
+		for (int i=0;i<p1->num_links;i++)
+		{
+			int t=search_diff_exprs(p1->links[i],p2->links[i],req_num);
+			if (t==0) return 0;
+		}
+		return 1;
+	}
 	return 0;
+}
+
+int check_require(int depth,int max_depth,struct ast_node* lables_pointer,struct ast_node* req_exprs,int req_of_num)
+{
+	if (depth>=max_depth) return 1;
+	int id=find_rich_expr_by_name((char*)lables_pointer->links[depth]);
+	struct ast_node* pointer=rich_exprs[id].pointer;
+	struct ast_node* req_expr=req_exprs->links[depth];
+	//printf("string:%s id:%d \n",(char*)lables_pointer->links[depth],id);
+
+	struct expr_hash_node expr_hash[MAX_NUM_PART_OF_EXPR];
+	
+	int sub_expr_num=0;
+	if ((enum operators)pointer->data==op_get)
+	{
+		/* deal with rght part of the expr */
+		expr_hash[sub_expr_num].expr=pointer->links[1];
+		sub_expr_num++;
+		pointer=pointer->links[0];
+		while ((enum operators)pointer->data==op_comma)
+		{
+			expr_hash[sub_expr_num].expr=pointer->links[0];
+			sub_expr_num++;
+			pointer=pointer->links[1];
+		}
+		expr_hash[sub_expr_num].expr=pointer;
+		sub_expr_num++;
+	}
+	//printf("sub_expr_num %d\n",sub_expr_num);
+
+	/* initalize the combination */
+	for (int i=0;i<sub_expr_num;i++)
+		expr_hash[i].index=i;
+
+	int success;
+	do
+	{
+		success=1;
+		
+		struct ast_node* reqs_back[req_of_num];
+		for (int i=0;i<req_of_num;i++)
+			reqs_back[i]=reqs[i].pointer;
+
+		/*printf("   sub debug : sub_expr_hash \n");
+		for (int i=0;i<sub_expr_num;i++)
+			printf("    %d ",expr_hash[i].index);
+		printf("\n");*/
+
+		struct ast_node* sub_exprs[sub_expr_num]; 
+		for (int i=0;i<sub_expr_num;i++)
+			sub_exprs[expr_hash[i].index]=expr_hash[i].expr;
+
+		int index=0;
+		
+		/* check the requirement */
+		pointer=req_expr;
+		if ((enum operators)pointer->data==op_get)
+		{
+			int res=search_diff_exprs(pointer->links[1],sub_exprs[index++],req_of_num);
+			//printf("result %d\n",res);
+			if (!res) success=0;
+					
+			pointer=pointer->links[0];
+			while ((enum operators)pointer->data==op_comma)
+			{
+				//printf("=== \n");
+				res=search_diff_exprs(pointer->links[0],sub_exprs[index],req_of_num);
+				//printf(" %d %d\n",(int)pointer->links[0]->data,(int)sub_exprs[index]->data);
+				index++;
+				//printf("result %d\n",res);
+				if (!res) success=0;
+				if (!success) break;
+				pointer=pointer->links[1];
+			}
+					
+			res=search_diff_exprs(pointer,sub_exprs[index++],req_of_num);
+			//printf("result %d\n",res);
+			if (!res) success=0;
+		}
+
+		if (success)
+		{
+			/*printf(" %d sub debug  : sub_expr_hash \n",depth);
+			for (int i=0;i<sub_expr_num;i++)
+				printf("    %d ",expr_hash[i].index);
+			printf("\n");*/
+			
+			success=check_require(depth+1,max_depth,lables_pointer,req_exprs,req_of_num);
+			break;
+		}
+		
+		for (int i=0;i<req_of_num;i++)
+			reqs[i].pointer=reqs_back[i];
+	
+		//printf("final result %d\n",success);
+		if (success) break;
+	}
+	while (next_possible_comb(sub_expr_num,expr_hash));
+	return success;
 }
 
 void translate(struct ast_node* node)
@@ -462,7 +578,7 @@ void translate(struct ast_node* node)
 				rich_exprs[rich_exprs_num].name=(char*)node->links[i]->links[1];
 				rich_exprs[rich_exprs_num].pointer=node->links[i]->data;
 				rich_exprs_num++;
-				printf(" + %s\n",(char*)node->links[i]->links[1]);
+				//printf(" + %s\n",(char*)node->links[i]->links[1]);
 			}
 			
 			/* veriry the conclusion */
@@ -475,9 +591,9 @@ void translate(struct ast_node* node)
 
 			int res=search_same_exprs(con_expr,last_expr);
 			if (res)
-				printf("#	[translator] program: last line do match it's conclusion\n");
+				printf("#	[translator] program: (right) last line do match it's conclusion\n");
 			else
-				printf("#	[translator] program: last line don't matche it's conclusion\n");
+				printf("#	[translator] program: (wrong) last line don't matche it's conclusion\n");
 
 			break;
 		case nd_rich_expr:
@@ -510,8 +626,8 @@ void translate(struct ast_node* node)
 				}
 				
 			}
-			//printf("num_state_req %d, num_req %d\n",state_req_num,req_num);
 
+			/* deal with sub_expr */
 			pointer=node->data;
 			int sub_expr_num=0;
 			if ((enum operators)pointer->data==op_get)
@@ -529,16 +645,15 @@ void translate(struct ast_node* node)
 				expr_hash[sub_expr_num].expr=pointer;
 				sub_expr_num++;
 			}
-			//printf("sub_expr_num %d\n",sub_expr_num);
 
 			/* initalize the combination */
 			for (int i=0;i<sub_expr_num;i++)
 				expr_hash[i].index=i;
 
-			struct ast_node* t=node->links[0]->links[1];
-			printf(" la la %d\n",(int)t->node_type);
-			int lables_num=node->links[0]->num_links;
-			printf("lables num %d\n",lables_num);
+			int lables_num=0;
+			struct ast_node* lables_pointer=node->links[0]->links[1];
+			if (lables_pointer!=NULL)
+				lables_num=lables_pointer->num_links;
 			
 			/* verify a single line in the proof body */
 			int success;
@@ -586,16 +701,26 @@ void translate(struct ast_node* node)
 				}
 
 				/* continue verify requirements */
+				if (!success) continue;
+				if (!lables_num) break;
+
+				/*printf(" debug : sub_expr_hash \n");
+				for (int i=0;i<sub_expr_num;i++)
+					printf("%d ",expr_hash[i].index);
+				printf("\n");*/
 				
+				//printf("lable num %d\n",lables_num);
+				
+				success=check_require(0,lables_num,lables_pointer,req->links[1],req_num);
 
 				if (success) break;
 			}
-			while (next_possible_comb(sub_expr_num));
+			while (next_possible_comb(sub_expr_num,expr_hash));
 
 			if (success)
-				printf("#	[translator] program: match with conclusion part\n");
+				printf("#	[translator] program: (right) match with conclusions part and requirements part\n");
 			else
-				printf("#	[translator] program: could not match with conclusion part\n");
+				printf("#	[translator] program: (wrong) could not match with conclusion part\n");
 			break;
 		case nd_ref_body:
 			break;
