@@ -17,7 +17,9 @@
 	- [x] Actions to construct AST
 	- [x] Token completion
 	- [x] Operator priority and associability
-	- [ ] Error reporting system (\*)
-	- [x] DEBUG (print) (\*)
+	- [x] DEBUG (print)
+	- [ ] Error reporting system
 - Syntax-Directed Translation
 	- [x] First stage SDT
+	- [ ] Optimization
+	- [ ] Error reporting system

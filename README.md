@@ -17,6 +17,8 @@ Please refer to the following links to documents:
 
 	- [AMK Language Design: Propositional logics](docs/ld_propositional_logics.md)
 
+	- [Lexical Analysis](docs/lex.md)
+	
 	- [Syntactical Analysis & AST](docs/syntax.md)
 
 - Code Progress Documents
@@ -25,27 +27,15 @@ Please refer to the following links to documents:
 
 <h1 id="schedule"> Schedule and Work Allocation</h1>
 
-## Current Status: Nov 1 -- Nov 12 | syntactical analysis
+## Current Status: Nov 19 | Mid-Term Report
 
-- Nov 19: Interim report
+- Nov 19: Mid-Term report
 
 ## Future Schedule
 
 To be decided
 
 ## Work done
-
-### Nov 12 -- Nov 18: (First demo) Syntax-directed translation
-
-- Write doc for syntactical part: bsnsk
-- Syntax-directed translation: zhqc
-- Prepare slides for interim report: sanzunonyasama
-
-### Nov 1 -- Nov 12 : syntactical analysis
-
-- Fix bugs and write doc for lexical part: sanzunonyasama
-- Syntactical analysis and build AST: bsnsk
-- Design Syntax-directed translation and write doc for that: zhqc
 
 ### Oct 18 -- Oct 25 : language design
 
@@ -58,4 +48,16 @@ To be decided
 - Lexical analysis using flex: sanzunonyasama
 - Syntactical analysis draft: zhqc
 - Investigation (Bison vs ANTLR, feature and usage): bsnsk
+
+### Nov 1 -- Nov 12 : syntactical analysis
+
+- Fix bugs and write doc for lexical part: sanzunonyasama
+- Syntactical analysis and build AST: bsnsk
+- Design Syntax-directed translation and write doc for that: zhqc
+
+### Nov 12 -- Nov 18: (First demo) Syntax-directed translation
+
+- Write doc for syntactical part: bsnsk
+- Syntax-directed translation: zhqc
+- Prepare slides for interim report: sanzunonyasama
 

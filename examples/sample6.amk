@@ -7,7 +7,7 @@ theorem belong:
 	conclude:
 		a,b|-a
 
-theorem cencellation:
+theorem not_cancellation:
 	require:
 		define a of statement
 		define b of statement
@@ -17,14 +17,25 @@ theorem cencellation:
 	conclude:
 		c |- a
 
+theorem plus:
+	require:
+		define a of statement
+		define b of statement
+		define c of set[statement]
+		define d of set[statement]
+		a, c |- b
+	conclude:
+		a, c, d |- b
+
 theorem first_proof:
 	require:
 		define a of statement
 		define b of statement
 	conclude:
-		a,not a,not b|-b
+		a,not a, not b|-b
 	proof:
 		a,not a,not b|-a -[belong] <aa>
 		a,not a,not b|-not a -[belong] <bb>
-		a,not a,not b|-b -[theorem cencellation: <aa> <bb>] <cc>
+		a, not a |- b -[theorem not_cancellation: <aa> <bb>] <cc>
+		a, not a, not b |- b -[theorem plus: <cc>] <dd>
 
