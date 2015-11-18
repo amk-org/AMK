@@ -315,6 +315,7 @@ expr: var {
 #define MAX_NUM_THEOREM 100
 #define MAX_NUM_PART_OF_EXPR 100
 #define MAX_REQ_STATE 100
+#define MAX_NUM_RICH_EXPR 100
 
 struct theorem_node
 {
@@ -337,11 +338,19 @@ struct req_node
 	struct ast_node* pointer;
 };
 
+struct rich_expr_node
+{
+	char* name;
+	struct ast_node* pointer;
+};
+
 struct theorem_node table_theorem[MAX_NUM_THEOREM];
 struct expr_hash_node expr_hash[MAX_NUM_PART_OF_EXPR];
 struct req_node reqs[MAX_REQ_STATE];
+struct rich_expr_node rich_exprs[MAX_NUM_RICH_EXPR];
 int theorem_total=0;
 int require_num=0;
+int rich_exprs_num=0;
 
 int find_theorem_by_name(char* s)
 {
@@ -443,10 +452,17 @@ void translate(struct ast_node* node)
 			break;
 		case nd_rich_exprs:
 			
+			rich_exprs_num=0;
+
 			for (int i=0;i<node->num_links;i++)
 			{
 				printf("#	[translator] program: begin to verify %dth line of proof body\n",i+1);
 				translate(node->links[i]);
+
+				rich_exprs[rich_exprs_num].name=(char*)node->links[i]->links[1];
+				rich_exprs[rich_exprs_num].pointer=node->links[i]->data;
+				rich_exprs_num++;
+				printf(" + %s\n",(char*)node->links[i]->links[1]);
 			}
 			
 			/* veriry the conclusion */
@@ -515,9 +531,16 @@ void translate(struct ast_node* node)
 			}
 			//printf("sub_expr_num %d\n",sub_expr_num);
 
+			/* initalize the combination */
 			for (int i=0;i<sub_expr_num;i++)
 				expr_hash[i].index=i;
 
+			struct ast_node* t=node->links[0]->links[1];
+			printf(" la la %d\n",(int)t->node_type);
+			int lables_num=node->links[0]->num_links;
+			printf("lables num %d\n",lables_num);
+			
+			/* verify a single line in the proof body */
 			int success;
 			do
 			{
@@ -561,6 +584,10 @@ void translate(struct ast_node* node)
 					if (!res) success=0;
 					if (!success) continue;
 				}
+
+				/* continue verify requirements */
+				
+
 				if (success) break;
 			}
 			while (next_possible_comb(sub_expr_num));
@@ -579,13 +606,6 @@ void translate(struct ast_node* node)
 	}
 }
 
-void search_require(struct ast_node* node)
-{
-	enum node_types node_type=node->node_type;
-	printf("== = == %d\n",node_type);
-}
-
-
 /* FUNCTION DEFINITIONS */
 int main()
 {
@@ -600,12 +620,6 @@ int main()
 
 	/* perform Syntax-Directed Translation*/
 	translate(root);
-
-	/*for (int i=0;i<theorem_total;i++)
-	{
-		printf("%s\n",table_theorem[i].name);
-		search_require(table_theorem[i].node_require);
-	}*/
 	
 	return 0;
 }
