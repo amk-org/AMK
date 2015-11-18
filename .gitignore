@@ -4,6 +4,9 @@ src/amk
 src/amk.tab.*
 src/amki
 src/tags
+src/*.swp
+src/.DS_Store
+src/ast_structure.log
 src/example/*.o
 src/example/lex.yy.c
 src/example/amk.tab.*
