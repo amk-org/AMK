@@ -617,6 +617,7 @@ int main()
 	FILE * ast_log = fopen("ast_structure.log", "w");
 	print_ast(root, 0, ast_log);
 	fclose(ast_log);
+	RPT(AST, "finished.");
 
 	/* perform Syntax-Directed Translation*/
 	translate(root);

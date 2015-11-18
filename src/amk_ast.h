@@ -177,7 +177,13 @@ void print_ast(struct ast_node * root, int depth, FILE * out) {
 
 		case nd_ref_body:
 			visit_links = 0;
-			AST_RPT("use '%s'", root->data);
+			fprintf(out, "%s(%d): use '%s' CHILD [", node_type_names[root->node_type],
+					root->num_links, root->data);
+			if (root->links[0])
+				fprintf(out, "prefix '%s',", (char *)root->links[0]);
+			if (root->links[1])
+				fprintf(out, "%s ]", node_type_names[root->links[1]->node_type]);
+			fprintf(out, "\n");
 			break;
 
 		case nd_ref_labels:
@@ -214,6 +220,8 @@ void print_ast(struct ast_node * root, int depth, FILE * out) {
 		print_ast(root->data, depth+1, out);
 	if (root->node_type == nd_rich_expr)
 		print_ast(root->links[0], depth+1, out);
+	else if (root->node_type == nd_ref_body)
+		print_ast(root->links[1], depth+1, out);
 	else if (visit_links)
 		for (int i=0; i<root->num_links; i++)
 			print_ast(root->links[i], depth+1, out);
