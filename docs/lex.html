@@ -2,7 +2,7 @@
 
 <head>
 <meta charset="utf-8">
-<title>syntax</title>
+<title>lex</title>
 <style type="text/css">
 body {
   font-family: Helvetica, arial, sans-serif;
@@ -304,157 +304,74 @@ sup {
 </style>
 </head>
 <body>
-<h1 id="toc_0">Documentation: Syntax</h1>
+<h1 id="toc_0">Documentation:Lex</h1>
 
-<p>By ssy @ Nov 2015</p>
+<h2 id="toc_1">Keyword</h2>
 
-<hr>
+<pre><code class="language-none">define import 
+therom axiom lemma 
+require conclude proof 
+where of 
+not wedge vee </code></pre>
 
-<h2 id="toc_1">Data Union</h2>
+<h2 id="toc_2">Operator</h2>
 
-<p>The union for data passing during <strong>yylex()</strong> is defined as follows.</p>
+<p>Spaces in operators are not allowed.</p>
 
-<pre><code class="language-none">/* union */
-%union {
-  char *str;
-  struct ast_node *ptr;
-};</code></pre>
+<pre><code class="language-none">not vee wedge
+|-  |-|  -&gt;  &lt;-&gt;</code></pre>
 
-<h2 id="toc_2">AST Node</h2>
+<h2 id="toc_3">Identifier</h2>
 
-<h3 id="toc_3">Struct Definition</h3>
+<p>Identifiers are strings that</p>
 
-<p><strong>struct ast_node</strong> is defined as follows.</p>
+<ol>
+<li>starts with letters;</li>
+<li>may contain letters, numbers, and &#39;_&#39;.</li>
+</ol>
 
-<pre><code class="language-c">/* node in AST */
-struct ast_node {
-    /* info of this node */
-    enum node_types node_type;
-    void * data;
-    
-    /* links */
-    int num_links;
-    struct ast_node ** links;
-};</code></pre>
+<h2 id="toc_4">Label</h2>
 
-<h3 id="toc_4">Explanation for Node Types</h3>
+<p>Labels contain letters, numbers and &#39;_&#39;.</p>
 
-<p>For differnet node types, we define the member variables as the following table indicates.</p>
+<p>Labels are wrapped with &#39;&lt;&#39; and &#39;&gt;&#39;.</p>
 
-<table>
-<thead>
-<tr>
-<th>node_type</th>
-<th>data</th>
-<th>num_links</th>
-<th>links</th>
-</tr>
-</thead>
+<p>Spaces in labels are not allowed.</p>
 
-<tbody>
-<tr>
-<td>nd_program</td>
-<td>NULL</td>
-<td>2</td>
-<td>import_part, proof_part</td>
-</tr>
-<tr>
-<td>nd_import_part</td>
-<td>NULL</td>
-<td>n</td>
-<td>import_expr</td>
-</tr>
-<tr>
-<td>nd_proof_part</td>
-<td>NULL</td>
-<td>n</td>
-<td>proof_block</td>
-</tr>
-<tr>
-<td>nd_import_expr</td>
-<td>(char *) str</td>
-<td>0</td>
-<td>NULL</td>
-</tr>
-<tr>
-<td>nd_rich_exprs</td>
-<td>NULL</td>
-<td>n</td>
-<td>rich_expr</td>
-</tr>
-<tr>
-<td>nd_exprs</td>
-<td>NULL</td>
-<td>n</td>
-<td>expr</td>
-</tr>
-<tr>
-<td>nd_proof_block</td>
-<td>(char *) name</td>
-<td>3</td>
-<td>proof_require, proof_conclude, proof_body / NULL</td>
-</tr>
-<tr>
-<td>nd_rich_expr</td>
-<td>(struct ast_node *) expr</td>
-<td>2</td>
-<td>theorem_ref, label</td>
-</tr>
-<tr>
-<td>nd_ref_body</td>
-<td>(char *) theorem_name</td>
-<td>2</td>
-<td>ref_pref, ref_labels</td>
-</tr>
-<tr>
-<td>nd_ref_labels</td>
-<td>NULL</td>
-<td>n</td>
-<td>identifier</td>
-</tr>
-<tr>
-<td>nd_expr</td>
-<td>(enum operators) op (NULL if none)</td>
-<td>k = 1 or 2</td>
-<td>(ast_node *) expr / (char *) var</td>
-</tr>
-<tr>
-<td>nd_of_expr</td>
-<td>var</td>
-<td>1</td>
-<td>type</td>
-</tr>
-<tr>
-<td>nd_of_exprs</td>
-<td>NULL</td>
-<td>n</td>
-<td>of_expr</td>
-</tr>
-<tr>
-<td>nd_proof_req</td>
-<td>NULL</td>
-<td>2</td>
-<td>of_exprs, exprs</td>
-</tr>
-<tr>
-<td>nd_type</td>
-<td>(char *) identifier / &quot;set&quot; / &quot;list&quot;</td>
-<td>0 or 1</td>
-<td>(sub-)type</td>
-</tr>
-</tbody>
-</table>
+<p>Here are some examples below.</p>
 
-<h2 id="toc_5">Operator Precedence and Associativity</h2>
+<pre><code class="language-none">&lt;1&gt;
+&lt;belong&gt;
+&lt;_____yoooooo____&gt;
+&lt;3q_&gt;</code></pre>
 
-<pre><code class="language-none">/* operator precedence and associativity */
-%right dget
-%right get
-%right dcontain
-%right contain
-%right vee
-%right wedge
-%nonassoc not</code></pre>
+<h2 id="toc_5">Other Symbol</h2>
+
+<p>The symble to show which lemma or conclusion appeared before and now is used in this proof line.</p>
+
+<pre><code class="language-none">-[]
+    Example:
+    a |- b -[theorem t: &lt;1&gt; &lt;2&gt;] &lt;1&gt;</code></pre>
+
+<p>Parrens.</p>
+
+<pre><code class="language-none">(
+)</code></pre>
+
+<p>Comments</p>
+
+<pre><code class="language-none">#
+    Example:
+    #This is a comment.</code></pre>
+
+<p>Squere brackets</p>
+
+<pre><code class="language-none">[
+]</code></pre>
+
+<p>Colons</p>
+
+<pre><code class="language-none">:</code></pre>
 
 <script type="text/x-mathjax-config">
 if (typeof MathJaxListener !== 'undefined') {

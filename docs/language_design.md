@@ -88,8 +88,8 @@ classic.mamk
 	AXIOM
 		axiom1:
 			require: 
-				a of statement
-				b of list[statement]
+				define a of statement
+				define b of list[statement]
 			conclude: a, b |- a
 			
 		axiom2:
@@ -97,8 +97,11 @@ classic.mamk
 	
 	THEOREM
 		naive_theorem:
-			require: a, b of statement
-			conclude: a, b |- a
+			require: 
+				define a of statement
+				define b of statement
+			conclude: 
+				a, b |- a
 			proof:
 				a, b |- a [axiom1]
 		
@@ -157,8 +160,10 @@ AMK本身并没有运算符，所有的相关运算符都来自模块定义（�
 下面是一个简单的例子（不要在意例子的具体内容）。
 
 	theoreom A:
-		require: P, R, Q
-		conclude: a, b |- c
+		require: 
+			P, R, Q
+		conclude: 
+			a, b |- c
 			where
 				state a = R -> P Vee Q
 				state b = not (R wedge Q)
@@ -177,13 +182,16 @@ AMK本身并没有运算符，所有的相关运算符都来自模块定义（�
 下面是一个简单的证明示例：
 
 	theorem T:
-		require: a, b
-		conclude: a -> b |- a -> (a wedge b)
+		require: 
+			define a of statement
+			define b of statement
+		conclude: 
+			a -> b |- a -> (a wedge b)
 		proof:
 			a -> b, a |- a -[axiom belong] <1>
 			a -> b, a |- a -> b <2> # using of axiom can be omitted
-			a -> b, a |- b -[axiom ->- : 1,2] <t3>
-			a -> b, a |- a wedge b -[:t3] <4>
+			a -> b, a |- b -[axiom ->- : <1><2>] <t3>
+			a -> b, a |- a wedge b -[:<t3>] <4>
 			a -> b |- a -> (a wedge b) [4]
 
 首先来看写在定理／引理的"proof:"后面的内容，每行一句推理过程。
@@ -194,7 +202,7 @@ AMK本身并没有运算符，所有的相关运算符都来自模块定义（�
 	- 如果是公理，可以不写清楚具体是哪条公里。但是定理、引理的使用必须明确指明其名字和应用的变量（这点和手写证明的要求是一样的）。
 	- 括号内的内容可以用':'分隔作为两部分
 		- 前面是使用的定理／引理／公理的名字，前缀 axiom / lemma / theorem 可以省略。
-		- 后面是对那几行推理得到的结果使用该定理／引理／公理，用标号**按定理条件的顺序**指明，用逗号作为分隔符。
+		- 后面是对那几行推理得到的结果使用该定理／引理／公理，用标号**按定理条件的顺序**指明。
 		- 如果只有前一半，可以省略':'，但是只有后一半不能省略':'
 		
 ## 编写 Coding
@@ -216,10 +224,10 @@ AMK大小写敏感，内置关键字等统一用小写。推荐用户使用小�
 支持各模块类型的高亮插件、自动补全插件后期可以补上。
 
 ## 其它解释器语法
-### 运行：amk
-在终端调用amk进入解释器。例如
+### 运行：amki
+在终端调用amki进入解释器。例如
 	
-	$ amk
+	$ amki
 	welcome to amk interpreter!
 	>
 	
@@ -227,8 +235,8 @@ AMK大小写敏感，内置关键字等统一用小写。推荐用户使用小�
 ### 装载：source *file*
 source 用以装载源文件。例如
 
-	$ amk 
-	welcome to amk interpreter!
+	$ amki 
+	welcome to amki interpreter!
 	> source A.amk
 	source code loaded successfully!
 	>
@@ -236,8 +244,8 @@ source 用以装载源文件。例如
 ### 检查：check *file*
 check 用以检查定理／引理的正确性。例如
 
-	$ amk 
-	welcome to amk interpreter!
+	$ amki 
+	welcome to amki interpreter!
 	> source A.amk
 	source code loaded successfully!
 	> check A
@@ -245,11 +253,10 @@ check 用以检查定理／引理的正确性。例如
 		@ line 10: conclude a -> b
 	> quit
 	
-### 检查文件: amk *file*
+### 检查文件: amki *file*
 可以使用解释器对文件中的证明逐个检查。例如
 
-	$ amk A.amk
+	$ amki A.amk
 	welcome to amk interpreter!
 	checked all theorems and lemmas, they are all correct!
 	congratulations!
-v

@@ -37,16 +37,3 @@ A sensible proof:
 			a -> b, a |- a wedge b [t3] <4>
 			a -> b |- a -> (a wedge b) [4]
 			
-
-Check a theorem proof:
-
-	$ amk 
-	welcome to amk interpreter!
-	> source A.amk
-	source code loaded successfully!
-	> check A
-	Proof for A is not correct!
-		@ line 10: conclude a -> b
-	> quit
-
-	

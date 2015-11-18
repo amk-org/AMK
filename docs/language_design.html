@@ -408,8 +408,8 @@ OPERATOR # operators are arranged in decreasing order of their priorities
 AXIOM
     axiom1:
         require: 
-            a of statement
-            b of list[statement]
+            define a of statement
+            define b of list[statement]
         conclude: a, b |- a
 
     axiom2:
@@ -417,8 +417,11 @@ AXIOM
 
 THEOREM
     naive_theorem:
-        require: a, b of statement
-        conclude: a, b |- a
+        require: 
+            define a of statement
+            define b of statement
+        conclude: 
+            a, b |- a
         proof:
             a, b |- a [axiom1]</code></pre>
 
@@ -482,8 +485,10 @@ set[typeB]</p></li>
 <p>下面是一个简单的例子（不要在意例子的具体内容）。</p>
 
 <pre><code class="language-none">theoreom A:
-    require: P, R, Q
-    conclude: a, b |- c
+    require: 
+        P, R, Q
+    conclude: 
+        a, b |- c
         where
             state a = R -&gt; P Vee Q
             state b = not (R wedge Q)
@@ -503,13 +508,16 @@ set[typeB]</p></li>
 <p>下面是一个简单的证明示例：</p>
 
 <pre><code class="language-none">theorem T:
-    require: a, b
-    conclude: a -&gt; b |- a -&gt; (a wedge b)
+    require: 
+        define a of statement
+        define b of statement
+    conclude: 
+        a -&gt; b |- a -&gt; (a wedge b)
     proof:
         a -&gt; b, a |- a -[axiom belong] &lt;1&gt;
         a -&gt; b, a |- a -&gt; b &lt;2&gt; # using of axiom can be omitted
-        a -&gt; b, a |- b -[axiom -&gt;- : 1,2] &lt;t3&gt;
-        a -&gt; b, a |- a wedge b -[:t3] &lt;4&gt;
+        a -&gt; b, a |- b -[axiom -&gt;- : &lt;1&gt;&lt;2&gt;] &lt;t3&gt;
+        a -&gt; b, a |- a wedge b -[:&lt;t3&gt;] &lt;4&gt;
         a -&gt; b |- a -&gt; (a wedge b) [4]</code></pre>
 
 <p>首先来看写在定理／引理的&quot;proof:&quot;后面的内容，每行一句推理过程。</p>
@@ -525,7 +533,7 @@ set[typeB]</p></li>
 
 <ul>
 <li>前面是使用的定理／引理／公理的名字，前缀 axiom / lemma / theorem 可以省略。</li>
-<li>后面是对那几行推理得到的结果使用该定理／引理／公理，用标号<strong>按定理条件的顺序</strong>指明，用逗号作为分隔符。</li>
+<li>后面是对那几行推理得到的结果使用该定理／引理／公理，用标号<strong>按定理条件的顺序</strong>指明。</li>
 <li>如果只有前一半，可以省略&#39;:&#39;，但是只有后一半不能省略&#39;:&#39;</li>
 </ul></li>
 </ul></li>
@@ -555,11 +563,11 @@ $ cp vim-plugin/filetype.vim ~/.vim/</code></pre>
 
 <h2 id="toc_17">其它解释器语法</h2>
 
-<h3 id="toc_18">运行：amk</h3>
+<h3 id="toc_18">运行：amki</h3>
 
-<p>在终端调用amk进入解释器。例如</p>
+<p>在终端调用amki进入解释器。例如</p>
 
-<pre><code class="language-none">$ amk
+<pre><code class="language-none">$ amki
 welcome to amk interpreter!
 &gt;</code></pre>
 
@@ -567,8 +575,8 @@ welcome to amk interpreter!
 
 <p>source 用以装载源文件。例如</p>
 
-<pre><code class="language-none">$ amk 
-welcome to amk interpreter!
+<pre><code class="language-none">$ amki 
+welcome to amki interpreter!
 &gt; source A.amk
 source code loaded successfully!
 &gt;</code></pre>
@@ -577,8 +585,8 @@ source code loaded successfully!
 
 <p>check 用以检查定理／引理的正确性。例如</p>
 
-<pre><code class="language-none">$ amk 
-welcome to amk interpreter!
+<pre><code class="language-none">$ amki 
+welcome to amki interpreter!
 &gt; source A.amk
 source code loaded successfully!
 &gt; check A
@@ -586,16 +594,14 @@ Proof for theorem A is not correct!
     @ line 10: conclude a -&gt; b
 &gt; quit</code></pre>
 
-<h3 id="toc_21">检查文件: amk <em>file</em></h3>
+<h3 id="toc_21">检查文件: amki <em>file</em></h3>
 
 <p>可以使用解释器对文件中的证明逐个检查。例如</p>
 
-<pre><code class="language-none">$ amk A.amk
+<pre><code class="language-none">$ amki A.amk
 welcome to amk interpreter!
 checked all theorems and lemmas, they are all correct!
 congratulations!</code></pre>
-
-<p>v</p>
 
 <script type="text/x-mathjax-config">
 if (typeof MathJaxListener !== 'undefined') {
