@@ -1,0 +1,21 @@
+import logics.proposition
+
+theorem belong:
+	require:
+		define a of statement
+		define b of set[statement] 
+	conclude:
+		a,b|-a
+
+theorem belong2:
+	require:
+		define a of statement
+		define b of statement
+		define c of statement
+		define d of statement
+	conclude:
+		a,b,c|-c
+	proof:
+		a,b,c|-a -[belong] <1>
+		a,b,c|-d -[belong] <2>
+		a,b,c|-c -[belong] <2>

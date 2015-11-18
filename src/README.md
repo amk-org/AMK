@@ -10,7 +10,7 @@
 - Lexical part 
 	- [x] First stage bug fixed
 	- [x] Fix compiling errors
-	- [ ] DEBUG!!!!
+	- [x] DEBUG
 - Syntactical part
 	- [x] Basic AMK grammar draft
 	- [x] Proposition part grammar
@@ -18,6 +18,6 @@
 	- [x] Token completion
 	- [x] Operator priority and associability
 	- [ ] Error reporting system (\*)
-	- [ ] DEBUG (print) (\*)
+	- [x] DEBUG (print) (\*)
 - Syntax-Directed Translation
-	- [ ] Basic framework and work allocation
+	- [x] First stage SDT

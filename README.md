@@ -27,19 +27,26 @@ Please refer to the following links to documents:
 
 ## Current Status: Nov 1 -- Nov 12 | syntactical analysis
 
+- Nov 19: Interim report
+
+## Future Schedule
+
+To be decided
+
+## Work done
+
+### Nov 12 -- Nov 18: (First demo) Syntax-directed translation
+
+- Write doc for syntactical part: bsnsk
+- Syntax-directed translation: zhqc
+- Prepare slides for interim report: sanzunonyasama
+
+### Nov 1 -- Nov 12 : syntactical analysis
+
 - Fix bugs and write doc for lexical part: sanzunonyasama
 - Syntactical analysis and build AST: bsnsk
 - Design Syntax-directed translation and write doc for that: zhqc
 
-## Future Schedule
-
-- Nov 12 -- Nov 18: (First demo) Syntax-directed translation
-	- Write doc for syntactical part: bsnsk
-	- Syntax-directed translation: zhqc
-	- Prepare slides for interim report: sanzunonyasama
-- Nov 19: Interim report
-
-## Work done
 ### Oct 18 -- Oct 25 : language design
 
 - Language design: bsnsk

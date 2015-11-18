@@ -1,0 +1,30 @@
+import logics.proposition
+
+theorem belong:
+	require:
+		define a of statement
+		define b of set[statement] 
+	conclude:
+		a,b|-a
+
+theorem cencellation:
+	require:
+		define a of statement
+		define b of statement
+		define c of set[statement]
+		not a,c |- b
+		not a,c |- not b
+	conclude:
+		c |- a
+
+theorem first_proof:
+	require:
+		define a of statement
+		define b of statement
+	conclude:
+		a,not a,not b|-b
+	proof:
+		a,not a,not b|-a -[belong] <aa>
+		a,not a,not b|-not b -[belong] <bb>
+		a,not a,not b|-b -[theorem cencellation: <aa> <bb>] <cc>
+
