@@ -27,13 +27,27 @@ Please refer to the following links to documents:
 
 <h1 id="schedule"> Schedule and Work Allocation</h1>
 
-## Current Status: Nov 19 | Mid-Term Report
+## Current Status: Nov 20  -- Dec 3 : Error Reporting
 
-- Nov 19: Mid-Term report
+- Syntax Refinement: bsnsk
+	- Error Reporting System
+	- Support for '(' ')'
+	- Storage of Line Number in AST Nodes
+
+- Shell to implement modules: bsnsk
+
+- Translator Refinement: zhqc
+	- Debug
+	- More Complex Examples
+
+- Lexer Comments : sanzunonyasama
+- Web Libraries Investigation: sanzunonyasama
 
 ## Future Schedule
 
-To be decided
+- Further Support
+	- Contact Mr. Wang
+- Web Interface
 
 ## Work done
 
@@ -61,3 +75,5 @@ To be decided
 - Syntax-directed translation: zhqc
 - Prepare slides for interim report: sanzunonyasama
 
+### Nov 19 : Mid-Term Report
+- Mid-Term Report
