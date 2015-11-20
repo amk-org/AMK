@@ -35,6 +35,14 @@ int last_tab = 0;
 int cur_tab = 0;
 int tmp_tab = 0;
 
+/* handle locations */
+int yycolumn = 1;
+
+#define YY_USER_ACTION yylloc.first_line = yylloc.last_line = yylineno;	\
+	yylloc.first_column = yycolumn;										\
+	yylloc.last_column = yycolumn + yyleng - 1;							\
+	yycolumn += yyleng;													
+
 %}
 
 %%
@@ -138,6 +146,7 @@ vee {return vee;}
 
 [\n]+		{	last_tab = cur_tab; 
 			cur_tab = 0;
+			yycolumn = 1;
 			//printf("\nnext line : line no. %d\n", yylineno);
 			RPT(new_line);
 			return new_line;
@@ -147,8 +156,8 @@ vee {return vee;}
 			//printf("waste space\n");
 		}	
 
-[\s\t]*\n	
-{
+[\s\t]*\n	{
+	yycolumn = 1;
 	RPT(blankline);
 }
 

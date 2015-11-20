@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* include header file for AST */
+#include "amk_ast.h"
+
 /*** interface to the lexer ***/
 
 /*  Lexer prototype required by bison, aka getNextToken() */
@@ -16,9 +19,6 @@ int yyerror(void * addr_root, const char *p) {
 	fprintf(stderr, "Error at line %d: %s\n", yylineno, p);
 	return 1;
 }
-
-/* include header file for AST */
-#include "amk_ast.h"
 
 %}
 
@@ -80,31 +80,31 @@ int yyerror(void * addr_root, const char *p) {
 /* Basic AMK Grammar */
 
 program: import_part proof_part {
-			$$ = new_ast_node(nd_program, $1, $2, NULL);
+			$$ = new_ast_node(nd_program, $1, $2, NULL, @1.first_line, @2.last_line - 1);
 			*AST_NODE_PTR_ARR(addr_root) = $$;
 			RPT(program, "finished");
 	   }
 
 import_part: {
-				$$ = new_ast_node(nd_import_part, NULL, NULL, NULL);
+				$$ = new_ast_node(nd_import_part, NULL, NULL, NULL, 0, 0);
 				RPT(import_part, "start merging");
 		   }
 		   | import_expr import_part {
-				$$ = new_ast_node(nd_import_part, $1, $2, NULL);
+				$$ = new_ast_node(nd_import_part, $1, $2, NULL, @1.first_line, @2.last_line - 1);
 				RPT(import_part, "merge with %s", (char *)($1->data));
 		   }
 
 import_expr: import file_name new_line{
-				$$ = new_ast_node(nd_import_expr, $2, NULL, NULL);
+				$$ = new_ast_node(nd_import_expr, $2, NULL, NULL, @1.first_line, @2.last_line);
 				RPT(import_expr, "input %s", $2);
 		   }
 
 proof_part: {
-				$$ = new_ast_node(nd_proof_part, NULL, NULL, NULL);
+				$$ = new_ast_node(nd_proof_part, NULL, NULL, NULL, 0, 0);
 				RPT(proof_part, "start merging");
 		  }
 		  | proof_block proof_part {
-				$$ = new_ast_node(nd_proof_part, $1, $2, NULL);
+				$$ = new_ast_node(nd_proof_part, $1, $2, NULL, @1.first_line, @2.last_line - 1);
 				RPT(proof_part, "merge with theorem %s", (char *)($1->data));
 		  }
 
@@ -113,7 +113,7 @@ proof_block: proof_head indent proof_req proof_con proof_body dedent {
 				arr[0] = $3;
 				arr[1] = $4;
 				arr[2] = $5;
-				$$ = new_ast_node(nd_proof_block, (void *)$1, (void *)arr, NULL);
+				$$ = new_ast_node(nd_proof_block, (void *)$1, (void *)arr, NULL, @1.first_line, @5.last_line - 1);
 				RPT(proof_block, "theorem %s constructed", $1);
 		   }
 		   | proof_head indent proof_req proof_con dedent {
@@ -121,7 +121,7 @@ proof_block: proof_head indent proof_req proof_con proof_body dedent {
 				arr[0] = $3;
 				arr[1] = $4;
 				arr[2] = NULL;
-				$$ = new_ast_node(nd_proof_block, (void *)$1, (void *)arr, NULL);
+				$$ = new_ast_node(nd_proof_block, (void *)$1, (void *)arr, NULL, @1.first_line, @4.last_line - 1);
 				RPT(proof_block, "theorem %s declared", $1);
 		   }
 
@@ -159,7 +159,7 @@ proof_head: theorem_pref identifier colon new_line {
 		  }
 
 proof_req: require colon new_line indent of_exprs exprs dedent {
-			$$ = new_ast_node(nd_proof_req, $5, $6, NULL);
+			$$ = new_ast_node(nd_proof_req, $5, $6, NULL, @1.first_line, @6.last_line - 1);
 			RPT(proof_req, "finished");
 		 }
 
@@ -174,61 +174,61 @@ proof_body: proof colon new_line indent rich_exprs dedent {
 		  }
 
 of_exprs: {
-			$$ = new_ast_node(nd_of_exprs, NULL, NULL, NULL);
+			$$ = new_ast_node(nd_of_exprs, NULL, NULL, NULL, 0, 0);
 		}
 		| of_expr of_exprs {
-			$$ = new_ast_node(nd_of_exprs, $1, $2, NULL);
+			$$ = new_ast_node(nd_of_exprs, $1, $2, NULL, @1.first_line, @2.last_line - 1);
 		;}
 
 of_expr: define var of type new_line {
-			$$ = new_ast_node(nd_of_expr, $2, $4, NULL);
+			$$ = new_ast_node(nd_of_expr, $2, $4, NULL, @1.first_line, @3.last_line);
 			RPT(of_expr, "var %s of type %s", $2, (char *)($4->data));
 		}
 
 type: identifier {
-		$$ = new_ast_node(nd_type, $1, NULL, NULL);
+		$$ = new_ast_node(nd_type, $1, NULL, NULL, @1.first_line, @1.last_line);
 		RPT(type, "%s", $1);
 	}
 	| set left_bracket type right_bracket {
-		$$ = new_ast_node(nd_type, (char *)str_set, $3, NULL);
+		$$ = new_ast_node(nd_type, (char *)str_set, $3, NULL, @1.first_line, @4.last_line);
 		RPT(set_type, "%s", (char *)($3->data));
 	}
 	| list left_bracket type right_bracket {
-		$$ = new_ast_node(nd_type, (char *)str_list, $3, NULL);
+		$$ = new_ast_node(nd_type, (char *)str_list, $3, NULL, @1.first_line, @4.last_line);
 		RPT(list_type, "%s", (char *)($3->data));
 	}
 
 
 exprs: {
-		$$ = new_ast_node(nd_exprs, NULL, NULL, NULL);
+		$$ = new_ast_node(nd_exprs, NULL, NULL, NULL, 0, 0);
 		RPT(exprs, "bound");
 	 }
 	 | expr new_line exprs {
-		$$ = new_ast_node(nd_exprs, $1, $3, NULL);
+		$$ = new_ast_node(nd_exprs, $1, $3, NULL, @1.first_line, @3.last_line - 1);
 	 }
 
 rich_exprs: rich_expr {
-			$$ = new_ast_node(nd_rich_exprs, $1, NULL, NULL);
+			$$ = new_ast_node(nd_rich_exprs, $1, NULL, NULL, @1.first_line, @1.last_line);
 			RPT(rich_exprs, "bound");
 		  }
 		  | rich_expr rich_exprs {
-			$$ = new_ast_node(nd_rich_exprs, $1, $2, NULL);
+			$$ = new_ast_node(nd_rich_exprs, $1, $2, NULL, @1.first_line, @2.last_line - 1);
 		  }
 
 rich_expr: expr new_line {
-			$$ = new_ast_node(nd_rich_expr, $1, NULL, NULL);
+			$$ = new_ast_node(nd_rich_expr, $1, NULL, NULL, @1.first_line, @1.last_line);
 			RPT(rich_expr, "without additional info");
 		  }
 		  | expr theorem_ref new_line {
-			$$ = new_ast_node(nd_rich_expr, $1, $2, NULL);
+			$$ = new_ast_node(nd_rich_expr, $1, $2, NULL, @1.first_line, @2.last_line);
 			RPT(rich_expr, "with reference of theorem %s", (char*)($2->data));
 		  }
 		  | expr label new_line {
-			$$ = new_ast_node(nd_rich_expr, $1, NULL, $2);
+			$$ = new_ast_node(nd_rich_expr, $1, NULL, $2, @1.first_line, @2.last_line);
 			RPT(rich_expr, "with label %s", $2);
 		  }
 		  | expr theorem_ref label new_line {
-			$$ = new_ast_node(nd_rich_expr, $1, $2, $3);
+			$$ = new_ast_node(nd_rich_expr, $1, $2, $3, @1.first_line, @3.last_line);
 			RPT(rich_expr, "with reference of theorem %s, label %s",
 				(char*)($2->data), $3);
 		  }
@@ -239,15 +239,15 @@ theorem_ref: left_ref ref_body right_ref {
 		   }
 
 ref_body: ref_pref ref_theo {
-			$$ = new_ast_node(nd_ref_body, $2, $1, NULL);
+			$$ = new_ast_node(nd_ref_body, $2, $1, NULL, @1.first_line, @2.last_line);
 			RPT(reference, "%s", $2);
 		}
 		| ref_pref ref_theo colon ref_labels {
-			$$ = new_ast_node(nd_ref_body, $2, $1, $4);
+			$$ = new_ast_node(nd_ref_body, $2, $1, $4, @1.first_line, @4.last_line);
 			RPT(reference, "with theorem %s and labels", $2);
 		}
 		| colon ref_labels {
-			$$ = new_ast_node(nd_ref_body, NULL, NULL, $2);
+			$$ = new_ast_node(nd_ref_body, NULL, NULL, $2, @1.first_line, @2.last_line);
 			RPT(reference, "with an axiom and labels");
 		}
 
@@ -257,11 +257,11 @@ ref_theo: identifier {
 		}
 
 ref_labels: label {
-			$$ = new_ast_node(nd_ref_labels, $1, NULL, NULL);
+			$$ = new_ast_node(nd_ref_labels, $1, NULL, NULL, @1.first_line, @1.last_line);
 			RPT(label, "%s", $1);
 		}
 		| label ref_labels {
-			$$ = new_ast_node(nd_ref_labels, $1, $2, NULL);
+			$$ = new_ast_node(nd_ref_labels, $1, $2, NULL, @1.first_line, @2.last_line);
 			RPT(label, " with %s", $1);
 		}
 
@@ -273,44 +273,46 @@ var: identifier {
 /* logics.proposition Grammar */
 
 expr: var {
-		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_null), $1, NULL);
+		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_null), $1, NULL, @1.first_line, @1.last_line);
 		RPT(expr, "with single var %s", $1);
 	}
 	| not expr {
-		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_not), $2, NULL);
+		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_not), $2, NULL, @1.first_line, @2.last_line);
 		RPT(expr, "with 'not'");
 	}
 	| expr wedge expr {
-		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_wedge), $1, $3);
+		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_wedge), $1, $3, @1.first_line, @3.last_line);
 		RPT(expr, "with 'wedge'");
 	}
 	| expr vee expr {
-		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_vee), $1, $3);
+		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_vee), $1, $3, @1.first_line, @3.last_line);
 		RPT(expr, "with 'vee'");
 	}
 	| expr contain expr {
-		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_contain), $1, $3);
+		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_contain), $1, $3, @1.first_line, @3.last_line);
 		RPT(expr, "with 'contain'");
 	}
 	| expr dcontain expr {
-		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_dcontain), $1, $3);
+		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_dcontain), $1, $3, @1.first_line, @3.last_line);
 		RPT(expr, "with 'dcontain'");
 	}
 	| expr get expr {
-		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_get), $1, $3);
+		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_get), $1, $3, @1.first_line, @3.last_line);
 		RPT(expr, "with 'get'");
 	}
 	| expr dget expr {
-		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_dget), $1, $3);
+		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_dget), $1, $3, @1.first_line, @3.last_line);
 		RPT(expr, "with 'dget'");
 	}
 	| expr comma expr {
-		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_comma), $1, $3);
+		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_comma), $1, $3, @1.first_line, @3.last_line);
 		RPT(expr, "with comma");
 	}
 
 
 %%
+
+#include "amk_ast_def.h"
 
 #define MAX_NUM_THEOREM 100
 #define MAX_NUM_PART_OF_EXPR 100
