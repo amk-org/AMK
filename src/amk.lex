@@ -8,7 +8,7 @@
 #include <string.h>
 
 /* macros for debugging */
-#define DEBUG_FILE_PTR stderr
+#define DEBUG_FILE_PTR NULL /* stderr */
 #define RPTF(status, fmt, ...)  do {							\
 	if (DEBUG_FILE_PTR)											\
 		fprintf(DEBUG_FILE_PTR, "#\t[Lexer] " #status			\

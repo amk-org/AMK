@@ -17,6 +17,7 @@ extern int yylineno;
 /* error reporting function */
 int yyerror(void * addr_root, const char *p) {
 	fprintf(stderr, "Error at line %d: %s\n", yylineno, p);
+	exit(0);
 	return 1;
 }
 
@@ -157,9 +158,17 @@ proof_head: theorem_pref identifier colon new_line {
 			$$ = $2;
 			RPT(proof_head, "name is %s", $2);
 		  }
+		  | theorem_pref identifier new_line {
+			$$ = $2;
+			RPT(proof_head, "name is %s", $2);
+		  }
 
 proof_req: require colon new_line indent of_exprs exprs dedent {
 			$$ = new_ast_node(nd_proof_req, $5, $6, NULL, @1.first_line, @6.last_line - 1);
+			RPT(proof_req, "finished");
+		 }
+		 | require new_line indent of_exprs exprs dedent {
+			$$ = new_ast_node(nd_proof_req, $4, $5, NULL, @1.first_line, @6.last_line - 1);
 			RPT(proof_req, "finished");
 		 }
 
@@ -167,9 +176,17 @@ proof_con: conclude colon new_line indent exprs dedent{
 			$$ = $5;
 			RPT(proof_con, "finished");
 		 }
+		 | conclude new_line indent exprs dedent {
+			$$ = $4;
+			RPT(proof_con, "finished");
+		 }
 
 proof_body: proof colon new_line indent rich_exprs dedent {
 			$$ = $5;
+			RPT(proof_body, "finished");
+		  }
+		  | proof new_line indent rich_exprs dedent {
+			$$ = $4;
 			RPT(proof_body, "finished");
 		  }
 

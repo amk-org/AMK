@@ -17,13 +17,13 @@ theorem cencellation:
 	conclude:
 		c |- a
 
-theorem first_proof:
-	require:
+theorem first_proof
+	require
 		define a of statement
 		define b of statement
-	conclude:
+	conclude
 		a,not a,not b|-b
-	proof:
+	proof
 		a,not a,not b|-a -[belong] <aa>
 		a,not a,not b|-not (b -> a) -[belong] <bb>
 		a,not a,not b|-a -[theorem cencellation: <aa> <bb>] <cc>

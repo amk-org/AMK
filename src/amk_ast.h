@@ -16,7 +16,7 @@ const char str_set[] = "set\0";
 const char str_list[] = "list\0";
 
 /* macros for debugging */
-#define DEBUG_FILE_PTR stderr
+#define DEBUG_FILE_PTR NULL /* stderr */
 #define NAME "parser"
 #define RPT(status, fmt, ...)  do {							\
 	if (DEBUG_FILE_PTR)										\
