@@ -140,9 +140,9 @@ vee {return vee;}
 			else return right_bracket;
 		}
 
-\(		{return left_parren;}
+\(		{return left_paren;}
 
-\)		{return right_parren;}
+\)		{return right_paren;}
 
 [\n]+		{	last_tab = cur_tab; 
 			cur_tab = 0;

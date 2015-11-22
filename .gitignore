@@ -5,6 +5,7 @@ src/amk.tab.*
 src/amki
 src/tags
 src/*.swp
+src/ast_structure.log
 src/.DS_Store
 src/ast_structure.log
 src/example/*.o

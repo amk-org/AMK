@@ -45,7 +45,7 @@ int yyerror(void * addr_root, const char *p) {
 %token <ptr> import	theorem	axiom lemma require
 %token <ptr> conclude proof where define of 
 %token <ptr> left_bracket right_bracket
-%token <ptr> left_ref right_ref left_parren	right_parren
+%token <ptr> left_ref right_ref left_paren	right_paren
 %token <ptr> colon comma
 %token <ptr> set list
 %token <ptr> not vee wedge contain get dget dcontain
@@ -275,6 +275,10 @@ var: identifier {
 expr: var {
 		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_null), $1, NULL, @1.first_line, @1.last_line);
 		RPT(expr, "with single var %s", $1);
+	}
+	| left_paren expr right_paren {
+		$$ = $2;
+		RPT(expr, "with parentheses");
 	}
 	| not expr {
 		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_not), $2, NULL, @1.first_line, @2.last_line);
