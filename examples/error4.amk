@@ -212,4 +212,4 @@ theorem example26_19
 		a <-> b, b |- a <-> b -[belong] <6>
 		a <-> b, b |- a -[theorem contain_cancellation_right: <6> <5>] <7>
 		a <-> b |- b -> a -[theorem contain_introduction: <7>] <8>
-		a <-> b |- (a -> b) wedge (b -> a) -[theorem wedge_introduction: <4> <8>] <9>
+		a <-> b |- (a -> b) wedge (b -> a) -[theorem wedge_introduction: <4> <81>] <9>

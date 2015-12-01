@@ -7,7 +7,7 @@ theorem belong:
 	conclude:
 		a,b|-a
 
-theorem cencellation:
+theorem not_cancellation:
 	require:
 		define a of statement
 		define b of statement
@@ -17,16 +17,13 @@ theorem cencellation:
 	conclude:
 		c |- a
 
-theorem zhqc:
+theorem first_proof:
 	require:
 		define a of statement
 		define b of statement
 	conclude:
-		a vee b vee not b
-		a wedge b |-| c
+		a,not a, not b|-b
 	proof:
-		a |- b -[theorem t: <1> <2>] <1>
-		a -> b <2>
-		b |- a -[: <2>] <t3>
-		bs |- nsk -[t] <r>
-		c
+		a,not a,not b|-a -[belong] <aa>
+		a,not a,not b|-not a -[belong] <bb>
+		a, not a, not b |- b -[theorem not_cancellation: <aa> <bb>] <cc>

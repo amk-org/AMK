@@ -490,6 +490,13 @@ int check_require(int depth,int max_depth,struct ast_node* lables_pointer,struct
 {
 	if (depth>=max_depth) return 1;
 	int id=find_rich_expr_by_name((char*)lables_pointer->links[depth]);
+	
+	if (id==-1)
+	{
+		print_message(ERROR,"cannot find properly lable(s) by name",lables_pointer->location->first_line,lables_pointer->location->last_line);
+		return 0;
+	}
+
 	struct ast_node* pointer=rich_exprs[id].pointer;
 	struct ast_node* req_expr=req_exprs->links[depth];
 	//printf("string:%s id:%d \n",(char*)lables_pointer->links[depth],id);

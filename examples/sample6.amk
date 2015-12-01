@@ -1,0 +1,52 @@
+import logics.proposition
+
+theorem belong:
+	require:
+		define a of statement
+		define b of set[statement] 
+	conclude:
+		a, b |-a
+
+theorem not_cancellation:
+	require:
+		define a of statement
+		define b of statement
+		define c of set[statement]
+		not a, c |- b
+		not a, c |- not b
+	conclude:
+		c |- a
+
+theorem contain_cancellation:
+	require:
+		define a of statement
+		define b of statement
+		define c of set[statement]
+		c |- a -> b
+		c |- a
+	conclude:
+		c |- b
+
+theorem contain_introduction:
+	require:
+		define a of statement
+		define b of statement
+		define c of set[statement]
+		a, c |- b
+	conclude:
+		c |- a -> b
+
+theorem example26_12:
+	require:
+		define a of statement
+		define b of statement
+		define c of statement
+	conclude:
+		a -> b, b -> c |- a -> c
+	proof:
+		a -> b, b -> c, a |- a -> b -[belong] <1>
+		a -> b, b -> c, a |- a -[belong] <2>
+		a -> b, b -> c, a |- b -[theorem contain_cancellation: <1> <2>] <3>
+		a -> b, b -> c, a |- b -> c -[belong] <4>
+		a -> b, b -> c, a |- c -[theorem contain_cancellation: <4> <3>] <5>
+		a -> b, b -> c |- a -> c -[theorem contain_introduction: <5>] <6>

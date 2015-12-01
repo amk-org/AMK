@@ -5,26 +5,46 @@ theorem belong:
 		define a of statement
 		define b of set[statement] 
 	conclude:
-		a,b|-a
+		a, b |-a
 
-theorem cencellation:
+theorem vee_cancellation:
+	require:
+		define a of statement
+		define b of statement
+		define c of statement
+		define d of set[statement]
+		a, d |- c
+		b, d |- c
+	conclude:
+		a vee b, d |- c
+
+theorem vee_introduction_right:
 	require:
 		define a of statement
 		define b of statement
 		define c of set[statement]
-		not a,c |- b
-		not a,c |- not b
-	conclude:
 		c |- a
+	conclude:
+		c |- a vee b
 
-theorem first_proof
-	require
+theorem vee_introduction_left:
+	require:
 		define a of statement
 		define b of statement
-	conclude
-		a,not a,not b|-b
-	proof
-		a,not a,not b|-a -[belong] <aa>
-		a,not a,not b|-not (b -> a) -[belong] <bb>
-		a,not a,not b|-a -[theorem cencellation: <aa> <bb>] <cc>
+		define c of set[statement]
+		c |- a
+	conclude:
+		c |- b vee a
 
+theorem example26_18_2
+	require:
+		define a of statement
+		define b of statement
+	conclude:
+		b vee a |- a vee b
+	proof:
+		a |- a -[belong] <1>
+		a |- a vee b -[theorem vee_introduction_right: <1>] <2>
+		b |- b -[belong] <3>
+		b |- a vee b -[theorem vee_introduction_left: <3>] <4>
+		b vee a |- a vee b -[theorem vee_cancellation: <4> <2>] <5>
