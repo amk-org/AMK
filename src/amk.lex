@@ -217,7 +217,7 @@ vee {return vee;}
 			}	
 		}		
 
-[\s\t]*#[^\n]	{}
+[\s\t]*#[^\n]*	{}
 
 <<EOF>> {
 	RPTF(tab, "num : %d", last_tab);

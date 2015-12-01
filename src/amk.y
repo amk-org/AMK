@@ -127,10 +127,13 @@ proof_block: proof_head indent proof_req proof_con proof_body dedent {
 		   }
 
 theorem_pref: theorem {
-				/* nothing */
+				$$ = (char *) theorem_prefix;
 			}
 			| lemma {
-				/* nothing */
+				$$ = (char *) theorem_prefix+2;
+			}
+			| axiom {
+				$$ = (char *) theorem_prefix+4;
 			}
 
 ref_pref: {
@@ -155,12 +158,18 @@ ref_pref: {
 		}
 
 proof_head: theorem_pref identifier colon new_line {
-			$$ = $2;
+			$$ = malloc(strlen($2)+3);
+			strcpy($$, $2);
+			strcpy($$+strlen($2)+1, $1);
 			RPT(proof_head, "name is %s", $2);
+			free($2);
 		  }
 		  | theorem_pref identifier new_line {
-			$$ = $2;
+			$$ = malloc(strlen($2)+3);
+			strcpy($$, $2);
+			strcpy($$+strlen($2)+1, $1);
 			RPT(proof_head, "name is %s", $2);
+			free($2);
 		  }
 
 proof_req: require colon new_line indent of_exprs exprs dedent {

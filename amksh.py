@@ -10,16 +10,55 @@ def enter():
     subprocess.call(["(cd src; make)"], shell=True)
     print " done."
 
+def simple_line(line):
+    return line.split("#")[0].rstrip()
+
+def import_file(src_fname, dst_file):
+    src_filename = "modules/" \
+        + src_fname.replace(".", "/").replace("\n", "").replace("\r", "") \
+        + ".mamk"
+    f = open(src_filename, "r")
+    lines = f.readlines()
+    f.close()
+
+    flag = 0
+    for line in lines:
+        if simple_line(line) == "AXIOM":
+            flag = 1
+        elif simple_line(line) == "THEOREM":
+            flag = 2
+        elif flag == 1:
+            dst_file.write(line)
+
 def check_file(filename):
     print "==================="
+
     if not os.path.isfile(filename):
         print "%s is not a valid file!" % (filename)
         return
+
     print "checking file `" + filename + "` ...",
+
     codefile = open(filename, "r")
-    result = subprocess.check_output(["src/amki"], stdin=codefile, stderr=subprocess.STDOUT)
+    codelines = codefile.readlines()
     codefile.close()
+
+    tmpfile = open(".amk/curr.amk", "w")
+
+    for line in codelines:
+        if line.split(" ")[0] == "import":
+            import_file(line.split(" ")[1], tmpfile)
+        else:
+            tmpfile.write(line)
+
+    tmpfile.close()
+    tmpfile = open(".amk/curr.amk", "r")
+    
+    result = subprocess.check_output(["src/amki"], stdin=tmpfile, stderr=subprocess.STDOUT)
+
     print " done\n"
+    tmpfile.close()
+    
     print result
     print "==================="
 

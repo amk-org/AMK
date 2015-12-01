@@ -92,6 +92,9 @@ const char * node_type_names[] = {
 	"nd_type"
 };
 
+/* theorem prefix type */
+const char theorem_prefix[] = "t\0l\0a\0";
+
 /* node in AST */
 struct ast_node {
 	/* info of this node */
