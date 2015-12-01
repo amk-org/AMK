@@ -14,8 +14,8 @@ theorem belong2:
 		define c of statement
 		define d of statement
 	conclude:
-		a,b,c|-c
+		a,b,c|-b
 	proof:
-		a,b,c|-a -[belong] <1>
-		a,b,(a wedge b) wedge c|- (a wedge b) wedge c -[belong] <2>
+		a,b,c|-a -[belong1] <1>
 		a,b,c|-c -[belong] <2>
+		a,b,c|-b -[belong] <2>

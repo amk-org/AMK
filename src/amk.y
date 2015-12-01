@@ -340,6 +340,26 @@ expr: var {
 #define MAX_REQ_STATE 100
 #define MAX_NUM_RICH_EXPR 100
 
+#define SUCCESS 0
+#define ERROR 1
+#define WARNING 2
+
+void print_message(int type,const char* message,int first_line,int last_line)
+{
+	switch (type)
+	{
+		case SUCCESS:
+			printf("[correct %d:%d] %s\n",first_line,last_line,message);
+			break;
+		case ERROR:
+			printf("[error] %d:%d] %s\n",first_line,last_line,message);
+			break;
+		default:
+			printf("[warning] %d:%d] %s\n",first_line,last_line,message);
+			break;
+	}
+}
+
 struct theorem_node
 {
 	char* name;
@@ -374,6 +394,8 @@ struct rich_expr_node rich_exprs[MAX_NUM_RICH_EXPR];
 int theorem_total=0;
 int require_num=0;
 int rich_exprs_num=0;
+
+int program_success=1;
 
 int find_theorem_by_name(char* s)
 {
@@ -595,7 +617,6 @@ void translate(struct ast_node* node)
 
 			for (int i=0;i<node->num_links;i++)
 			{
-				printf("#	[translator] program: begin to verify %dth line of proof body\n",i+1);
 				translate(node->links[i]);
 
 				rich_exprs[rich_exprs_num].name=(char*)node->links[i]->links[1];
@@ -614,19 +635,31 @@ void translate(struct ast_node* node)
 
 			int res=search_same_exprs(con_expr,last_expr);
 			if (res)
-				printf("#	[translator] program: (correct) last line matches its conclusion\n");
+				print_message(SUCCESS,"last line matches its conclusion",node->location->first_line,node->location->last_line);
 			else
-				printf("#	[translator] program: (incorrect) last line does not match its conclusion\n");
+			{
+				print_message(ERROR,"last line does not match its conclusion",node->location->first_line,node->location->last_line);
+				program_success=0;
+			}
 
 			break;
 		case nd_rich_expr:
-			//printf("%s\n",(char*)node->links[0]->data);
+			/* deal with each line in the proof body */
+
+			/* find theorem by name */
 			id=find_theorem_by_name(node->links[0]->data);
+			if (id==-1)
+			{
+				print_message(ERROR,"cannot find properly theorem by name",node->location->first_line,node->location->last_line);
+				program_success=0;
+				break;
+			}
+
 			struct ast_node* req=table_theorem[id].node_require;
 			struct ast_node* con=table_theorem[id].node_conclude;
 			struct ast_node* pointer;
 
-			/* deal with of_exprs */
+			/* deal with of_exprs in requirement of theorem */
 			pointer=req->links[0];
 			int state_req_num=0;
 			int req_num=0;
@@ -650,7 +683,7 @@ void translate(struct ast_node* node)
 				
 			}
 
-			/* deal with sub_expr */
+			/* deal with sub_expr in requirement of theorem */
 			pointer=node->data;
 			int sub_expr_num=0;
 			if ((enum operators)pointer->data==op_get)
@@ -741,9 +774,12 @@ void translate(struct ast_node* node)
 			while (next_possible_comb(sub_expr_num,expr_hash));
 
 			if (success)
-				printf("#	[translator] program: (correct) match conclusion part and requirement part\n");
+				print_message(SUCCESS,"match conclusion part and requirement part",node->location->first_line,node->location->last_line);
 			else
-				printf("#	[translator] program: (incorrect) cannot match conclusion part\n");
+			{
+				print_message(ERROR,"cannot match conclusion part",node->location->first_line,node->location->last_line);
+				program_success=0;
+			}
 			break;
 		case nd_ref_body:
 			break;
@@ -770,5 +806,7 @@ int main()
 	/* perform Syntax-Directed Translation*/
 	translate(root);
 	
+	if (program_success)
+		print_message(SUCCESS,"program pass the varification successfully",root->location->first_line,root->location->last_line);
 	return 0;
 }

@@ -17,5 +17,17 @@ theorem belong2:
 		a,b,c|-c
 	proof:
 		a,b,c|-a -[belong] <1>
-		a,b,c|-d -[belong] <2>
+		a,b,a wedge b|- a wedge b -[belong] <2>
 		a,b,c|-c -[belong] <2>
+
+theorem belong3:
+	require:
+		define x of statement
+		define y of statement
+		define z of statement
+		define p of statement
+	conclude:
+		x,y,z|-y
+	proof:
+		x,y,z|-y -[belong2] <2>
+

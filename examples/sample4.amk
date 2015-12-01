@@ -7,15 +7,23 @@ theorem belong:
 	conclude:
 		a,b|-a
 
-theorem belong2:
+theorem not_cancellation:
 	require:
 		define a of statement
 		define b of statement
-		define c of statement
-		define d of statement
+		define c of set[statement]
+		not a,c |- b
+		not a,c |- not b
 	conclude:
-		a,b,c|-c
+		c |- a
+
+theorem first_proof:
+	require:
+		define a of statement
+		define b of statement
+	conclude:
+		a,not a, not b|-b
 	proof:
-		a,b,c|-a -[belong] <1>
-		a,b,a wedge b|- a wedge b -[belong] <2>
-		a,b,c|-c -[belong] <2>
+		a,not a,not b|-a -[belong] <aa>
+		a,not a,not b|-not a -[belong] <bb>
+		a, not a, not b |- b -[theorem not_cancellation: <aa> <bb>] <cc>

@@ -1,13 +1,21 @@
 import logics.proposition
 
-theorem T:
-	require: 
-		a, b of statement
-	conclude: 
-		a -> b |- a -> (a wedge b)
+theorem belong:
+	require:
+		define a of statement
+		define b of set[statement] 
+	conclude:
+		a,b|-a
+
+theorem belong2:
+	require:
+		define a of statement
+		define b of statement
+		define c of statement
+		define d of statement
+	conclude:
+		a,b,c|-b
 	proof:
-		a -> b, a |- a [axiom belong] <1>
-		a -> b, a |- a -> b <2> # using of axiom can be omitted
-		a -> b, a |- b [axiom ->- : 1, 2] <t3>
-		a -> b, a |- a wedge b [:1, t3] <4>
-		a -> b |- a -> (a wedge b) [4
+		a,b,c|-a -[belong] <1>
+		a,b,c|-c -[belong] <2>
+		a,b,c|-b -[belong] <2>
