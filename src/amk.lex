@@ -65,8 +65,20 @@ theorem {
 	}
 	RPT(theorem);
 	return theorem;}
-axiom {fake_newline = 0;return axiom;}
-lemma {fake_newline = 0;return lemma;}
+axiom {fake_newline = 0;
+	if(last_tab != 0 && left == 0){
+		last_tab --;
+		yyless(0);
+		//printf("dedent in theorem \n ");
+		return dedent;
+	}return axiom;}
+lemma {fake_newline = 0;
+	if(last_tab != 0 && left == 0){
+		last_tab --;
+		yyless(0);
+		//printf("dedent in theorem \n ");
+		return dedent;
+	}return lemma;}
 require {fake_newline = 0;RPT(require);
 		return require;
 		}
