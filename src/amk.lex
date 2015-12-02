@@ -34,7 +34,7 @@ int left = 0;
 int last_tab = 0;
 int cur_tab = 0;
 int tmp_tab = 0;
-
+int fake_newline = 1;
 /* handle locations */
 int yycolumn = 1;
 
@@ -46,14 +46,16 @@ int yycolumn = 1;
 %}
 
 %%
-of {return of;}
-set {return set;}
-list {return list;}
-define {return define;}
+of {fake_newline = 0; return of;}
+set {fake_newline = 0;return set;}
+list {fake_newline = 0;return list;}
+define {fake_newline = 0;return define;}
 import {
+		fake_newline = 0;
 		RPT(import);
 	return import;}
-theorem {	
+theorem {
+	fake_newline = 0;	
 	//printf("cur %d last %d\n", cur_tab, last_tab);
 	if(last_tab != 0 && left == 0){
 		last_tab --;
@@ -63,36 +65,39 @@ theorem {
 	}
 	RPT(theorem);
 	return theorem;}
-axiom {return axiom;}
-lemma {return lemma;}
-require {RPT(require);
+axiom {fake_newline = 0;return axiom;}
+lemma {fake_newline = 0;return lemma;}
+require {fake_newline = 0;RPT(require);
 		return require;
 		}
 conclude {
+	fake_newline = 0;
 	RPT(conclude);
 	return conclude;}
-proof {return proof;}
-where	{return where;}
-not {return not;}
-wedge {return wedge;}
-vee {return vee;}
+proof {
+	fake_newline = 0;
+	return proof;}
+where	{fake_newline = 0;return where;}
+not {fake_newline = 0;return not;}
+wedge {fake_newline = 0;return wedge;}
+vee {fake_newline = 0;return vee;}
 
-[:]		{
+[:]		{fake_newline = 0;
 	RPT(colon);
 
 	return colon;
 }
 
-[,]	{
+[,]	{fake_newline = 0;
 	return comma;
 }
-[a-z0-9A-Z_-~]*\.[a-z0-0A-Z_.-~]*		{
+[a-z0-9A-Z_-~]*\.[a-z0-0A-Z_.-~]*		{fake_newline = 0;
 												yylval.str = malloc(strlen(yytext) + 1);
 												strcpy(yylval.str,yytext); 
 												return file_name;
 										}
 
-[a-zA-Z_][a-zA-Z0-9_]*		{
+[a-zA-Z_][a-zA-Z0-9_]*		{fake_newline = 0;
 									yylval.str = malloc(strlen(yytext) + 1);
 									strcpy(yylval.str,yytext);
 									//printf("lexer found iden %s\n",yylval.str);
@@ -100,22 +105,22 @@ vee {return vee;}
 							}
 
 
-\|- {
+\|- {fake_newline = 0;
 	return get;
 }
-\|-\| {
+\|-\| {fake_newline = 0;
 	RPT(dget);
 	return dget;
 }
 
--> {
+-> {fake_newline = 0;
 	return contain;
 }
-\<-\> {
+\<-\> {fake_newline = 0;
 	return dcontain;
 }
 
-\<[a-zA-Z0-9_]+\>		{
+\<[a-zA-Z0-9_]+\>		{fake_newline = 0;
 	RPT(label);
 	yylval.str = malloc(strlen(yytext));
 						memcpy(yylval.str,yytext + 1, strlen(yytext) - 2);
@@ -123,45 +128,48 @@ vee {return vee;}
 						return label;
 				}
 
-\[		{ 
+\[		{ fake_newline = 0;
 		return left_bracket;
 	}
 
--\[		{ 
+-\[		{ fake_newline = 0;
 	RPT(left_ref);
 	left++;
 	return left_ref;
 }
 
-\]		{if(left){
+\]		{fake_newline = 0;if(left){fake_newline = 0;
 			left--;
 			return right_ref;
 			}			
 			else return right_bracket;
 		}
 
-\(		{return left_paren;}
+\(		{fake_newline = 0;return left_paren;}
 
-\)		{return right_paren;}
+\)		{fake_newline = 0;return right_paren;}
 
 ([\s\t ]*(#[^\n]*)*[\n])+		{	last_tab = cur_tab; 
 			cur_tab = 0;
 			yycolumn = 1;
 			//printf("\nnext line : line no. %d\n", yylineno);
 			RPT(new_line);
-			return new_line;
+			if(fake_newline == 0){
+				fake_newline = 1;
+				return new_line;
+			}
 		}
 
-[ ]+	{
+[ ]+	{fake_newline = 0;
 			//printf("waste space\n");
 		}	
 
 
-[\t][\t]		{	cur_tab++;
+[\t][\t]		{	fake_newline = 0;cur_tab++;
 					unput('\t');
 		}
 
-[\t]		{
+[\t]		{fake_newline = 0;
 			/*printf("catch tab now!\n");
 			cur_tab++;
 			if(cur_tab > last_tab){
