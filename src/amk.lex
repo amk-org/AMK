@@ -144,7 +144,7 @@ vee {return vee;}
 
 \)		{return right_paren;}
 
-[\n]+		{	last_tab = cur_tab; 
+([\s\t ]*(#[^\n]*)*[\n])+		{	last_tab = cur_tab; 
 			cur_tab = 0;
 			yycolumn = 1;
 			//printf("\nnext line : line no. %d\n", yylineno);
@@ -156,10 +156,6 @@ vee {return vee;}
 			//printf("waste space\n");
 		}	
 
-[\s\t]*\n	{
-	yycolumn = 1;
-	RPT(blankline);
-}
 
 [\t][\t]		{	cur_tab++;
 					unput('\t');
@@ -217,7 +213,6 @@ vee {return vee;}
 			}	
 		}		
 
-[\s\t]*#[^\n]*	{}
 
 <<EOF>> {
 	RPTF(tab, "num : %d", last_tab);

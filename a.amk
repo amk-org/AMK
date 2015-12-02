@@ -1,22 +1,4 @@
-import logics.proposition  # asfsalkfjsakl
-		# asfjaslkfaskl	
-	#afklasjlka 
-#asflkj a
-	#
-#
-
-#
-#		
-#		asf 
-#		###as #
-	# # #
-#
-#		
-   #	#
-	   #   #
-#   # asfa asfsafasfjaslg kj lJ#KLlk lk#KJL#Jlk3 lk              #\n
-#   alkf  
-	 #	 #
+import logics.proposition
 
 theorem belong:
 	require:
@@ -28,7 +10,7 @@ theorem belong:
 theorem vee_cancellation:
 	require:
 		define a of statement
-		define b of statement # alkjflkasj lk
+		define b of statement
 		define c of statement
 		define d of set[statement]
 		a, d |- c
@@ -39,7 +21,7 @@ theorem vee_cancellation:
 theorem vee_introduction_right:
 	require:
 		define a of statement
-		define b of statement   # asf asklfj askl 
+		define b of statement
 		define c of set[statement]
 		c |- a
 	conclude:
@@ -48,7 +30,7 @@ theorem vee_introduction_right:
 theorem vee_introduction_left:
 	require:
 		define a of statement
-		define b of statement    # askfjsakl fjlak
+		define b of statement
 		define c of set[statement]
 		c |- a
 	conclude:
