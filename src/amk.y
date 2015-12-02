@@ -619,13 +619,25 @@ void translate(struct ast_node* node)
 			break;
 		case nd_proof_block:
 			table_theorem[theorem_total].name=(char*)node->data;
-			//printf("theorem: %s\n",(char*)node->data);
+
+			char* type=((char*)node->data)+strlen((char*)node->data)+1;
+			//printf("theorem: %s\n",(char*)type);
 			table_theorem[theorem_total].type=0;
 			table_theorem[theorem_total].node_require=node->links[0];
 			table_theorem[theorem_total].node_conclude=node->links[1];
 			theorem_total++;
-			if (node->links[2]!=NULL)
-				translate(node->links[2]);
+
+			if (strcmp(type,"a")!=0)
+			{
+				if (node->links[2]!=NULL)
+					translate(node->links[2]);
+				else
+				{
+					print_message(ERROR,"lacking proof part",node->location->first_line,node->location->last_line);
+					program_success=0;
+				}
+			}
+
 			break;
 		case nd_rich_exprs:
 			
