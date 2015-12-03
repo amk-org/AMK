@@ -14,9 +14,12 @@ int yylex();
 /* line number variable */
 extern int yylineno;
 
+/* lineno offset */
+static int lineoff = 0; 
+
 /* error reporting function */
 int yyerror(void * addr_root, const char *p) {
-	fprintf(stderr, "Error at line %d: %s\n", yylineno, p);
+	fprintf(stderr, "Error at line %d: %s\n", yylineno - lineoff, p);
 	exit(0);
 	return 1;
 }
@@ -819,11 +822,14 @@ void translate(struct ast_node* node)
 }
 
 /* FUNCTION DEFINITIONS */
-int main()
+int main(int argc, char ** argv)
 {
+
+	if (argc > 1)
+		lineoff = atoi(argv[1]);
+
 	/* parse to get AST */
 	yyparse(&root);
-	//printf("%x\n", (unsigned int)root);
 
 	/* print AST structure */
 	FILE * ast_log = fopen("ast_structure.log", "w");
