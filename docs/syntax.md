@@ -30,9 +30,9 @@ The union for data passing during **yylex()** is defined as follows.
 ### Explanation for Node Types
 For differnet node types, we define the member variables as the following table indicates.
 
-| node_type | data| num_links | links
----|---|---|---|---
-nd_program  |NULL|2|import\_part, proof\_part
+ node\_type | data| num\_links | links
+---|---|---|---|---|
+nd\_program  |NULL|2|import\_part, proof\_part
 nd\_import\_part  |NULL|n|import\_expr
 nd\_proof\_part  |NULL|n|proof\_block
 nd\_import\_expr  |(char *) str|0|NULL
