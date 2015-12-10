@@ -1,5 +1,5 @@
 # AMK Language Design: Overview
-Drafted by *ssy* @ Oct, 2015
+Drafted by *Shuyang Shi* @ Oct, 2015
 ***
 
 下面是关于AMK语言的总述，会出现一些例子，这些例子默认来自于古典命题逻辑领域。具体各领域的内容在各自的说明文件中查阅。
