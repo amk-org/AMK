@@ -1,4 +1,9 @@
 
+
+# asfas f
+
+
+
 	# base axioms of "N"
 
 axiom belong:
@@ -136,6 +141,28 @@ axiom contain_introduction:
 
 
 
+   # asfas 
+
+
+		# asfjaslkfaskl	
+	#afklasjlka 
+#asflkj a
+	#
+#
+
+#
+#		
+#		asf 
+#		###as #
+	# # #
+#
+#		
+   #	#
+	   #   #
+#   # asfa asfsafasfjaslg kj lJ#KLlk lk#KJL#Jlk3 lk              #\n
+#   alkf  
+	 #	 #
+
 theorem belong:
 	require:
 		define a of statement
@@ -146,7 +173,7 @@ theorem belong:
 theorem vee_cancellation:
 	require:
 		define a of statement
-		define b of statement
+		define b of statement # alkjflkasj lk
 		define c of statement
 		define d of set[statement]
 		a, d |- c
@@ -157,7 +184,7 @@ theorem vee_cancellation:
 theorem vee_introduction_right:
 	require:
 		define a of statement
-		define b of statement
+		define b of statement   # asf asklfj askl 
 		define c of set[statement]
 		c |- a
 	conclude:
@@ -166,7 +193,7 @@ theorem vee_introduction_right:
 theorem vee_introduction_left:
 	require:
 		define a of statement
-		define b of statement
+		define b of statement    # askfjsakl fjlak
 		define c of set[statement]
 		c |- a
 	conclude:

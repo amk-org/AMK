@@ -1,0 +1,88 @@
+.contest-register-step2-contestant-select-block{
+    padding:10px 40px 20px 40px;
+    margin-bottom:40px;
+    background-color:#f7f7f7;
+}
+
+.contest-register-step2-contestant-select-block .container-fluid .row .col-lg-4{
+    text-align:right;
+    color:#999;
+}
+
+.contest-register-step2-contestant-select-block-photo{
+    text-align: center;
+}
+
+.contest-register-step2-contestant-select-block-photo button{
+    margin-top:10px;
+}
+
+.contest-register-step2-contestant-select-block .container-fluid .row {
+    margin-top:5px;
+    margin-bottom:10px;
+}
+
+.contest-register-step2-contestant-name{
+    cursor:pointer;
+    display:inline-block;
+    border-radius:3px;
+    padding:4px;
+}
+
+.contest-register-step2-contestant-name:hover{
+    background-color:rgba(255,180,160,0.9);
+}
+
+.contest-register-step2-contestant-name.active{
+    background-color:rgba(255,180,160,0.9);
+}
+
+.contest-register-item-selected-table-right-bottom-button{
+    padding-left:0.5px;font-size:22px;
+    line-height:22px;text-align:center;
+    position:relative;
+    top:10px;
+    left:10px;
+    width:20px;height:20px;background-color:#ddd;border-radius:10px;color:#fff;float:right;
+    overflow:visible;
+    cursor:pointer;
+}
+
+.contest-register-item-selected-table-right-bottom-button span{
+    display:none;
+    position:absolute;
+    color: #666;
+    font-size: 14px;
+    left: -30px;
+    top: -1px;
+
+}
+
+.contest-register-item-selected-table-right-bottom-button:hover{
+    background-color:indianred;
+}
+
+.contest-register-item-selected-table-right-bottom-button:hover span{
+    display:block;
+}
+
+.contest-register-add-item-tr{
+    cursor:default  ;
+}
+
+.contest-register-add-item-tr td:first-child i{
+    font-size:20px;
+    color:#eee;
+}
+
+.contest-register-add-item-tr td:first-child i:hover{
+    color:yellowgreen;
+}
+
+.contest-register-add-item-tr{
+}
+
+.contest-register-add-item-tr.active td:first-child i {
+    font-size:25px;
+    color:yellowgreen;
+}
