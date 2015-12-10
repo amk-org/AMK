@@ -1,23 +1,19 @@
-# AMK Brief
+# AMK 简介
+AMK (Anti-Min-Ke) 是为书写和检查证明的人们而设计、实现的程序设计语言。设计的目标是：
+
+- 标准化证明书写；
+- 自动检查证明的正误；
+- 提供在线的编辑器提供Web服务做到上面两点；
+- 做一定程度上的（半）自动证明。
+
 AMK (Anti-Min-Ke) is a home-made language for people writing and checking mathematical proofs. It aims to
 - standardize proof writings, 
 - automatically check the correctness of proofs, and
 - (future) do semi-automatically proof.
 
-# Documents of AMK Project
-Please refer to the following links to documents:
+## 项目源码链接
 
-- Project Page: [AMK Project](https://bsnsk.github.io/AMK)
+从 [Github](https://github.com/bsnsk/AMK) 访问该项目。
 
-- [Schedule and Work Allocation](#schedule)
-
-- Design Documents
-
-	- [AMK Language Design: Overview](docs/language_design.md)
-
-	- [AMK Language Design: Propositional logics](docs/ld_propositional_logics.md)
-
-	- [Lexical Analysis](docs/lex.md)
-	
-	- [Syntactical Analysis & AST](docs/syntax.md)
+Visit the project at [Github](https://github.com/bsnsk/AMK)
 
