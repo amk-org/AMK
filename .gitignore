@@ -16,3 +16,5 @@ src/example_cpp/*.o
 src/example_cpp/lex.yy.c
 src/example_cpp/amk.tab.*
 src/example_cpp/mycalc
+ast_structure.log
+.amk/*
