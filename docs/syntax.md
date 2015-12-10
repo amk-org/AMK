@@ -1,5 +1,5 @@
 # Documentation: Syntax
-By ssy @ Nov 2015
+By *Shuyang Shi* @ Nov 2015
 ***
 
 ## Data Union
