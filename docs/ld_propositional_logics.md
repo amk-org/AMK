@@ -1,5 +1,5 @@
 # AMK Language Design: "Mathematical Logics" Module
-Drafted by *ssy* @ Oct, 2015
+Drafted by *Shuyang Shi* @ Oct, 2015
 ***
 
 ## 前言
