@@ -498,6 +498,12 @@ int search_diff_exprs(struct ast_node* p1,struct ast_node* p2,int req_num)
 int check_require(int depth,int max_depth,struct ast_node* lables_pointer,struct ast_node* req_exprs,int req_of_num)
 {
 	if (depth>=max_depth) return 1;
+	if (strcmp("x",(char*)lables_pointer->links[depth])==0)
+	{
+		printf("deal with <?>\n");
+
+		/* insert the auto-proof code */
+	}
 	int id=find_rich_expr_by_name((char*)lables_pointer->links[depth]);
 	
 	if (id==-1)
