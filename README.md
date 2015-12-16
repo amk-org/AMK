@@ -1,79 +1,25 @@
-# AMK Brief
+# AMK 简介
+AMK (Anti-Min-Ke) 是为书写和检查证明的人们而设计、实现的程序设计语言。设计的目标是：
+
+- 标准化证明书写；
+- 自动检查证明的正误；
+- 提供在线的编辑器提供Web服务做到上面两点；
+- 做一定程度上的（半）自动证明。
+
 AMK (Anti-Min-Ke) is a home-made language for people writing and checking mathematical proofs. It aims to
 - standardize proof writings, 
 - automatically check the correctness of proofs, and
 - (future) do semi-automatically proof.
 
-# Documents of AMK Project
-Please refer to the following links to documents:
+## 具体实现领域
 
-- Project Page: [AMK Project](https://bsnsk.github.io/AMK)
+作为一学期的课程项目，我们打算做数理逻辑方面的内容，不失一般性地实现该领域下的功能，之后再考虑拓展领域。
 
-- [Schedule and Work Allocation](#schedule)
+As a course project, we decided to implement AMK in the area of Mathematical Logics (propositional logics). Later it can be extended to other areas of mathematics.
 
-- Design Documents
+## 项目源码链接
 
-	- [AMK Language Design: Overview](docs/language_design.md)
+从 [Github](https://github.com/bsnsk/AMK) 访问该项目。
 
-	- [AMK Language Design: Propositional logics](docs/ld_propositional_logics.md)
+Visit the project at [Github](https://github.com/bsnsk/AMK)
 
-	- [Lexical Analysis](docs/lex.md)
-	
-	- [Syntactical Analysis & AST](docs/syntax.md)
-
-- Code Progress Documents
-	
-	- [src/README](src/README.md)
-
-<h1 id="schedule"> Schedule and Work Allocation</h1>
-
-## Current Status: Nov 20  -- Dec 3 : Error Reporting
-
-- Syntax Refinement: bsnsk
-	- Error Reporting System
-	- Support for '(' ')'
-	- Storage of Line Number in AST Nodes
-
-- Shell to implement modules: bsnsk
-
-- Translator Refinement: zhqc
-	- Debug
-	- More Complex Examples
-
-- Lexer Comments : sanzunonyasama
-- Web Libraries Investigation: sanzunonyasama
-
-## Future Schedule
-
-- Further Support
-	- Contact Mr. Wang
-- Web Interface
-
-## Work done
-
-### Oct 18 -- Oct 25 : language design
-
-- Language design: bsnsk
-- Tool and stage investigation: sanzunonyasama
-- Coq investigation: zhqc
-
-### Oct 25 -- Nov 1 : lexical analysis
-
-- Lexical analysis using flex: sanzunonyasama
-- Syntactical analysis draft: zhqc
-- Investigation (Bison vs ANTLR, feature and usage): bsnsk
-
-### Nov 1 -- Nov 12 : syntactical analysis
-
-- Fix bugs and write doc for lexical part: sanzunonyasama
-- Syntactical analysis and build AST: bsnsk
-- Design Syntax-directed translation and write doc for that: zhqc
-
-### Nov 12 -- Nov 18: (First demo) Syntax-directed translation
-
-- Write doc for syntactical part: bsnsk
-- Syntax-directed translation: zhqc
-- Prepare slides for interim report: sanzunonyasama
-
-### Nov 19 : Mid-Term Report
-- Mid-Term Report

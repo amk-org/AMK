@@ -22,6 +22,7 @@ def import_file(src_fname, dst_file):
     f.close()
 
     flag = 0
+    totline = 0
     for line in lines:
         if simple_line(line) == "AXIOM":
             flag = 1
@@ -29,6 +30,8 @@ def import_file(src_fname, dst_file):
             flag = 2
         elif flag == 1:
             dst_file.write(line)
+            totline += 1
+    return totline
 
 def check_file(filename):
     print "==================="
@@ -45,16 +48,17 @@ def check_file(filename):
 
     tmpfile = open(".amk/curr.amk", "w")
 
+    lineoff = 0
     for line in codelines:
         if line.split(" ")[0] == "import":
-            import_file(line.split(" ")[1], tmpfile)
+            lineoff += import_file(line.split(" ")[1], tmpfile) - 1
         else:
             tmpfile.write(line)
 
     tmpfile.close()
     tmpfile = open(".amk/curr.amk", "r")
     
-    result = subprocess.check_output(["src/amki"], stdin=tmpfile, stderr=subprocess.STDOUT)
+    result = subprocess.check_output(["src/amki", str(lineoff)], stdin=tmpfile, stderr=subprocess.STDOUT)
 
     print " done\n"
     tmpfile.close()

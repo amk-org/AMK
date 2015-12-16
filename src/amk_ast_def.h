@@ -279,8 +279,8 @@ struct ast_node *new_ast_node(enum node_types node_type, void *arg, void *arg2, 
 	}
 	if (re) {
 		re->location = malloc(sizeof(struct YYLTYPE));
-		re->location->first_line = flno;
-		re->location->last_line = llno;
+		re->location->first_line = flno - lineoff;
+		re->location->last_line = llno - lineoff;
 	}
 	return re;
 }

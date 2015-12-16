@@ -1,28 +1,6 @@
 # AMK Language Design: Overview
-Drafted by *ssy* @ Oct, 2015
+Drafted by *Shuyang Shi* @ Oct, 2015
 ***
-
-<link rel="stylesheet" href="http://yandex.st/highlightjs/6.2/styles/googlecode.min.css">
- 
-<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
-<script src="http://yandex.st/highlightjs/6.2/highlight.min.js"></script>
- 
-<script>hljs.initHighlightingOnLoad();</script>
-<script type="text/javascript">
- $(document).ready(function(){
-      $("h2,h3,h4,h5,h6").each(function(i,item){
-        var tag = $(item).get(0).localName;
-        $(item).attr("id","wow"+i);
-        $("#category").append('<a class="new'+tag+'" href="#wow'+i+'">'+$(this).text()+'</a></br>');
-        $(".newh2").css("margin-left",0);
-        $(".newh3").css("margin-left",20);
-        $(".newh4").css("margin-left",40);
-        $(".newh5").css("margin-left",60);
-        $(".newh6").css("margin-left",80);
-      });
- });
-</script>
-<div id="category"></div>
 
 下面是关于AMK语言的总述，会出现一些例子，这些例子默认来自于古典命题逻辑领域。具体各领域的内容在各自的说明文件中查阅。
 
@@ -223,40 +201,3 @@ AMK大小写敏感，内置关键字等统一用小写。推荐用户使用小�
 
 支持各模块类型的高亮插件、自动补全插件后期可以补上。
 
-## 其它解释器语法
-### 运行：amki
-在终端调用amki进入解释器。例如
-	
-	$ amki
-	welcome to amk interpreter!
-	>
-	
-
-### 装载：source *file*
-source 用以装载源文件。例如
-
-	$ amki 
-	welcome to amki interpreter!
-	> source A.amk
-	source code loaded successfully!
-	>
-	
-### 检查：check *file*
-check 用以检查定理／引理的正确性。例如
-
-	$ amki 
-	welcome to amki interpreter!
-	> source A.amk
-	source code loaded successfully!
-	> check A
-	Proof for theorem A is not correct!
-		@ line 10: conclude a -> b
-	> quit
-	
-### 检查文件: amki *file*
-可以使用解释器对文件中的证明逐个检查。例如
-
-	$ amki A.amk
-	welcome to amk interpreter!
-	checked all theorems and lemmas, they are all correct!
-	congratulations!
