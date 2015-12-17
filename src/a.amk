@@ -34,22 +34,7 @@ theorem belong:
 	conclude:
 		a,b|-a
 
-<<<<<<< HEAD
 theorem not_cancellation:
-=======
-theorem vee_cancellation:
-	require:
-		define a of statement
-		define b of statement # alkjflkasj lk
-		define c of statement
-		define d of set[statement]
-		a, d |- c
-		b, d |- c
-	conclude:
-		a vee b, d |- c
-
-theorem vee_introduction_right:
->>>>>>> origin/master
 	require:
 		define a of statement
 		define b of statement   # asf asklfj askl 
@@ -57,16 +42,6 @@ theorem vee_introduction_right:
 		not a,c |- b
 		not a,c |- not b
 	conclude:
-<<<<<<< HEAD
-=======
-		c |- a vee b
-
-theorem vee_introduction_left:
-	require:
-		define a of statement
-		define b of statement    # askfjsakl fjlak
-		define c of set[statement]
->>>>>>> origin/master
 		c |- a
 
 theorem first_proof:
