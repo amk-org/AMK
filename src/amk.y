@@ -351,6 +351,29 @@ expr: var {
 /* include header file for Translator */
 #include "amk_translator.h"
 
+void print(struct ast_node* node)
+{
+	FILE *fp=fopen("out.tex","w");
+	fprintf(fp,"\\documentclass[11pt]{article}\n");
+	fprintf(fp,"\\newtheorem{theorem}{Theorem}\n");
+	fprintf(fp,"\\def\\turn{\\vdash}\n");
+	fprintf(fp,"\\title{\\textbf{\\LaTeX\\ for Logic}}\n");
+	fprintf(fp,"\\author{AMK}\n");
+	fprintf(fp,"\\begin{document}\n");
+	fprintf(fp,"\\maketitle\n");
+	fprintf(fp,"\\begin{theorem}[fist proof] $ a, \\neg a, \\neg b \\turn b $.\\\\\n");
+	fprintf(fp,"$(1)a, \\neg a, \\neg b \\turn b \\hfill belong $\\\\\n");
+	fprintf(fp,"$(2)a, \\neg a, \\neg b \\turn \\neg a \\hfill belong $\\\\\n");
+	fprintf(fp,"$(3)a, \\neg a, \\neg b \\turn b \\hfill not \\_ cancellation (1)(2) $\\\\\n");
+	fprintf(fp,"\\end{theorem}\n");
+	fprintf(fp,"\\begin{theorem}[second proof] $ a, \\neg a, \\neg b \\turn b $.\\\\\n");
+	fprintf(fp,"$(1)a, \\neg a, \\neg b \\turn b \\hfill belong $\\\\\n");
+	fprintf(fp,"$(2)a, \\neg a, \\neg b \\turn \\neg a \\hfill belong $\\\\\n");
+	fprintf(fp,"$(3)a, \\neg a, \\neg b \\turn b \\hfill not \\_ cancellation (1)(2) $\\\\\n");
+	fprintf(fp,"\\end{theorem}\n");
+	fprintf(fp,"\\end{document}\n");
+}
+
 /* FUNCTION DEFINITIONS */
 int main(int argc, char ** argv)
 {
@@ -373,5 +396,7 @@ int main(int argc, char ** argv)
 	if (program_success)
 		print_message(SUCCESS,"program pass the varification successfully",root->location->first_line,root->location->last_line);
 
+	/* print it to pdf file*/
+	print(root);
 	return 0;
 }

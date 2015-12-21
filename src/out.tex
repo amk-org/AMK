@@ -1,0 +1,18 @@
+\documentclass[11pt]{article}
+\newtheorem{theorem}{Theorem}
+\def\turn{\vdash}
+\title{\textbf{\LaTeX\ for Logic}}
+\author{AMK}
+\begin{document}
+\maketitle
+\begin{theorem}[fist proof] $ a, \neg a, \neg b \turn b $.\\
+$(1)a, \neg a, \neg b \turn b \hfill belong $\\
+$(2)a, \neg a, \neg b \turn \neg a \hfill belong $\\
+$(3)a, \neg a, \neg b \turn b \hfill not \_ cancellation (1)(2) $\\
+\end{theorem}
+\begin{theorem}[second proof] $ a, \neg a, \neg b \turn b $.\\
+$(1)a, \neg a, \neg b \turn b \hfill belong $\\
+$(2)a, \neg a, \neg b \turn \neg a \hfill belong $\\
+$(3)a, \neg a, \neg b \turn b \hfill not \_ cancellation (1)(2) $\\
+\end{theorem}
+\end{document}
