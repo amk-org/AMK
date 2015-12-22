@@ -351,6 +351,50 @@ expr: var {
 /* include header file for Translator */
 #include "amk_translator.h"
 
+void print_tree(struct ast_node* node,FILE* fp)
+{
+	enum node_types node_type=node->node_type;
+	int node_num=node->num_links;
+	int i;
+	switch (node_type)
+	{
+		case nd_program:
+			print_tree(node->links[1],fp);
+			break;
+		case nd_proof_part:
+			for (i=0;i<node_num;i++)
+				print_tree(node->links[i],fp);
+			break;
+		case nd_proof_block:
+			fprintf(fp,"\\begin{theorem}[%s] $ a, \\neg a, \\neg b \\turn b $.\\\\\n",(char*)node->data);
+			
+			char* type=((char*)node->data)+strlen((char*)node->data)+1;
+			if ((strcmp(type,"a")!=0)&&(node->links[2]!=NULL))
+				print_tree(node->links[2],fp);
+
+			fprintf(fp,"\\end{theorem}\n");
+			break;
+		case nd_rich_exprs:
+			for (int i=0;i<node->num_links;i++)
+				print_tree(node->links[i],fp);
+			break;
+		case nd_rich_expr:	
+			fprintf(fp,"$(%s)a, \\neg a, \\neg b \\turn b \\hfill %s ",(char*)node->links[1],node->links[0]->data);
+			
+			struct ast_node* lables_pointer=node->links[0]->links[1];
+			if (lables_pointer!=NULL)
+			{
+				int lables_num=lables_pointer->num_links;
+				for (int i=0;i<lables_num;i++)
+					fprintf(fp,"(%s)",(char*)lables_pointer->links[i]);
+			}
+			fprintf(fp," $\\\\\n");
+			break;
+		default:
+			break;
+	}
+}
+
 void print(struct ast_node* node)
 {
 	FILE *fp=fopen("out.tex","w");
@@ -361,6 +405,7 @@ void print(struct ast_node* node)
 	fprintf(fp,"\\author{AMK}\n");
 	fprintf(fp,"\\begin{document}\n");
 	fprintf(fp,"\\maketitle\n");
+	print_tree(node,fp);
 	fprintf(fp,"\\begin{theorem}[fist proof] $ a, \\neg a, \\neg b \\turn b $.\\\\\n");
 	fprintf(fp,"$(1)a, \\neg a, \\neg b \\turn b \\hfill belong $\\\\\n");
 	fprintf(fp,"$(2)a, \\neg a, \\neg b \\turn \\neg a \\hfill belong $\\\\\n");

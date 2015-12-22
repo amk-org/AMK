@@ -152,6 +152,13 @@ int search_diff_exprs(struct ast_node* p1,struct ast_node* p2,int req_num)
 	return 0;
 }
 
+/*
+	depth: current depth
+	max_depth: limitation of the depth, in other words, the total number of invoking lables in a rich_expr
+	lables_pointer: in order to get lables
+	req_exprs: requirments of the theorem
+	req_of_num: the number of variables that need to be identify
+*/
 int check_require(int depth,int max_depth,struct ast_node* lables_pointer,struct ast_node* req_exprs,int req_of_num)
 {
 	if (depth>=max_depth) return 1;

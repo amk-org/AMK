@@ -34,7 +34,7 @@ theorem belong:
 	conclude:
 		a,b|-a
 
-theorem not_cancellation:
+theorem notCancellation:
 	require:
 		define a of statement
 		define b of statement   # asf asklfj askl 
@@ -44,7 +44,7 @@ theorem not_cancellation:
 	conclude:
 		c |- a
 
-theorem first_proof:
+theorem firstProof:
 	require:
 		define a of statement
 		define b of statement
@@ -53,4 +53,4 @@ theorem first_proof:
 	proof:
 		a,not a,not b|-a -[belong] <aa>
 		a,not a,not b|-not a -[belong] <bb>
-		a, not a, not b |- b -[theorem not_cancellation: <x> <bb>] <cc>
+		a, not a, not b |- b -[theorem notCancellation: <aa> <bb>] <cc>
