@@ -154,31 +154,31 @@ int search_diff_exprs(struct ast_node* p1,struct ast_node* p2,int req_num)
 
 /*
 	depth: current depth
-	max_depth: limitation of the depth, in other words, the total number of invoking lables in a rich_expr
-	lables_pointer: in order to get lables
+	max_depth: limitation of the depth, in other words, the total number of invoking labels in a rich_expr
+	labels_pointer: in order to get labels
 	req_exprs: requirments of the theorem
 	req_of_num: the number of variables that need to be identify
 */
-int check_require(int depth,int max_depth,struct ast_node* lables_pointer,struct ast_node* req_exprs,int req_of_num)
+int check_require(int depth,int max_depth,struct ast_node* labels_pointer,struct ast_node* req_exprs,int req_of_num)
 {
 	if (depth>=max_depth) return 1;
-	if (strcmp("x",(char*)lables_pointer->links[depth])==0)
+	if (strcmp("x",(char*)labels_pointer->links[depth])==0)
 	{
 		printf("deal with <?>\n");
 
 		/* insert the auto-proof code */
 	}
-	int id=find_rich_expr_by_name((char*)lables_pointer->links[depth]);
+	int id=find_rich_expr_by_name((char*)labels_pointer->links[depth]);
 
 	if (id==-1)
 	{
-		print_message(ERROR,"cannot find properly lable(s) by name",lables_pointer->location->first_line,lables_pointer->location->last_line);
+		print_message(ERROR,"cannot find proper label(s) by name",labels_pointer->location->first_line,labels_pointer->location->last_line);
 		return 0;
 	}
 
 	struct ast_node* pointer=rich_exprs[id].pointer;
 	struct ast_node* req_expr=req_exprs->links[depth];
-	//printf("string:%s id:%d \n",(char*)lables_pointer->links[depth],id);
+	//printf("string:%s id:%d \n",(char*)labels_pointer->links[depth],id);
 
 	struct expr_hash_node expr_hash[MAX_NUM_PART_OF_EXPR];
 
@@ -257,7 +257,7 @@ int check_require(int depth,int max_depth,struct ast_node* lables_pointer,struct
 				printf("    %d ",expr_hash[i].index);
 			printf("\n");*/
 
-			success=check_require(depth+1,max_depth,lables_pointer,req_exprs,req_of_num);
+			success=check_require(depth+1,max_depth,labels_pointer,req_exprs,req_of_num);
 			break;
 		}
 
@@ -303,7 +303,7 @@ void translate(struct ast_node* node)
 					translate(node->links[2]);
 				else
 				{
-					print_message(ERROR,"lacking proof part",node->location->first_line,node->location->last_line);
+					print_message(ERROR,"lack proof part",node->location->first_line,node->location->last_line);
 					program_success=0;
 				}
 			}
@@ -348,7 +348,7 @@ void translate(struct ast_node* node)
 			id=find_theorem_by_name(node->links[0]->data);
 			if (id==-1)
 			{
-				print_message(ERROR,"cannot find properly theorem by name",node->location->first_line,node->location->last_line);
+				print_message(ERROR,"cannot find proper theorem by name",node->location->first_line,node->location->last_line);
 				program_success=0;
 				break;
 			}
@@ -404,10 +404,10 @@ void translate(struct ast_node* node)
 			for (int i=0;i<sub_expr_num;i++)
 				expr_hash[i].index=i;
 
-			int lables_num=0;
-			struct ast_node* lables_pointer=node->links[0]->links[1];
-			if (lables_pointer!=NULL)
-				lables_num=lables_pointer->num_links;
+			int labels_num=0;
+			struct ast_node* labels_pointer=node->links[0]->links[1];
+			if (labels_pointer!=NULL)
+				labels_num=labels_pointer->num_links;
 
 			/* verify a single line in the proof body */
 			int success;
@@ -456,16 +456,16 @@ void translate(struct ast_node* node)
 
 				/* continue verify requirements */
 				if (!success) continue;
-				if (!lables_num) break;
+				if (!labels_num) break;
 
 				/*printf(" debug : sub_expr_hash \n");
 				for (int i=0;i<sub_expr_num;i++)
 					printf("%d ",expr_hash[i].index);
 				printf("\n");*/
 
-				//printf("lable num %d\n",lables_num);
+				//printf("lable num %d\n",labels_num);
 
-				success=check_require(0,lables_num,lables_pointer,req->links[1],req_num);
+				success=check_require(0,labels_num,labels_pointer,req->links[1],req_num);
 
 				if (success) break;
 			}
