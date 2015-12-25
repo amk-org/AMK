@@ -14,6 +14,8 @@ int yylex();
 /* line number variable */
 extern int yylineno;
 
+extern char * yytext;
+
 /* lineno offset */
 static int lineoff = 0; 
 
@@ -303,43 +305,43 @@ var: identifier {
 
 expr: var {
 		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_null), $1, NULL, @1.first_line, @1.last_line);
-		RPT(expr, "with single var %s", $1);
+		RPT(expr, "with single var %s: %s", $1, yytext);
 	}
 	| left_paren expr right_paren {
 		$$ = $2;
-		RPT(expr, "with parentheses");
+		RPT(expr, "with parentheses: %s", yytext);
 	}
 	| not expr {
 		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_not), $2, NULL, @1.first_line, @2.last_line);
-		RPT(expr, "with 'not'");
+		RPT(expr, "with 'not': %s", yytext);
 	}
 	| expr wedge expr {
 		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_wedge), $1, $3, @1.first_line, @3.last_line);
-		RPT(expr, "with 'wedge'");
+		RPT(expr, "with 'wedge': %s", yytext);
 	}
 	| expr vee expr {
 		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_vee), $1, $3, @1.first_line, @3.last_line);
-		RPT(expr, "with 'vee'");
+		RPT(expr, "with 'vee': %s", yytext);
 	}
 	| expr contain expr {
 		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_contain), $1, $3, @1.first_line, @3.last_line);
-		RPT(expr, "with 'contain'");
+		RPT(expr, "with 'contain': %s", yytext);
 	}
 	| expr dcontain expr {
 		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_dcontain), $1, $3, @1.first_line, @3.last_line);
-		RPT(expr, "with 'dcontain'");
+		RPT(expr, "with 'dcontain': %s", yytext);
 	}
 	| expr get expr {
 		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_get), $1, $3, @1.first_line, @3.last_line);
-		RPT(expr, "with 'get'");
+		RPT(expr, "with 'get': %s", yytext);
 	}
 	| expr dget expr {
 		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_dget), $1, $3, @1.first_line, @3.last_line);
-		RPT(expr, "with 'dget'");
+		RPT(expr, "with 'dget': %s", yytext);
 	}
 	| expr comma expr {
 		$$ = new_ast_node(nd_expr, AST_NODE_PTR(op_comma), $1, $3, @1.first_line, @3.last_line);
-		RPT(expr, "with comma");
+		RPT(expr, "with comma: %s", yytext);
 	}
 
 
