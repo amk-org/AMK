@@ -1,0 +1,192 @@
+
+
+# asfas f
+
+
+
+	# base axioms of "N"
+
+axiom belong:
+	require:
+		define a of statement
+		define b of set[statement] 
+	conclude:
+		a, b |-a
+
+axiom not_cancellation:
+	require:
+		define a of statement
+		define b of statement
+		define c of set[statement]
+		not a, c |- b
+		not a, c |- not b
+	conclude:
+		c |- a
+
+axiom not_introduction:
+	require:
+		define a of statement
+		define b of statement
+		define c of set[statement]
+		a, c |- b
+		a, c |- not b
+	conclude:
+		c |- not a
+
+axiom contain_cancellation:
+	require:
+		define a of statement
+		define b of statement
+		define c of set[statement]
+		c |- a -> b
+		c |- a
+	conclude:
+		c |- b
+
+axiom contain_introduction:
+	require:
+		define a of statement
+		define b of statement
+		define c of set[statement]
+		a, c |- b
+	conclude:
+		c |- a -> b
+
+axiom vee_cancellation:
+	require:
+		define a of statement
+		define b of statement
+		define c of statement
+		define d of set[statement]
+		a, d |- c
+		b, d |- c
+	conclude:
+		a vee b, d |- c
+
+axiom vee_introduction_right:
+	require:
+		define a of statement
+		define b of statement
+		define c of set[statement]
+		c |- a
+	conclude:
+		c |- a vee b
+
+axiom vee_introduction_left:
+	require:
+		define a of statement
+		define b of statement
+		define c of set[statement]
+		c |- a
+	conclude:
+		c |- b vee a
+
+axiom wedge_cancellation_left:
+	require:
+		define a of statement
+		define b of statement
+		define c of set[statement]
+		c |- a wedge b
+	conclude:
+		c |- a
+
+axiom wedge_cancellation_right:
+	require:
+		define a of statement
+		define b of statement
+		define c of set[statement]
+		c |- a wedge b
+	conclude:
+		c |- b
+
+axiom wedge_introduction:
+	require:
+		define a of statement
+		define b of statement
+		define c of set[statement]
+		c |- a
+		c |- b
+	conclude:
+		c |- a wedge b
+
+axiom contain_cancellation_left:
+	require:
+		define a of statement
+		define b of statement
+		define c of set[statement]
+		c |- a <-> b
+		c |- a
+	conclude:
+		c |- b
+
+axiom contain_cancellation_right:
+	require:
+		define a of statement
+		define b of statement
+		define c of set[statement]
+		c |- a <-> b
+		c |- b
+	conclude:
+		c |- a
+
+axiom contain_introduction:
+	require:
+		define a of statement
+		define b of statement
+		define c of set[statement]
+		a, c |- b
+		b, c |- a
+	conclude:
+		c |- a <-> b
+
+
+
+   # asfas 
+
+
+		# asfjaslkfaskl	
+	#afklasjlka 
+#asflkj a
+	#
+#
+
+#
+#		
+#		asf 
+#		###as #
+	# # #
+#
+#		
+   #	#
+	   #   #
+#   # asfa asfsafasfjaslg kj lJ#KLlk lk#KJL#Jlk3 lk              #\n
+#   alkf  
+	 #	 #
+
+theorem belong:
+	require:
+		define a of statement
+		define b of set[statement] 
+	conclude:
+		a,b|-a
+
+theorem notCancellation:
+	require:
+		define a of statement
+		define b of statement   # asf asklfj askl 
+		define c of set[statement]
+		not a,c |- b
+		not a,c |- not b
+	conclude:
+		c |- a
+
+theorem firstProof:
+	require:
+		define a of statement
+		define b of statement
+	conclude:
+		a,not a, not b|-b
+	proof:
+		a,not a,not b|-a -[belong] <aa>
+		a,not a,not b|-not a -[belong] <bb>
+		a, not a, not b |- b -[theorem notCancellation: <aa> <bb>] <cc>

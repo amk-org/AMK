@@ -152,6 +152,8 @@ int search_diff_exprs(struct ast_node* p1,struct ast_node* p2,int req_num)
 	return 0;
 }
 
+#include "amk_infer.h"
+
 /*
 	depth: current depth
 	max_depth: limitation of the depth, in other words, the total number of invoking labels in a rich_expr
@@ -164,8 +166,19 @@ int check_require(int depth,int max_depth,struct ast_node* labels_pointer,struct
 	if (depth>=max_depth) return 1;
 	if (strcmp("x",(char*)labels_pointer->links[depth])==0)
 	{
-		printf("deal with <?>\n");
-
+		printf("deal with <x>\n");
+		/* TODO */
+		int d = infer(...);
+		if (d == -1)
+			print_message(ERROR, "cannot infer the <x> expression",
+					labels_pointer->location->first_line,
+					labels_pointer->location->last_line);
+		else {
+			char msg[64];
+			sprintf(msg, "infer with exactly %d step(s) to get <x> expression", d);
+			print_message(WARNING, msg,
+					labels_pointer->location->first_line,
+					labels_pointer->location->last_line);
 		/* insert the auto-proof code */
 	}
 	int id=find_rich_expr_by_name((char*)labels_pointer->links[depth]);
