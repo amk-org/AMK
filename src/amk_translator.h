@@ -18,10 +18,10 @@ void print_message(int type,const char* message,int first_line,int last_line)
 			printf("[correct %d:%d] %s\n",first_line,last_line,message);
 			break;
 		case ERROR:
-			printf("[error] %d:%d] %s\n",first_line,last_line,message);
+			printf("[error %d:%d] %s\n",first_line,last_line,message);
 			break;
 		default:
-			printf("[warning] %d:%d] %s\n",first_line,last_line,message);
+			printf("[warning %d:%d] %s\n",first_line,last_line,message);
 			break;
 	}
 }
