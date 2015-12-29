@@ -58,15 +58,13 @@ void search_req_fit_previous(int depth, int max_depth,
  *		Success: return depth
  *		Fail: -1
  */
-int infer(struct ast_node * proof_expr,
-			struct ast_node * req_expr,
-			struct ast_node *labels_pointer,
-			struct ast_node *req_exprs,
-			int num_of_expr)
+int infer(int depth,int max_depth,struct ast_node* labels_pointer,struct ast_node* req_exprs,int req_of_num)
 {
 	if (MAX_INFER_STEPS <0)
 		return -1;
 
+	struct ast_node* req_expr=req_exprs->links[depth];
+	
 	/* seach if can be found in previous steps */
 	for (int i=0; i<rich_exprs_num; i++)
 		if (search_diff_exprs(rich_exprs[i]->data, proof_expr)
