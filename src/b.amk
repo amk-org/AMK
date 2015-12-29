@@ -5,6 +5,13 @@
 
 import logics.proposition  # asfsalkfjsakl
 
+theorem belong:
+	require:
+		define a of statement
+		define b of set[statement] 
+	conclude:
+		a,b|-a
+
 theorem notCancellation:
 	require:
 		define a of statement
@@ -15,22 +22,16 @@ theorem notCancellation:
 	conclude:
 		c |- a
 
-theorem belong:
-	require:
-		define a of statement
-		define b of set[statement] 
-	conclude:
-		a,b|-a
-
-theorem contain_cancellation:
+theorem firstProof:
 	require:
 		define a of statement
 		define b of statement
-		define c of set[statement]
-		c |- a -> b
-		c |- a
 	conclude:
-		c |- b
+		a,not a, not b|-b
+	proof:
+		not b, a,not a|-a -[belong] <tt>
+		not b, a,not a|-not a -[belong] <bb>
+		a, not a, not b |- b -[theorem notCancellation: <tt> <x>] <cc>
 
 theorem secondProof:
 	require:
@@ -41,20 +42,7 @@ theorem secondProof:
 	proof:
 		not b, not b, not a, a|- a -[belong] <tt>
 		not b, not b, not a, a|- not a -[belong] <bb>
-		not b, not a, a |- b -[theorem notCancellation: <tt> <bb>] <r>
+#		not b, not a, a |- b
 		not b, not a, a |- not b -[belong] <cc>
 		not a, a |- b -[theorem notCancellation: <x> <cc>] <dd>
-
-theorem thirdProof:
-	require:
-		define a of statement
-		define b of statement
-	conclude:
-		a, b |- b
-	proof:
-		not a, a->b, a, b |- not a -[belong] <A>
-		not a, a->b, a, b |- a -[belong] <B>
-		a->b, a, b |- a -[theorem notCancellation: <A><B>] <C>
-		a->b, a, b |- a->b -[belong] <D>
-		a->b, a, b |- b -[theorem contain_cancellation: <D><C>] <E>
 

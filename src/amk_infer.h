@@ -6,6 +6,16 @@
 
 #define MAX_INFER_STEPS 1
 
+
+int check_require(int depth,
+		int max_depth,
+		struct ast_node* labels_pointer,
+		struct ast_node* req_exprs,
+		int req_of_num,
+		int is_auto,
+		struct ast_node* missing_expr,
+		struct ast_node *proof_expr);
+
 /*
  * check whether the provided expression is the missing one.
  *
@@ -21,14 +31,64 @@
  *		Success:	1
  *		Fail:		0
  */
-int check(struct ast_node *missing_expr)
+int check(int depth, int max_depth,
+		struct ast_node *labels_pointer,
+		struct ast_node *req_exprs,
+		int req_of_num,
+		struct ast_node *missing_expr,
+		struct ast_node *proof_expr)
 {
-	/* TODO */
+	return check_require(depth, max_depth, labels_pointer,
+			req_exprs, req_of_num, 1, missing_expr, proof_expr) ? 1 : 0;
 }
 
-void search_req_fit_previous(int depth, int max_depth,
-		struct theorem_node *th, struct ast_node ** re,
-		char *flag, struct ast_node ** reqs);
+int search_req_fit_previous(
+		int depth,
+		int max_depth,
+		struct theorem_node *th,
+		struct ast_node ** re,
+		char *flag,
+		struct ast_node ** reqs,
+		int _depth,
+		int _max_depth,
+		struct ast_node* _labels_pointer,
+		struct ast_node* _req_exprs,
+		int _req_of_num,
+		struct ast_node *proof_expr);
+
+void bp(){
+	fprintf(stderr, "@");
+}
+
+int exactly_same_expr(struct ast_node *a, struct ast_node *b)
+{
+	if (!a || !b)
+		return !a && !b ? 1 : 0;
+	if (a->num_links != b->num_links || a->data != b->data)
+		return 0;
+	if (!a->data)
+		return strcmp((char *)a->links[0], (char *)b->links[0]) ? 0 : 1;
+	for (int i=0; i<a->num_links; i++)
+		if (!exactly_same_expr(a->links[i], b->links[i]))
+			return 0;
+	return 1;
+}
+
+int structure_same_expr(struct ast_node *a, struct ast_node *b, int flag)
+{
+	if (!a || !b)
+		return !a && !b ? 1 : 0;
+	if (!a->data || (flag && !b->data))
+		return 1;
+	if (a->num_links != b->num_links || a->data != b->data)
+		return 0;
+	if (a->data) {
+		for (int i=0; i<a->num_links; i++)
+			if (!structure_same_expr(a->links[i], b->links[i], flag))
+				return 0;
+	}
+	return 1;
+}
 
 /*
  * Infer at most MAX_INFER_STEPS steps.
@@ -48,52 +108,71 @@ void search_req_fit_previous(int depth, int max_depth,
  *			and check through theorem T;
  *		4. if step 3 fails, dive into deeper search.
  *
- * Parameter:
- *	@proof_expr: the nd_expr currently dealing with in proof_block.
- *
- *	@req_expr: the corresponding requirement expression Q in theorem T's
- *		requirement part.
- *
  * Return value:
  *		Success: return depth
- *		Fail: -1
+ *		Fail: 1
  */
-int infer(int depth,int max_depth,struct ast_node* labels_pointer,struct ast_node* req_exprs,int req_of_num)
+int infer(
+		int depth,
+		int max_depth,
+		struct ast_node* labels_pointer,
+		struct ast_node* req_exprs,
+		int req_of_num,
+		struct ast_node *proof_expr)
 {
 	if (MAX_INFER_STEPS <0)
 		return -1;
 
 	struct ast_node* req_expr=req_exprs->links[depth];
-	
+
+	fprintf(stderr, "INFER STEP: 0\n");
+
 	/* seach if can be found in previous steps */
-	for (int i=0; i<rich_exprs_num; i++)
-		if (search_diff_exprs(rich_exprs[i]->data, proof_expr)
-				&& check(rich_exprs[i]->expr))
+	for (int i=0; i<rich_exprs_num; i++) {
+		if (i==2){
+			bp();
+			fprintf(stderr, "same = %d, considering %s\n", structure_same_expr(req_expr, rich_exprs[i].pointer, 0),
+					rich_exprs[i].name);
+		}
+		if (structure_same_expr(req_expr, rich_exprs[i].pointer, 0)
+				&& check(depth, max_depth, labels_pointer,
+					req_exprs, req_of_num, rich_exprs[i].pointer, proof_expr))
 			return 0;
+	}
 
 	if (MAX_INFER_STEPS == 0)
 		return -1;
 
+	fprintf(stderr, "INFER_STEP: 1\n");
+
 	char * flag = malloc(rich_exprs_num);
-	struct ast_node ** reqs = malloc(sizeof(void *) * num_req_th);
+	int max_num_req = 0;
+	for (int i=0; i<theorem_total; i++)
+		if (max_num_req < table_theorem[i].node_require->links[1]->num_links)
+			max_num_req = table_theorem[i].node_require->links[1]->num_links;
+	struct ast_node ** reqs = malloc(sizeof(void *) * max_num_req);
 
 	/* search through theorems */
-	for (int i=0, j, k; i<theorem_total; i++)
+	for (int i=0, j, k; i<theorem_total - 1; i++)
 		if (table_theorem[i].node_conclude->num_links == 1
-				&& search_diff_exprs(table_theorem[i].node_conclude->links[0],
-						proof_expr)){
-			struct theorem_node * th = table_theorem[i];
-			int num_req_th = th.node_require->num_links;
-			struct ast_note *re = NULL;
+				&& structure_same_expr(table_theorem[i].node_conclude->links[0], req_expr, 1)
+					//search_diff_exprs(table_theorem[i].node_conclude->links[0], req_expr,
+					//	table_theorem[i].node_require->links[0]->num_links)
+				) {
+			struct theorem_node * th = &table_theorem[i];
+			int num_req_th = th->node_require->num_links;
+			struct ast_node *re = NULL;
 			memset(flag, 0, rich_exprs_num);
 
 			/*
 			 * find legal combination of theorem `th`'s requirement,
 			 * and save the newly constructed expression in re
 			 */
-			int res = search_req_fit_previous(0, num_req_th, th, &re, flag, reqs);
+			int res = search_req_fit_previous(0, num_req_th, th, &re, flag, reqs,
+					depth, max_depth, labels_pointer,
+					req_exprs, req_of_num, proof_expr);
 			if (res) {
-				delete []flag;
+				free(flag);
 				return 1;
 			}
 		}
@@ -106,22 +185,11 @@ int infer(int depth,int max_depth,struct ast_node* labels_pointer,struct ast_nod
 	return -1;
 }
 
-int exactly_same_expr(struct ast_node *a, struct ast_node *b)
-{
-	if (!a || !b)
-		return !a && !b ? 1 : 0;
-	if (a->num_links != b->num_links || strcmp(a->data, b->data))
-		return 0;
-	for (int i=0; i<a->num_links; i++)
-		if (!exactly_same_expr(a->links[i], b->links[i]))
-			return 0;
-	return 1;
-}
 
 int check_structure_symbol(
 			struct ast_node *expr,
 			struct ast_node *req,
-			char **syms,
+			struct ast_node **syms,
 			struct theorem_node *th)
 {
 	if (!expr || !req)
@@ -130,8 +198,8 @@ int check_structure_symbol(
 	if (!req->data) {
 		int k;
 		for (k = 0; k < th->node_require->links[0]->num_links
-				&& strcmp(th->node_require->links[0]->link[k]->data,
-					req->links[0]); k++);
+				&& strcmp(th->node_require->links[0]->links[k]->data,
+					(char *)req->links[0]); k++);
 		if (syms[k] && !exactly_same_expr(expr, syms[k]))
 			return 0;
 		if (!syms[k])
@@ -161,12 +229,14 @@ struct ast_node *recursively_construct(
 	if (!conclusion->data) {
 		int k;
 		for (k = 0; k < th->node_require->links[0]->num_links
-				&& strcmp(th->node_require->links[0]->link[k]->data,
-					conclusion->links[0]); k++);
+				&& strcmp(th->node_require->links[0]->links[k]->data,
+					(char *)conclusion->links[0]); k++);
 		return syms[k];
 	}
 
-	struct ast_node *re = malloc(sizeof(struct ast_node));
+	struct ast_node *re;
+	AST_NODE_MALLOC(re, nd_expr);
+	LINKS_MALLOC(re->links, conclusion->num_links);
 	re->data = conclusion->data;
 	re->num_links = conclusion->num_links;
 	for (int i=0; i<re->num_links; i++)
@@ -182,11 +252,11 @@ struct ast_node * construct_according(
 	int num = th->node_require->links[1]->num_links;
 	int table_size = th->node_require->links[0]->num_links;
 	struct ast_node **syms = malloc(table_size * sizeof(void *));
-	struct ast_nore *re = NULL;
+	struct ast_node *re = NULL;
 	for (int i=0; i<table_size; i++)
 		syms[i] = 0;//th->node_require->links[0]->links[i]->data;
 	for (int i=0; i<num; i++) {
-		struct ast_node *expr = reqs[i]->data;
+		struct ast_node *expr = reqs[i];
 		struct ast_node *req = th->node_require->links[1]->links[i];
 		if (!check_structure_symbol(expr, req, syms, th))
 			goto ret;
@@ -200,21 +270,30 @@ ret:
 
 int search_req_fit_previous(int depth, int max_depth,
 		struct theorem_node *th, struct ast_node ** re,
-		char *flag, struct ast_node ** reqs)
+		char *flag, struct ast_node ** reqs,
+		int _depth,
+		int _max_depth,
+		struct ast_node* _labels_pointer,
+		struct ast_node* _req_exprs,
+		int _req_of_num,
+		struct ast_node *proof_expr)
 {
 	if (depth == max_depth) {
 		*re = construct_according(th, reqs);
 		if (!*re)
 			return 0;
-		int res = check(*re);
+		int res = check(_depth, _max_depth, _labels_pointer,
+				_req_exprs, _req_of_num, *re, proof_expr);
 		free(*re);
 		return res ? 1 : 0;
 	}
 	for (int i=0; i<rich_exprs_num; i++)
 		if (!flag[i]) {
 			flag[i] = 1;
-			reqs[depth] = rich_exprs[i];
-			if (search_req_fit_previous(depth+1, max_depth, th, re, flag))
+			reqs[depth] = rich_exprs[i].pointer;
+			if (search_req_fit_previous(depth+1, max_depth, th, re, flag, reqs,
+						_depth, _max_depth, _labels_pointer, _req_exprs, _req_of_num,
+						proof_expr))
 				return 1;
 			flag[i] = 0;
 		}

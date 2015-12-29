@@ -5,14 +5,25 @@
 \author{AMK}
 \begin{document}
 \maketitle
-\begin{theorem}[belong] $ a, \neg a, \neg b \turn b $.\\
-\end{theorem}
 \begin{theorem}[notCancellation] $ a, \neg a, \neg b \turn b $.\\
 \end{theorem}
-\begin{theorem}[firstProof] $ a, \neg a, \neg b \turn b $.\\
-$(aa)a, \neg a, \neg b \turn b \hfill belong  $\\
+\begin{theorem}[belong] $ a, \neg a, \neg b \turn b $.\\
+\end{theorem}
+\begin{theorem}[contain_cancellation] $ a, \neg a, \neg b \turn b $.\\
+\end{theorem}
+\begin{theorem}[secondProof] $ a, \neg a, \neg b \turn b $.\\
+$(tt)a, \neg a, \neg b \turn b \hfill belong  $\\
 $(bb)a, \neg a, \neg b \turn b \hfill belong  $\\
-$(cc)a, \neg a, \neg b \turn b \hfill notCancellation (aa)(bb) $\\
+$(r)a, \neg a, \neg b \turn b \hfill notCancellation (tt)(bb) $\\
+$(cc)a, \neg a, \neg b \turn b \hfill belong  $\\
+$(dd)a, \neg a, \neg b \turn b \hfill notCancellation (x)(cc) $\\
+\end{theorem}
+\begin{theorem}[thirdProof] $ a, \neg a, \neg b \turn b $.\\
+$(A)a, \neg a, \neg b \turn b \hfill belong  $\\
+$(B)a, \neg a, \neg b \turn b \hfill belong  $\\
+$(C)a, \neg a, \neg b \turn b \hfill notCancellation (A)(B) $\\
+$(D)a, \neg a, \neg b \turn b \hfill belong  $\\
+$(E)a, \neg a, \neg b \turn b \hfill contain_cancellation (D)(C) $\\
 \end{theorem}
 \begin{theorem}[fist proof] $ a, \neg a, \neg b \turn b $.\\
 $(1)a, \neg a, \neg b \turn b \hfill belong $\\

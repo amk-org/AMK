@@ -152,7 +152,7 @@ int search_diff_exprs(struct ast_node* p1,struct ast_node* p2,int req_num)
 	return 0;
 }
 
-//#include "amk_infer.h"
+#include "amk_infer.h"
 
 /*
 	depth: current depth
@@ -161,29 +161,31 @@ int search_diff_exprs(struct ast_node* p1,struct ast_node* p2,int req_num)
 	req_exprs: requirments of the theorem
 	req_of_num: the number of variables that need to be identify
 */
-int check_require(int depth,int max_depth,struct ast_node* labels_pointer,struct ast_node* req_exprs,int req_of_num,int is_auto,struct ast_node* missing_expr)
+int check_require(int depth, int max_depth, struct ast_node* labels_pointer,
+		struct ast_node* req_exprs, int req_of_num, int is_auto,
+		struct ast_node* missing_expr, struct ast_node *proof_expr)
 {
 	if (depth>=max_depth) return 1;
 	if (strcmp("x",(char*)labels_pointer->links[depth])==0 && is_auto==0)
 	{
 		printf("deal with <x>\n");
-		/* TODO */
-		//int d = infer(depth,max_depth,lables_pointer,req_exprs,req_of_num);
-		int d=-1;
-		if (d == -1)
+		int d = infer(depth, max_depth, labels_pointer, req_exprs, req_of_num, proof_expr);
+		if (d == -1) {
 			print_message(ERROR, "cannot infer the <x> expression",
 					labels_pointer->location->first_line,
 					labels_pointer->location->last_line);
+			return 0;
+		}
 		else {
 			char msg[64];
 			sprintf(msg, "infer with exactly %d step(s) to get <x> expression", d);
 			print_message(WARNING, msg,
 					labels_pointer->location->first_line,
 					labels_pointer->location->last_line);
-		/* insert the auto-proof code */
+			return 1;
 		}
 	}
-	
+
 	int id=find_rich_expr_by_name((char*)labels_pointer->links[depth]);
 
 	if (id==-1 && is_auto==0)
@@ -214,6 +216,8 @@ int check_require(int depth,int max_depth,struct ast_node* labels_pointer,struct
 			expr_hash[sub_expr_num].expr=pointer->links[0];
 			sub_expr_num++;
 			pointer=pointer->links[1];
+			if (!pointer)
+				return 0;
 		}
 		expr_hash[sub_expr_num].expr=pointer;
 		sub_expr_num++;
@@ -277,7 +281,7 @@ int check_require(int depth,int max_depth,struct ast_node* labels_pointer,struct
 				printf("    %d ",expr_hash[i].index);
 			printf("\n");*/
 
-			success=check_require(depth+1,max_depth,labels_pointer,req_exprs,req_of_num,0,NULL);
+			success=check_require(depth+1,max_depth,labels_pointer,req_exprs,req_of_num,0,NULL, proof_expr);
 			break;
 		}
 
@@ -486,7 +490,7 @@ void translate(struct ast_node* node)
 
 				//printf("lable num %d\n",labels_num);
 
-				success=check_require(0,labels_num,labels_pointer,req->links[1],req_num,0,NULL);
+				success=check_require(0,labels_num,labels_pointer,req->links[1],req_num,0,NULL, node->data);
 
 				if (success) break;
 			}
