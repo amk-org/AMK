@@ -11,9 +11,9 @@ def enter():
     print " done."
 
 def simple_line(line):
-    return line.split("#")[0].rstrip()
+    return line.split("#")[0].strip()
 
-def import_file(src_fname, dst_file):
+def import_file(src_fname, dst_string):
     src_filename = "modules/" \
         + src_fname.replace(".", "/").replace("\n", "").replace("\r", "") \
         + ".mamk"
@@ -29,9 +29,10 @@ def import_file(src_fname, dst_file):
         elif simple_line(line) == "THEOREM":
             flag = 2
         elif flag == 1:
-            dst_file.write(line)
+            dst_string += line
+#            dst_file.write(line)
             totline += 1
-    return totline
+    return (totline, dst_string)
 
 def check_file(filename):
     print "==================="
@@ -46,24 +47,31 @@ def check_file(filename):
     codelines = codefile.readlines()
     codefile.close()
 
-    tmpfile = open(".amk/curr.amk", "w")
+    dst_string = ""
+#    tmpfile = open(".amk/curr.amk", "w")
 
     lineoff = 0
     for line in codelines:
         if line.split(" ")[0] == "import":
-            lineoff += import_file(line.split(" ")[1], tmpfile) - 1
+            (delta, new_dst_string) = import_file(line.split(" ")[1], dst_string)
+            lineoff += delta - 1
+            dst_string = new_dst_string
+#            lineoff += import_file(line.split(" ")[1], tmpfile) - 1
         else:
-            tmpfile.write(line)
+            dst_string += line
+#            tmpfile.write(line)
 
-    tmpfile.close()
-    tmpfile = open(".amk/curr.amk", "r")
-    
-    result = subprocess.check_output(["src/amki", str(lineoff)], stdin=tmpfile, stderr=subprocess.STDOUT)
+#    tmpfile.close()
+#    tmpfile = open(".amk/curr.amk", "r")
+
+#    result = subprocess.check_output(["src/amki", str(lineoff)], stdin=tmpfile, stderr=subprocess.STDOUT)
+    p = subprocess.Popen(['./src/amki',str(lineoff)], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+    p.stdin.write(dst_string)
+    (res_out, res_err) = p.communicate()
 
     print " done\n"
-    tmpfile.close()
     
-    print result
+    print res_out
     print "==================="
 
 def exit():
@@ -82,3 +90,4 @@ if __name__ == "__main__":
         check_file(fn)
 
 #    exit()
+
