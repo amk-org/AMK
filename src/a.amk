@@ -78,5 +78,5 @@ theorem fourthProof:
 		not a, not a -> not b, b |- not a -> not b -[belong] <e2>
 #		not a, not a -> not b, b |- not b -[theorem contain_cancellation: <x><e1>] <e3>
 		not a, not a -> not b, b |- b -[belong] <e4>
-		not a -> not b, b |- a -[theorem notCancellation: <x><x>] <e5>
+		not a -> not b, b |- a -[theorem notCancellation: <x> <x>] <e5>
 		not a -> not b |- b -> a -[contain_introduction]

@@ -60,7 +60,8 @@ struct rich_expr_node rich_exprs[MAX_NUM_RICH_EXPR];
 int theorem_total=0;
 int require_num=0;
 int rich_exprs_num=0;
-
+int couldNotFindLable=0;
+int exitX=0;
 int program_success=1;
 
 int find_theorem_by_name(char* s)
@@ -168,13 +169,10 @@ int check_require(int depth, int max_depth, struct ast_node* labels_pointer,
 	if (depth>=max_depth) return 1;
 	if (strcmp("x",(char*)labels_pointer->links[depth])==0 && is_auto==0)
 	{
+		exitX=1;
 		char * ret_msg;
 		int d = infer(depth, max_depth, labels_pointer, req_exprs, req_of_num, proof_expr, &ret_msg);
 		if (d == -1) {
-			print_message(ERROR, "cannot infer the <x> expression",
-					labels_pointer->location->first_line,
-					labels_pointer->location->last_line);
-			free(ret_msg);
 			return 0;
 		}
 		else {
@@ -192,6 +190,7 @@ int check_require(int depth, int max_depth, struct ast_node* labels_pointer,
 
 	if (id==-1 && is_auto==0)
 	{
+		couldNotFindLable=1;
 		print_message(ERROR,"cannot find proper label(s) by name",labels_pointer->location->first_line,labels_pointer->location->last_line);
 		return 0;
 	}
@@ -441,6 +440,8 @@ void translate(struct ast_node* node)
 
 			/* verify a single line in the proof body */
 			int success;
+			couldNotFindLable=0;
+			exitX=0;
 			do
 			{
 				success=1;
@@ -496,7 +497,7 @@ void translate(struct ast_node* node)
 				//printf("lable num %d\n",labels_num);
 
 				success=check_require(0,labels_num,labels_pointer,req->links[1],req_num,0,NULL, node->data);
-
+				if (couldNotFindLable) break;
 				if (success) break;
 			}
 			while (next_possible_comb(sub_expr_num,expr_hash));
@@ -505,6 +506,10 @@ void translate(struct ast_node* node)
 				print_message(SUCCESS,"match conclusion part and requirement part",node->location->first_line,node->location->last_line);
 			else
 			{
+				if (exitX)
+					print_message(ERROR, "cannot infer the <x> expression",
+						labels_pointer->location->first_line,
+						labels_pointer->location->last_line);
 				print_message(ERROR,"cannot match conclusion part",node->location->first_line,node->location->last_line);
 				program_success=0;
 			}
