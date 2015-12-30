@@ -174,6 +174,7 @@ int check_require(int depth, int max_depth, struct ast_node* labels_pointer,
 			print_message(ERROR, "cannot infer the <x> expression",
 					labels_pointer->location->first_line,
 					labels_pointer->location->last_line);
+			free(ret_msg);
 			return 0;
 		}
 		else {
@@ -182,9 +183,9 @@ int check_require(int depth, int max_depth, struct ast_node* labels_pointer,
 			print_message(WARNING, msg,
 					labels_pointer->location->first_line,
 					labels_pointer->location->last_line);
+			free(ret_msg);
 			return 1;
 		}
-		free(ret_msg);
 	}
 
 	int id=find_rich_expr_by_name((char*)labels_pointer->links[depth]);
@@ -202,7 +203,7 @@ int check_require(int depth, int max_depth, struct ast_node* labels_pointer,
 		pointer=missing_expr;
 	struct ast_node* req_expr=req_exprs->links[depth];
 
-	fprintf(stderr, "xcheck %x\n", rich_exprs);
+//	fprintf(stderr, "xcheck %x\n", rich_exprs);
 
 	//printf("string:%s id:%d \n",(char*)labels_pointer->links[depth],id);
 

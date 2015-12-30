@@ -91,7 +91,7 @@ int structure_same_expr(struct ast_node *a, struct ast_node *b, int flag)
 	return 1;
 }
 
-#define INFER_DEBUG_FILE_PTR stderr
+#define INFER_DEBUG_FILE_PTR NULL
 
 /*
  * Infer at most MAX_INFER_STEPS steps.
@@ -139,13 +139,12 @@ int infer(
 	/* seach if can be found in previous steps */
 	for (int i=0; i<rich_exprs_num; i++) {
 		if (INFER_DEBUG_FILE_PTR != NULL && i==3) {
-			fprintf(INFER_DEBUG_FILE_PTR, "xx %x\n", (int)rich_exprs);
 			fprintf(INFER_DEBUG_FILE_PTR, "considering %d-th req and <%s>, same=%d, check=%d\n",
 					depth, rich_exprs[i].name,
 					structure_same_expr(req_expr, rich_exprs[i].pointer, 0),
 					check(depth, max_depth, labels_pointer,
 						req_exprs, req_of_num, rich_exprs[i].pointer, proof_expr));
-			bp();
+//			bp();
 			structure_same_expr(req_expr, rich_exprs[i].pointer, 0);
 			check(depth, max_depth, labels_pointer,
 				req_exprs, req_of_num, rich_exprs[i].pointer, proof_expr);
@@ -153,7 +152,7 @@ int infer(
 		if (structure_same_expr(req_expr, rich_exprs[i].pointer, 0)
 				&& check(depth, max_depth, labels_pointer,
 					req_exprs, req_of_num, rich_exprs[i].pointer, proof_expr)) {
-			sprintf(*ret_msg, "Your missing expression is the expression with label <%s>\n", rich_exprs[i].name);
+			sprintf(*ret_msg, "Your missing expression is the expression with label <%s>", rich_exprs[i].name);
 			return 0;
 		}
 	}
@@ -196,7 +195,6 @@ int infer(
 						strcat(*ret_msg, rich_exprs[k].name);
 						strcat(*ret_msg, ">");
 					}
-				strcat(*ret_msg, "\n");
 				free(flag);
 				return 1;
 			}
