@@ -201,6 +201,9 @@ int check_require(int depth, int max_depth, struct ast_node* labels_pointer,
 	else
 		pointer=missing_expr;
 	struct ast_node* req_expr=req_exprs->links[depth];
+
+	fprintf(stderr, "xcheck %x\n", rich_exprs);
+
 	//printf("string:%s id:%d \n",(char*)labels_pointer->links[depth],id);
 
 	struct expr_hash_node expr_hash[MAX_NUM_PART_OF_EXPR];

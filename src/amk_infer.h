@@ -139,6 +139,7 @@ int infer(
 	/* seach if can be found in previous steps */
 	for (int i=0; i<rich_exprs_num; i++) {
 		if (INFER_DEBUG_FILE_PTR != NULL && i==3) {
+			fprintf(INFER_DEBUG_FILE_PTR, "xx %x\n", (int)rich_exprs);
 			fprintf(INFER_DEBUG_FILE_PTR, "considering %d-th req and <%s>, same=%d, check=%d\n",
 					depth, rich_exprs[i].name,
 					structure_same_expr(req_expr, rich_exprs[i].pointer, 0),
