@@ -6,6 +6,7 @@
 
 #define MAX_INFER_STEPS 1
 
+#define MAX_INFER_RET_MSG_LEN 256
 
 int check_require(int depth,
 		int max_depth,
@@ -90,6 +91,8 @@ int structure_same_expr(struct ast_node *a, struct ast_node *b, int flag)
 	return 1;
 }
 
+#define INFER_DEBUG_FILE_PTR stderr
+
 /*
  * Infer at most MAX_INFER_STEPS steps.
  *
@@ -111,6 +114,8 @@ int structure_same_expr(struct ast_node *a, struct ast_node *b, int flag)
  * Return value:
  *		Success: return depth
  *		Fail: 1
+ *
+ * Readable message stored in *ret_msg.
  */
 int infer(
 		int depth,
@@ -118,32 +123,45 @@ int infer(
 		struct ast_node* labels_pointer,
 		struct ast_node* req_exprs,
 		int req_of_num,
-		struct ast_node *proof_expr)
+		struct ast_node *proof_expr,
+		char ** ret_msg)
 {
 	if (MAX_INFER_STEPS <0)
 		return -1;
 
 	struct ast_node* req_expr=req_exprs->links[depth];
 
-	fprintf(stderr, "INFER STEP: 0\n");
+	if (INFER_DEBUG_FILE_PTR != NULL)
+		fprintf(INFER_DEBUG_FILE_PTR, "INFER STEP: 0\n");
+
+	*ret_msg = malloc(MAX_INFER_RET_MSG_LEN);
 
 	/* seach if can be found in previous steps */
 	for (int i=0; i<rich_exprs_num; i++) {
-		if (i==2){
+		if (INFER_DEBUG_FILE_PTR != NULL && i==3) {
+			fprintf(INFER_DEBUG_FILE_PTR, "considering %d-th req and <%s>, same=%d, check=%d\n",
+					depth, rich_exprs[i].name,
+					structure_same_expr(req_expr, rich_exprs[i].pointer, 0),
+					check(depth, max_depth, labels_pointer,
+						req_exprs, req_of_num, rich_exprs[i].pointer, proof_expr));
 			bp();
-			fprintf(stderr, "same = %d, considering %s\n", structure_same_expr(req_expr, rich_exprs[i].pointer, 0),
-					rich_exprs[i].name);
+			structure_same_expr(req_expr, rich_exprs[i].pointer, 0);
+			check(depth, max_depth, labels_pointer,
+				req_exprs, req_of_num, rich_exprs[i].pointer, proof_expr);
 		}
 		if (structure_same_expr(req_expr, rich_exprs[i].pointer, 0)
 				&& check(depth, max_depth, labels_pointer,
-					req_exprs, req_of_num, rich_exprs[i].pointer, proof_expr))
+					req_exprs, req_of_num, rich_exprs[i].pointer, proof_expr)) {
+			sprintf(*ret_msg, "Your missing expression is the expression with label <%s>\n", rich_exprs[i].name);
 			return 0;
+		}
 	}
 
 	if (MAX_INFER_STEPS == 0)
 		return -1;
 
-	fprintf(stderr, "INFER_STEP: 1\n");
+	if (INFER_DEBUG_FILE_PTR != NULL)
+		fprintf(INFER_DEBUG_FILE_PTR, "INFER_STEP: 1\n");
 
 	char * flag = malloc(rich_exprs_num);
 	int max_num_req = 0;
@@ -156,8 +174,6 @@ int infer(
 	for (int i=0, j, k; i<theorem_total - 1; i++)
 		if (table_theorem[i].node_conclude->num_links == 1
 				&& structure_same_expr(table_theorem[i].node_conclude->links[0], req_expr, 1)
-					//search_diff_exprs(table_theorem[i].node_conclude->links[0], req_expr,
-					//	table_theorem[i].node_require->links[0]->num_links)
 				) {
 			struct theorem_node * th = &table_theorem[i];
 			int num_req_th = th->node_require->num_links;
@@ -172,6 +188,14 @@ int infer(
 					depth, max_depth, labels_pointer,
 					req_exprs, req_of_num, proof_expr);
 			if (res) {
+				sprintf(*ret_msg, "match theorem %s with expression(s)", th->name);
+				for (int k=0; k<rich_exprs_num; k++)
+					if (flag[k]){
+						strcat(*ret_msg, " <");
+						strcat(*ret_msg, rich_exprs[k].name);
+						strcat(*ret_msg, ">");
+					}
+				strcat(*ret_msg, "\n");
 				free(flag);
 				return 1;
 			}
@@ -253,8 +277,7 @@ struct ast_node * construct_according(
 	int table_size = th->node_require->links[0]->num_links;
 	struct ast_node **syms = malloc(table_size * sizeof(void *));
 	struct ast_node *re = NULL;
-	for (int i=0; i<table_size; i++)
-		syms[i] = 0;//th->node_require->links[0]->links[i]->data;
+	memset(syms, 0, sizeof(void *) * table_size);
 	for (int i=0; i<num; i++) {
 		struct ast_node *expr = reqs[i];
 		struct ast_node *req = th->node_require->links[1]->links[i];

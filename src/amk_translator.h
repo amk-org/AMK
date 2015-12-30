@@ -82,7 +82,7 @@ int find_require_by_name(char* s,int req_num)
 int find_rich_expr_by_name(char* s)
 {
 	for (int i=0;i<rich_exprs_num;i++)
-		if (strcmp(s,rich_exprs[i].name)==0)
+		if (rich_exprs[i].name && strcmp(s,rich_exprs[i].name)==0)
 			return i;
 	return -1;
 }
@@ -168,8 +168,8 @@ int check_require(int depth, int max_depth, struct ast_node* labels_pointer,
 	if (depth>=max_depth) return 1;
 	if (strcmp("x",(char*)labels_pointer->links[depth])==0 && is_auto==0)
 	{
-		printf("deal with <x>\n");
-		int d = infer(depth, max_depth, labels_pointer, req_exprs, req_of_num, proof_expr);
+		char * ret_msg;
+		int d = infer(depth, max_depth, labels_pointer, req_exprs, req_of_num, proof_expr, &ret_msg);
 		if (d == -1) {
 			print_message(ERROR, "cannot infer the <x> expression",
 					labels_pointer->location->first_line,
@@ -177,13 +177,14 @@ int check_require(int depth, int max_depth, struct ast_node* labels_pointer,
 			return 0;
 		}
 		else {
-			char msg[64];
-			sprintf(msg, "infer with exactly %d step(s) to get <x> expression", d);
+			char msg[512];
+			sprintf(msg, "infer exactly %d step(s) to get <x>: %s", d, ret_msg);
 			print_message(WARNING, msg,
 					labels_pointer->location->first_line,
 					labels_pointer->location->last_line);
 			return 1;
 		}
+		free(ret_msg);
 	}
 
 	int id=find_rich_expr_by_name((char*)labels_pointer->links[depth]);

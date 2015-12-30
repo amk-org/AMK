@@ -32,6 +32,15 @@ theorem contain_cancellation:
 	conclude:
 		c |- b
 
+axiom contain_introduction:
+	require:
+		define a of statement
+		define b of statement
+		define c of set[statement]
+		a, c |- b
+	conclude:
+		c |- a -> b
+
 theorem secondProof:
 	require:
 		define a of statement
@@ -43,7 +52,7 @@ theorem secondProof:
 		not b, not b, not a, a|- not a -[belong] <bb>
 		not b, not a, a |- b -[theorem notCancellation: <tt> <bb>] <r>
 		not b, not a, a |- not b -[belong] <cc>
-		not a, a |- b -[theorem notCancellation: <x> <cc>] <dd>
+		not a, a |- b -[theorem notCancellation: <r> <cc>] <dd>
 
 theorem thirdProof:
 	require:
@@ -54,7 +63,20 @@ theorem thirdProof:
 	proof:
 		not a, a->b, a, b |- not a -[belong] <A>
 		not a, a->b, a, b |- a -[belong] <B>
-		a->b, a, b |- a -[theorem notCancellation: <A><B>] <C>
+#		a->b, a, b |- a -[theorem notCancellation: <A><B>] <C>
 		a->b, a, b |- a->b -[belong] <D>
-		a->b, a, b |- b -[theorem contain_cancellation: <D><C>] <E>
+		a->b, a, b |- b -[theorem contain_cancellation: <D><x>] <E>
 
+theorem fourthProof:
+	require:
+		define a of statement
+		define b of statement
+	conclude:
+		not a -> not b |- b -> a
+	proof:
+		not a, not a -> not b, b |- not a -[belong] <e1>
+		not a, not a -> not b, b |- not a -> not b -[belong] <e2>
+		not a, not a -> not b, b |- not b -[theorem contain_cancellation: <x><e1>] <e3>
+		not a, not a -> not b, b |- b -[belong] <e4>
+		not a -> not b, b |- a -[theorem notCancellation: <x><e3>] <e5>
+		not a -> not b |- b -> a -[contain_introduction]
