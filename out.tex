@@ -1,74 +1,106 @@
-\documentclass[11pt]{article}
-\newtheorem{theorem}{Theorem}
-\def\turn{\vdash}
-\title{\textbf{\LaTeX\ for Logic}}
-\author{AMK}
-\begin{document}
-\maketitle
-\begin{theorem}[belong] $ a, \neg a, \neg b \turn b $.\\
-\end{theorem}
-\begin{theorem}[not_cancellation] $ a, \neg a, \neg b \turn b $.\\
-\end{theorem}
-\begin{theorem}[not_introduction] $ a, \neg a, \neg b \turn b $.\\
-\end{theorem}
-\begin{theorem}[contain_cancellation] $ a, \neg a, \neg b \turn b $.\\
-\end{theorem}
-\begin{theorem}[contain_introduction] $ a, \neg a, \neg b \turn b $.\\
-\end{theorem}
-\begin{theorem}[vee_cancellation] $ a, \neg a, \neg b \turn b $.\\
-\end{theorem}
-\begin{theorem}[vee_introduction_right] $ a, \neg a, \neg b \turn b $.\\
-\end{theorem}
-\begin{theorem}[vee_introduction_left] $ a, \neg a, \neg b \turn b $.\\
-\end{theorem}
-\begin{theorem}[wedge_cancellation_left] $ a, \neg a, \neg b \turn b $.\\
-\end{theorem}
-\begin{theorem}[wedge_cancellation_right] $ a, \neg a, \neg b \turn b $.\\
-\end{theorem}
-\begin{theorem}[wedge_introduction] $ a, \neg a, \neg b \turn b $.\\
-\end{theorem}
-\begin{theorem}[contain_cancellation_left] $ a, \neg a, \neg b \turn b $.\\
-\end{theorem}
-\begin{theorem}[contain_cancellation_right] $ a, \neg a, \neg b \turn b $.\\
-\end{theorem}
-\begin{theorem}[contain_introduction] $ a, \neg a, \neg b \turn b $.\\
-\end{theorem}
-\begin{theorem}[notCancellation] $ a, \neg a, \neg b \turn b $.\\
-\end{theorem}
-\begin{theorem}[belong] $ a, \neg a, \neg b \turn b $.\\
-\end{theorem}
-\begin{theorem}[contain_cancellation] $ a, \neg a, \neg b \turn b $.\\
-\end{theorem}
-\begin{theorem}[contain_introduction] $ a, \neg a, \neg b \turn b $.\\
-\end{theorem}
-\begin{theorem}[secondProof] $ a, \neg a, \neg b \turn b $.\\
-$(tt)a, \neg a, \neg b \turn b \hfill belong  $\\
-$(bb)a, \neg a, \neg b \turn b \hfill belong  $\\
-$(r)a, \neg a, \neg b \turn b \hfill notCancellation (tt)(bb) $\\
-$(cc)a, \neg a, \neg b \turn b \hfill belong  $\\
-$(dd)a, \neg a, \neg b \turn b \hfill notCancellation (r)(cc) $\\
-\end{theorem}
-\begin{theorem}[thirdProof] $ a, \neg a, \neg b \turn b $.\\
-$(A)a, \neg a, \neg b \turn b \hfill belong  $\\
-$(B)a, \neg a, \neg b \turn b \hfill belong  $\\
-$(D)a, \neg a, \neg b \turn b \hfill belong  $\\
-$(E)a, \neg a, \neg b \turn b \hfill contain_cancellation (D)(x) $\\
-\end{theorem}
-\begin{theorem}[fourthProof] $ a, \neg a, \neg b \turn b $.\\
-$(e1)a, \neg a, \neg b \turn b \hfill belong  $\\
-$(e2)a, \neg a, \neg b \turn b \hfill belong  $\\
-$(e4)a, \neg a, \neg b \turn b \hfill belong  $\\
-$(e5)a, \neg a, \neg b \turn b \hfill notCancellation (x)(x) $\\
-$((null))a, \neg a, \neg b \turn b \hfill contain_introduction  $\\
-\end{theorem}
-\begin{theorem}[fist proof] $ a, \neg a, \neg b \turn b $.\\
-$(1)a, \neg a, \neg b \turn b \hfill belong $\\
-$(2)a, \neg a, \neg b \turn \neg a \hfill belong $\\
-$(3)a, \neg a, \neg b \turn b \hfill not \_ cancellation (1)(2) $\\
-\end{theorem}
-\begin{theorem}[second proof] $ a, \neg a, \neg b \turn b $.\\
-$(1)a, \neg a, \neg b \turn b \hfill belong $\\
-$(2)a, \neg a, \neg b \turn \neg a \hfill belong $\\
-$(3)a, \neg a, \neg b \turn b \hfill not \_ cancellation (1)(2) $\\
-\end{theorem}
-\end{document}
+ \( a, \neg a, \neg b \vdash b .\)<span>belong</span><br/>
+
+ \( a, \neg a, \neg b \vdash b .\)<span>not_cancellation</span><br/>
+
+ \( a, \neg a, \neg b \vdash b .\)<span>not_introduction</span><br/>
+
+ \( a, \neg a, \neg b \vdash b .\)<span>contain_cancellation</span><br/>
+
+ \( a, \neg a, \neg b \vdash b .\)<span>contain_introduction</span><br/>
+
+ \( a, \neg a, \neg b \vdash b .\)<span>vee_cancellation</span><br/>
+
+ \( a, \neg a, \neg b \vdash b .\)<span>vee_introduction_right</span><br/>
+
+ \( a, \neg a, \neg b \vdash b .\)<span>vee_introduction_left</span><br/>
+
+ \( a, \neg a, \neg b \vdash b .\)<span>wedge_cancellation_left</span><br/>
+
+ \( a, \neg a, \neg b \vdash b .\)<span>wedge_cancellation_right</span><br/>
+
+ \( a, \neg a, \neg b \vdash b .\)<span>wedge_introduction</span><br/>
+
+ \( a, \neg a, \neg b \vdash b .\)<span>contain_cancellation_left</span><br/>
+
+ \( a, \neg a, \neg b \vdash b .\)<span>contain_cancellation_right</span><br/>
+
+ \( a, \neg a, \neg b \vdash b .\)<span>contain_introduction</span><br/>
+
+ \( a, \neg a, \neg b \vdash b .\)<span>example26_12</span><br/>
+\([1]: a, \neg a, \neg b \vdash b  \)<span>belong</span>
+  <br/>
+\([2]: a, \neg a, \neg b \vdash b  \)<span>belong</span>
+  <br/>
+\([3]: a, \neg a, \neg b \vdash b  \)<span>contain_cancellation</span>
+ (1)(2) <br/>
+\([4]: a, \neg a, \neg b \vdash b  \)<span>belong</span>
+  <br/>
+\([5]: a, \neg a, \neg b \vdash b  \)<span>contain_cancellation</span>
+ (4)(3) <br/>
+\([6]: a, \neg a, \neg b \vdash b  \)<span>contain_introduction</span>
+ (5) <br/>
+
+ \( a, \neg a, \neg b \vdash b .\)<span>example26_14</span><br/>
+\([1]: a, \neg a, \neg b \vdash b  \)<span>belong</span>
+  <br/>
+\([2]: a, \neg a, \neg b \vdash b  \)<span>belong</span>
+  <br/>
+\([3]: a, \neg a, \neg b \vdash b  \)<span>not_cancellation</span>
+ (1)(2) <br/>
+
+ \( a, \neg a, \neg b \vdash b .\)<span>example26_15_2</span><br/>
+\([1]: a, \neg a, \neg b \vdash b  \)<span>belong</span>
+  <br/>
+\([2]: a, \neg a, \neg b \vdash b  \)<span>belong</span>
+  <br/>
+\([3]: a, \neg a, \neg b \vdash b  \)<span>contain_cancellation</span>
+ (2)(1) <br/>
+\([4]: a, \neg a, \neg b \vdash b  \)<span>belong</span>
+  <br/>
+\([5]: a, \neg a, \neg b \vdash b  \)<span>not_introduction</span>
+ (4)(3) <br/>
+\([6]: a, \neg a, \neg b \vdash b  \)<span>contain_introduction</span>
+ (5) <br/>
+
+ \( a, \neg a, \neg b \vdash b .\)<span>example26_18_2</span><br/>
+\([1]: a, \neg a, \neg b \vdash b  \)<span>belong</span>
+  <br/>
+\([2]: a, \neg a, \neg b \vdash b  \)<span>vee_introduction_right</span>
+ (1) <br/>
+\([3]: a, \neg a, \neg b \vdash b  \)<span>belong</span>
+  <br/>
+\([4]: a, \neg a, \neg b \vdash b  \)<span>vee_introduction_left</span>
+ (3) <br/>
+\([5]: a, \neg a, \neg b \vdash b  \)<span>vee_cancellation</span>
+ (4)(2) <br/>
+
+ \( a, \neg a, \neg b \vdash b .\)<span>example26_17_2</span><br/>
+\([1]: a, \neg a, \neg b \vdash b  \)<span>belong</span>
+  <br/>
+\([2]: a, \neg a, \neg b \vdash b  \)<span>wedge_cancellation_left</span>
+ (1) <br/>
+\([3]: a, \neg a, \neg b \vdash b  \)<span>wedge_cancellation_right</span>
+ (1) <br/>
+\([4]: a, \neg a, \neg b \vdash b  \)<span>wedge_introduction</span>
+ (3)(2) <br/>
+
+ \( a, \neg a, \neg b \vdash b .\)<span>example26_19</span><br/>
+\([1]: a, \neg a, \neg b \vdash b  \)<span>belong</span>
+  <br/>
+\([2]: a, \neg a, \neg b \vdash b  \)<span>belong</span>
+  <br/>
+\([3]: a, \neg a, \neg b \vdash b  \)<span>contain_cancellation_left</span>
+ (2)(1) <br/>
+\([4]: a, \neg a, \neg b \vdash b  \)<span>contain_introduction</span>
+ (3) <br/>
+\([5]: a, \neg a, \neg b \vdash b  \)<span>belong</span>
+  <br/>
+\([6]: a, \neg a, \neg b \vdash b  \)<span>belong</span>
+  <br/>
+\([7]: a, \neg a, \neg b \vdash b  \)<span>contain_cancellation_right</span>
+ (6)(5) <br/>
+\([8]: a, \neg a, \neg b \vdash b  \)<span>contain_introduction</span>
+ (7) <br/>
+\([9]: a, \neg a, \neg b \vdash b  \)<span>wedge_introduction</span>
+ (4)(8) <br/>
+
