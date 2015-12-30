@@ -286,7 +286,7 @@ int check_require(int depth, int max_depth, struct ast_node* labels_pointer,
 			printf("\n");*/
 
 			success=check_require(depth+1,max_depth,labels_pointer,req_exprs,req_of_num,0,NULL, proof_expr);
-			break;
+			//break;
 		}
 
 		for (int i=0;i<req_of_num;i++)
