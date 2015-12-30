@@ -53,8 +53,9 @@ def check_file(filename):
     lineoff = 0
     for line in codelines:
         if line.split(" ")[0] == "import":
+            dst_string += line
             (delta, new_dst_string) = import_file(line.split(" ")[1], dst_string)
-            lineoff += delta - 1
+            lineoff += delta 
             dst_string = new_dst_string
 #            lineoff += import_file(line.split(" ")[1], tmpfile) - 1
         else:

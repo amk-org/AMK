@@ -18,3 +18,4 @@ src/example_cpp/amk.tab.*
 src/example_cpp/mycalc
 ast_structure.log
 .amk/curr.amk
+src/amki.dSYM
