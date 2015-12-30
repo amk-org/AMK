@@ -1,4 +1,4 @@
-nd_program<1722713362-82>(2):  CHILD [nd_import_part, nd_proof_part, ]
+nd_program<1672869138-82>(2):  CHILD [nd_import_part, nd_proof_part, ]
 	nd_import_part<-134--134>(0):  CHILD []
 	nd_proof_part<-130-82>(20):  CHILD [nd_proof_block, nd_proof_block, nd_proof_block, nd_proof_block, nd_proof_block, nd_proof_block, nd_proof_block, nd_proof_block, nd_proof_block, nd_proof_block, nd_proof_block, nd_proof_block, nd_proof_block, nd_proof_block, nd_proof_block, nd_proof_block, nd_proof_block, nd_proof_block, nd_proof_block, nd_proof_block, ]
 		nd_proof_block<-130--124>(3): name 'belong' CHILD [nd_proof_req, nd_exprs, NULL, ]

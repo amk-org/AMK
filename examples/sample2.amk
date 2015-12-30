@@ -1,12 +1,5 @@
 import logics.proposition
 
-theorem belong:
-	require:
-		define a of statement
-		define b of set[statement] 
-	conclude:
-		a,b|-a
-
 theorem belong2:
 	require:
 		define a of statement
