@@ -86,17 +86,17 @@ int yyerror(void * addr_root, const char *p) {
 /* Basic AMK Grammar */
 
 program: import_part proof_part {
-			$$ = new_ast_node(nd_program, $1, $2, NULL, @1.first_line, @2.last_line - 1);
+			$$ = new_ast_node(nd_program, $1, $2, NULL, @1.first_line + lineoff, @2.last_line - 1);
 			*AST_NODE_PTR_ARR(addr_root) = $$;
 			RPT(program, "finished");
 	   }
 
 import_part: {
-				$$ = new_ast_node(nd_import_part, NULL, NULL, NULL, 0, 0);
+				$$ = new_ast_node(nd_import_part, NULL, NULL, NULL, lineoff, 0);
 				RPT(import_part, "start merging");
 		   }
 		   | import_expr import_part {
-				$$ = new_ast_node(nd_import_part, $1, $2, NULL, @1.first_line, @2.last_line - 1);
+				$$ = new_ast_node(nd_import_part, $1, $2, NULL, @1.first_line + lineoff, @2.last_line - 1);
 				RPT(import_part, "merge with %s", (char *)($1->data));
 		   }
 
@@ -432,16 +432,17 @@ int main(int argc, char ** argv)
 	yyparse(&root);
 
 	/* print AST structure */
-	FILE * ast_log = fopen("ast_structure.log", "w");
+/*	FILE * ast_log = fopen("ast_structure.log", "w");
 	print_ast(root, 0, ast_log);
 	fclose(ast_log);
 	RPT(AST, "finished.");
+*/
 
 	/* perform Syntax-Directed Translation*/
 	translate(root);
 	
 	if (program_success)
-		print_message(SUCCESS,"program pass the varification successfully",root->location->first_line,root->location->last_line);
+		print_message(SUCCESS,"program passes the varification successfully",root->location->first_line,root->location->last_line);
 
 	/* print it to pdf file*/
 	print(root);
