@@ -1,3 +1,4 @@
+<<<<<<< HEAD
  \( a, \neg a, \neg b \vdash b .\)<span>belong</span><br/>
 
  \( a, \neg a, \neg b \vdash b .\)<span>not_cancellation</span><br/>
@@ -104,3 +105,56 @@
 \([9]: a, \neg a, \neg b \vdash b  \)<span>wedge_introduction</span>
  (4)(8) <br/>
 
+=======
+\documentclass[11pt]{article}
+\newtheorem{theorem}{Theorem}
+\def\turn{\vdash}
+\title{\textbf{\LaTeX\ for Logic}}
+\author{AMK}
+\begin{document}
+\maketitle
+\begin{theorem}[belong] $ a, \neg a, \neg b \turn b $.\\
+\end{theorem}
+\begin{theorem}[not_cancellation] $ a, \neg a, \neg b \turn b $.\\
+\end{theorem}
+\begin{theorem}[not_introduction] $ a, \neg a, \neg b \turn b $.\\
+\end{theorem}
+\begin{theorem}[contain_cancellation] $ a, \neg a, \neg b \turn b $.\\
+\end{theorem}
+\begin{theorem}[contain_introduction] $ a, \neg a, \neg b \turn b $.\\
+\end{theorem}
+\begin{theorem}[vee_cancellation] $ a, \neg a, \neg b \turn b $.\\
+\end{theorem}
+\begin{theorem}[vee_introduction_right] $ a, \neg a, \neg b \turn b $.\\
+\end{theorem}
+\begin{theorem}[vee_introduction_left] $ a, \neg a, \neg b \turn b $.\\
+\end{theorem}
+\begin{theorem}[wedge_cancellation_left] $ a, \neg a, \neg b \turn b $.\\
+\end{theorem}
+\begin{theorem}[wedge_cancellation_right] $ a, \neg a, \neg b \turn b $.\\
+\end{theorem}
+\begin{theorem}[wedge_introduction] $ a, \neg a, \neg b \turn b $.\\
+\end{theorem}
+\begin{theorem}[contain_cancellation_left] $ a, \neg a, \neg b \turn b $.\\
+\end{theorem}
+\begin{theorem}[contain_cancellation_right] $ a, \neg a, \neg b \turn b $.\\
+\end{theorem}
+\begin{theorem}[contain_introduction] $ a, \neg a, \neg b \turn b $.\\
+\end{theorem}
+\begin{theorem}[wrong_infer] $ a, \neg a, \neg b \turn b $.\\
+$(e4)a, \neg a, \neg b \turn b \hfill belong  $\\
+$(e5)a, \neg a, \neg b \turn b \hfill not_cancellation (x)(x) $\\
+$((null))a, \neg a, \neg b \turn b \hfill contain_introduction  $\\
+\end{theorem}
+\begin{theorem}[fist proof] $ a, \neg a, \neg b \turn b $.\\
+$(1)a, \neg a, \neg b \turn b \hfill belong $\\
+$(2)a, \neg a, \neg b \turn \neg a \hfill belong $\\
+$(3)a, \neg a, \neg b \turn b \hfill not \_ cancellation (1)(2) $\\
+\end{theorem}
+\begin{theorem}[second proof] $ a, \neg a, \neg b \turn b $.\\
+$(1)a, \neg a, \neg b \turn b \hfill belong $\\
+$(2)a, \neg a, \neg b \turn \neg a \hfill belong $\\
+$(3)a, \neg a, \neg b \turn b \hfill not \_ cancellation (1)(2) $\\
+\end{theorem}
+\end{document}
+>>>>>>> 54119bedf2fcc9cda6d4fb682ca77e4ea6eed39f

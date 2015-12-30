@@ -1,0 +1,28 @@
+import logics.proposition
+
+theorem zero_step_infer:
+	require:
+		define a of statement
+		define b of statement
+	conclude:
+		not a, a |- b	
+	proof:
+		not b, not b, not a, a|- a -[belong] <tt>
+		not b, not b, not a, a|- not a -[belong] <bb>
+		not b, not a, a |- b -[theorem not_cancellation: <tt> <bb>] <r> # <x> should be <r>
+		not b, not a, a |- not b -[belong] <cc>
+		not a, a |- b -[theorem not_cancellation: <x> <cc>] <dd> # <x> should be <r>
+
+theorem one_step_infer:
+	require:
+		define a of statement
+		define b of statement
+	conclude:
+		not a, a |- b	
+	proof:
+		not b, not b, not a, a|- a -[belong] <tt>
+		not b, not b, not a, a|- not a -[belong] <bb>
+#		not b, not a, a |- b -[theorem not_cancellation: <tt> <bb>] <r> # this commented line should be inferred
+		not b, not a, a |- not b -[belong] <cc>
+		not a, a |- b -[theorem not_cancellation: <x> <cc>] <dd> # infer here
+

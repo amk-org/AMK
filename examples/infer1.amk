@@ -1,0 +1,14 @@
+import logics.proposition
+
+theorem zero_step_infer_two_exprs:
+	require:
+		define a of statement
+		define b of statement
+	conclude:
+		a, b |- b
+	proof:
+		not a, a->b, a, b |- not a -[belong] <A>
+		not a, a->b, a, b |- a -[belong] <B>
+		a->b, a, b |- a -[theorem not_cancellation: <x><x>] <C>
+		a->b, a, b |- a->b -[belong] <D>
+		a->b, a, b |- b -[theorem contain_cancellation: <D><x>] <E>
