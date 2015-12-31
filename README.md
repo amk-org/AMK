@@ -20,7 +20,7 @@ As a course project, we decided to implement AMK in the area of Mathematical Log
 
 ## 项目源码链接
 
-从 [Github](https://github.com/bsnsk/AMK) 访问该项目。
+从 [Github](https://github.com/amk-org/AMK) 访问该项目。
 
-Visit the project at [Github](https://github.com/bsnsk/AMK)
+Visit the project at [Github](https://github.com/amk-org/AMK)
 
