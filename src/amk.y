@@ -368,20 +368,20 @@ void print_tree(struct ast_node* node,FILE* fp)
 				print_tree(node->links[i],fp);
 			break;
 		case nd_proof_block:
-			fprintf(fp,"\\begin{theorem}[%s] $ a, \\neg a, \\neg b \\turn b $.\\\\\n",(char*)node->data);
+			//fprintf(fp," \\( a, \\neg a, \\neg b \\vdash b .\\)<span>%s</span><br/>\n",(char*)node->data);
 			
 			char* type=((char*)node->data)+strlen((char*)node->data)+1;
 			if ((strcmp(type,"a")!=0)&&(node->links[2]!=NULL))
 				print_tree(node->links[2],fp);
 
-			fprintf(fp,"\\end{theorem}\n");
+			fprintf(fp,"\n");
 			break;
 		case nd_rich_exprs:
 			for (int i=0;i<node->num_links;i++)
 				print_tree(node->links[i],fp);
 			break;
 		case nd_rich_expr:	
-			fprintf(fp,"$(%s)a, \\neg a, \\neg b \\turn b \\hfill %s ",(char*)node->links[1],node->links[0]->data);
+			fprintf(fp,"\\([%s]: a, \\neg a, \\neg b \\vdash b  \\)<span>%s</span>\n ",(char*)node->links[1],node->links[0]->data);
 			
 			struct ast_node* lables_pointer=node->links[0]->links[1];
 			if (lables_pointer!=NULL)
@@ -390,7 +390,7 @@ void print_tree(struct ast_node* node,FILE* fp)
 				for (int i=0;i<lables_num;i++)
 					fprintf(fp,"(%s)",(char*)lables_pointer->links[i]);
 			}
-			fprintf(fp," $\\\\\n");
+			fprintf(fp," <br/>\n");
 			break;
 		default:
 			break;
@@ -400,25 +400,7 @@ void print_tree(struct ast_node* node,FILE* fp)
 void print(struct ast_node* node)
 {
 	FILE *fp=fopen("out.tex","w");
-	fprintf(fp,"\\documentclass[11pt]{article}\n");
-	fprintf(fp,"\\newtheorem{theorem}{Theorem}\n");
-	fprintf(fp,"\\def\\turn{\\vdash}\n");
-	fprintf(fp,"\\title{\\textbf{\\LaTeX\\ for Logic}}\n");
-	fprintf(fp,"\\author{AMK}\n");
-	fprintf(fp,"\\begin{document}\n");
-	fprintf(fp,"\\maketitle\n");
 	print_tree(node,fp);
-	fprintf(fp,"\\begin{theorem}[fist proof] $ a, \\neg a, \\neg b \\turn b $.\\\\\n");
-	fprintf(fp,"$(1)a, \\neg a, \\neg b \\turn b \\hfill belong $\\\\\n");
-	fprintf(fp,"$(2)a, \\neg a, \\neg b \\turn \\neg a \\hfill belong $\\\\\n");
-	fprintf(fp,"$(3)a, \\neg a, \\neg b \\turn b \\hfill not \\_ cancellation (1)(2) $\\\\\n");
-	fprintf(fp,"\\end{theorem}\n");
-	fprintf(fp,"\\begin{theorem}[second proof] $ a, \\neg a, \\neg b \\turn b $.\\\\\n");
-	fprintf(fp,"$(1)a, \\neg a, \\neg b \\turn b \\hfill belong $\\\\\n");
-	fprintf(fp,"$(2)a, \\neg a, \\neg b \\turn \\neg a \\hfill belong $\\\\\n");
-	fprintf(fp,"$(3)a, \\neg a, \\neg b \\turn b \\hfill not \\_ cancellation (1)(2) $\\\\\n");
-	fprintf(fp,"\\end{theorem}\n");
-	fprintf(fp,"\\end{document}\n");
 }
 
 /* FUNCTION DEFINITIONS */
