@@ -4,7 +4,7 @@ OBJ = amki
 NAME = amk
 LEX = $(NAME).lex
 YACC = $(NAME).y
-FLAGS = -g
+FLAGS = -O2
 
 default:
 	bison -d $(YACC)

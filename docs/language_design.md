@@ -1,5 +1,5 @@
 # AMK Language Design: Overview
-Drafted by *Shuyang Shi* @ Oct, 2015
+By *Shuyang Shi* @ Oct, 2015
 ***
 
 下面是关于AMK语言的总述，会出现一些例子，这些例子默认来自于古典命题逻辑领域。具体各领域的内容在各自的说明文件中查阅。
@@ -27,6 +27,8 @@ AMK的设计初衷是为了在数学各个领域的证明中发挥相当的作�
 
 	import logics.proposition
 	
+（导入了文件`modules/logics/proposition.mamk`中的内容。）
+	
 ### 源文件语法
 模块源文件（*.mamk*, **m**odule for **amk**)分为四部分，分别是
 
@@ -44,7 +46,7 @@ AMK的设计初衷是为了在数学各个领域的证明中发挥相当的作�
 classic.mamk
 
 	TYPE
-		statement {default}
+		statement
 		set[statement] # [statement] here means there is a list of several (finite) statements
 		numeric # numeric values like int, float, etc
 		
@@ -81,10 +83,10 @@ classic.mamk
 			conclude: 
 				a, b |- a
 			proof:
-				a, b |- a [axiom1]
+				a, b |- a -[axiom1]
 		
 
-### 用户代码作为模块（＊）
+### 用户代码作为模块（＊暂未实现）
 有时候证明较长，用户书写的时候需要用到另一个文件里的定理等。这区别于标准模块和用户定义模块，因为这并不是领域的拓新，也不会产生新的运算符、类型、公理等，因此，这一类模块尽管也称为模块，但是解释器实现的时候仅仅是将两个文件顺序拼接当成一个新文件而已。
 
 导入的示例（用引号以与之前的模块区分）：
@@ -101,16 +103,16 @@ AMK提供元类型，即**list**, **set** 分别表示有序、无序的列表�
 
 1. 在模块的源代码声明类型，如
 
-	list[typeA]
-	set[typeB]
+	`list[typeA]`
+	`set[typeB]`
 	
 2. 运算符默认使用逗号，用
 
-	a, b
+	`a, b`
 	
 	表示a, b两个元素组成的set，用
 	
-	[a, b]
+	`[a, b]`
 	
 	表示a, b两个元素组成的list。 
 	
@@ -130,7 +132,7 @@ AMK本身并没有运算符，所有的相关运算符都来自模块定义（�
 - 变量的定义；
 - 定理、引理等的名字或标号。
 
-结论在表达清楚的情况下建议直接写表达式。当结论非常复杂的时候可以用缩进的**where**来声明变量代替长而重复出现的表达式。
+结论在表达清楚的情况下建议直接写表达式。当结论非常复杂的时候可以用缩进的**where**来声明变量代替长而重复出现的表达式（where特性暂未实现）。
 
 再之后"**proof:**"后跟证明过程。具体的证明格式后面再详述。
 当声明了定理不跟**proof**引导的证明过程的时候，类似函数的声明，表示在后面会找到关于这个定理的证明。这一点是出于证明习惯的考虑，有时候我们会喜欢用分析法，从结论往回分阶段推倒，那么就需要留下一个假设等待后面证明。
@@ -172,20 +174,20 @@ AMK本身并没有运算符，所有的相关运算符都来自模块定义（�
 			a -> b, a |- a wedge b -[:<t3>] <4>
 			a -> b |- a -> (a wedge b) [4]
 
-首先来看写在定理／引理的"proof:"后面的内容，每行一句推理过程。
+首先来看写在定理／引理的`proof:`后面的内容，每行一句推理过程。
 
-- 每行是一个已定义类型的表达式（或者变量），标示该表达式已经由require的内容和前面的推理步骤，在该定理内得到证明。
-- （可选）尖括号<>内标示的是推理过程的标号，可以用数字、字母、下划线进行组合。为了方便书写，推理过程的标号**仅在当前函数内有效**。标号在一行的最右边（注释除外）。
-- （可选）符号对-[和]内标示的是使用的定理、引理。
+- 每行是一个已定义类型的表达式（或者变量），标示该表达式已经由`require`的内容和前面的推理步骤，在该定理内得到证明。
+- （可选）尖括号`<``>`内标示的是推理过程的标号，可以用数字、字母、下划线进行组合。为了方便书写，推理过程的标号**仅在当前函数内有效**。标号在一行的最右边（注释除外）。
+- （可选）符号对`-[`和`]`内标示的是使用的定理、引理。
 	- 如果是公理，可以不写清楚具体是哪条公里。但是定理、引理的使用必须明确指明其名字和应用的变量（这点和手写证明的要求是一样的）。
-	- 括号内的内容可以用':'分隔作为两部分
-		- 前面是使用的定理／引理／公理的名字，前缀 axiom / lemma / theorem 可以省略。
-		- 后面是对那几行推理得到的结果使用该定理／引理／公理，用标号**按定理条件的顺序**指明。
-		- 如果只有前一半，可以省略':'，但是只有后一半不能省略':'
+	- 括号内的内容可以用`:`分隔作为两部分
+		- 前面是使用的定理／引理／公理的名字，前缀 `axiom` / `lemma` / `theorem` 可以省略。
+		- 后面是对那几行推理得到的结果使用该定理／引理／公理，用标号按定理条件的顺序(不涉及推理的可以打乱顺序）指明。
+		- 如果只有前一半，可以省略`:`，但是只有后一半不能省略`:`
 		
 ## 编写 Coding
 ### 缩进与括号
-类似Python，采用缩进作为层次结构的标明，不使用大括号。定理的require, conclude, proof等都要相对theorem缩进，具体的where, 证明内容等也要相应缩进。
+类似Python，采用缩进作为层次结构的标明，不使用大括号。定理的`require`, `conclude`, `proof`等都要相对`theorem`缩进，具体的`where`, 证明内容等也要相应缩进。
 
 注意，这里缩进我们**仅使用TAB**。
 
@@ -201,3 +203,29 @@ AMK大小写敏感，内置关键字等统一用小写。推荐用户使用小�
 
 支持各模块类型的高亮插件、自动补全插件后期可以补上。
 
+### 使用
+
+使用的时候只需要运行`amksh.py`即可，例如
+
+```
+$ ./amksh.py examples/infer1.amk
+bison -d amk.y
+flex amk.lex
+gcc -o amki amk.tab.c lex.yy.c -O2
+Compiling ...  done.
+===================
+checking file `examples/infer1.amk` ...  done
+
+[correct 10:10] match conclusion part and requirement part
+[correct 11:11] match conclusion part and requirement part
+[warning 12:12] infer exactly 0 step(s) to get <x>: Your missing expression is the expression with label <A>
+[warning 12:12] infer exactly 0 step(s) to get <x>: Your missing expression is the expression with label <B>
+[correct 12:12] match conclusion part and requirement part
+[correct 13:13] match conclusion part and requirement part
+[warning 14:14] infer exactly 0 step(s) to get <x>: Your missing expression is the expression with label <B>
+[correct 14:14] match conclusion part and requirement part
+[error 10:14] last line does not match its conclusion
+
+===================
+$ 
+```

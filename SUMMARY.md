@@ -1,9 +1,12 @@
 # Summary
 
-* [AMK语言简介](README.md)
-* [项目时间与工作安排](docs/schedule.md)
-* [AMK语言设计](docs/language_design.md)
-* [命题逻辑部分语言设计](docs/ld_propositional_logics.md)
-* [Lexer设计文档](docs/lex.md)
-* [Parser设计文档](docs/syntax.md)
+* [AMK Project](README.md)
+* Project Management
+	* [Schedule and Work Allocation](docs/schedule.md)
+* User Guide with AMK Language
+	* [AMK Language Design](docs/language_design.md)
+	* [AMK Language Design: Propositional logics](docs/ld_propositional_logics.md)
+* Programmer's Guide of Code Documentation
+	* [Lexer Design Documentation](docs/lex.md)
+	* [Parser Design Documentation](docs/syntax.md)
 
