@@ -29,8 +29,3 @@ Visit the online version with friendly interaction at <http://amk.website/>.
 
 Visit the project at [Github](https://github.com/amk-org/AMK)
 
-## 作者信息 Authors
-
-- 史舒扬
-- 张浩千
-- 倪盛恺
