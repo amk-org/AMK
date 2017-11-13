@@ -19,9 +19,9 @@ AMK (Anti-Min-Ke) is a home-made language for people writing and checking mathem
 As a course project, we decided to implement AMK in the area of Mathematical Logics (propositional logics). Later it can be extended to other areas of mathematics.
 
 ## 项目网站链接 Project Website
-访问 <http://amk.website/> 访问我们的在线版本，提供友好的交互界面。
+访问 ~~<http://amk.website/>~~ 访问我们的在线版本，提供友好的交互界面。
 
-Visit the online version with friendly interaction at <http://amk.website/>.
+Visit the online version with friendly interaction at ~~<http://amk.website/>~~.
 
 ## 项目源码链接 Source Code
 
